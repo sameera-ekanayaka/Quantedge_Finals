@@ -35,6 +35,7 @@ src/                   All calculations, one module per area
   config.py            Tickers, dates, paths, seeds
   data.py              load_prices, load_returns, load_risk_free
   get_data.py          Download and clean the data
+notebooks/             Walkthroughs, e.g. the data cleaning steps
   ui.py                Shared sidebar and settings
 tests/                 pytest tests, one file per module
 data/clean/            Cleaned CSVs (committed)
@@ -132,8 +133,10 @@ FRED, then:
 - checks the 2008, March 2020 and 2022 stress periods are covered
 - lists any daily move above 15% so it can be checked by eye
 
-Raw downloads go to `data/raw/` (not committed) and the cleaned
-`prices.csv` and `risk_free.csv` to `data/clean/`. To redo the cleaning
+Raw downloads go to `data/raw/` (not committed). The cleaned `prices.csv`
+and `risk_free.csv` go to `data/clean/`, along with `cleaning_report.json`,
+which records what each step did. The app's Data page reads that report, and
+`notebooks/data_cleaning.ipynb` walks through the same steps one at a time. To redo the cleaning
 without downloading again, run `python -m src.get_data --from-raw`.
 
 ## AI disclosure

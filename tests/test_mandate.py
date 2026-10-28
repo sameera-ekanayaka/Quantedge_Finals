@@ -1,4 +1,5 @@
 """Tests for the mandate rules in src/portfolio.py."""
+
 import pandas as pd
 
 from src.portfolio import TICKERS, check_weights, get_bounds

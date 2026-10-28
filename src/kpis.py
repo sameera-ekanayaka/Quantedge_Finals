@@ -2,6 +2,7 @@
 
 Owner: Imasha Karunathilaka
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -86,9 +87,7 @@ def calmar_ratio(returns: pd.Series) -> float:
     return float(annual_return(returns) / abs(mdd))
 
 
-def kpi_table(
-    returns: pd.Series, benchmark: pd.Series, rf_annual: float
-) -> pd.Series:
+def kpi_table(returns: pd.Series, benchmark: pd.Series, rf_annual: float) -> pd.Series:
     """Return every KPI for one portfolio as a single labelled series."""
     beta, alpha = capm_beta_alpha(returns, benchmark, rf_annual)
     return pd.Series(

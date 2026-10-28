@@ -34,6 +34,7 @@ app/pages/             One file per app page, UI only
 src/                   All calculations, one module per area
   config.py            Tickers, dates, paths, seeds
   data.py              load_prices, load_returns, load_risk_free
+  get_data.py          Download and clean the data
   ui.py                Shared sidebar and settings
 tests/                 pytest tests, one file per module
 data/clean/            Cleaned CSVs (committed)
@@ -113,6 +114,27 @@ numbers in the report.
 
 Prices from yfinance (adjusted close), the risk-free rate from FRED (3-month
 T-bill, DTB3), macro context from the World Bank or IMF. No other sources.
+
+## Getting the data
+
+One command downloads, cleans and saves everything:
+
+```bash
+python -m src.get_data
+```
+
+It pulls adjusted closes for the seven ETFs from Yahoo Finance and DTB3 from
+FRED, then:
+
+- keeps trading days only, from 18 Nov 2004 (GLD's first day) to 27 Oct 2026
+- fills gaps of up to 3 days with the last price and stops on anything longer
+- lines the risk-free rate up with the price dates
+- checks the 2008, March 2020 and 2022 stress periods are covered
+- lists any daily move above 15% so it can be checked by eye
+
+Raw downloads go to `data/raw/` (not committed) and the cleaned
+`prices.csv` and `risk_free.csv` to `data/clean/`. To redo the cleaning
+without downloading again, run `python -m src.get_data --from-raw`.
 
 ## AI disclosure
 

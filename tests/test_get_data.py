@@ -107,20 +107,6 @@ def test_stress_periods_covered():
     assert not get_data.stress_periods_covered(synthetic_prices(start="2010-01-01"))
 
 
-@pytest.fixture
-def tmp_data_dirs(tmp_path, monkeypatch):
-    for name, value in {
-        "RAW_DIR": tmp_path / "raw",
-        "CLEAN_DIR": tmp_path / "clean",
-        "RAW_PRICES_FILE": tmp_path / "raw" / "prices_raw.csv",
-        "RAW_RISK_FREE_FILE": tmp_path / "raw" / "risk_free_raw.csv",
-        "PRICES_FILE": tmp_path / "clean" / "prices.csv",
-        "RISK_FREE_FILE": tmp_path / "clean" / "risk_free.csv",
-    }.items():
-        monkeypatch.setattr(config, name, value)
-    return tmp_path
-
-
 def test_run_saves_files_the_loaders_can_read(tmp_data_dirs, monkeypatch):
     raw = synthetic_prices()
     monkeypatch.setattr(get_data, "download_prices", lambda: raw)
@@ -191,3 +177,59 @@ def test_download_risk_free_reads_fred_csv(tmp_path, monkeypatch):
     assert list(rf.columns) == ["DTB3"]
     assert np.isnan(rf["DTB3"].iloc[0])
     assert rf["DTB3"].iloc[1] == 1.52
+
+
+def test_clean_prices_records_each_step():
+    raw = synthetic_prices()
+    raw.loc[raw.index[50]] = np.nan
+    raw.loc[raw.index[100], "EEM"] = np.nan
+    steps = []
+    prices, _ = get_data.clean_prices(raw, steps=steps)
+    assert steps[0]["rows"] == len(raw)
+    assert steps[-1]["rows"] == len(prices)
+    removed = sum(s["removed"] for s in steps)
+    assert removed == len(raw) - len(prices)
+    assert "1 missing prices filled" in steps[-1]["detail"]
+
+
+def test_run_writes_cleaning_report(tmp_data_dirs, monkeypatch):
+    raw = synthetic_prices()
+    raw.loc[raw.index[300] :, "XLE"] *= 0.7
+    rf_raw = synthetic_rf(raw.index).drop(raw.index[400])
+    monkeypatch.setattr(get_data, "download_prices", lambda: raw)
+    monkeypatch.setattr(get_data, "download_risk_free", lambda: rf_raw)
+
+    prices, _ = get_data.run()
+    report = data.load_cleaning_report()
+
+    assert report["days"] == len(prices)
+    assert report["tickers"] == config.TICKERS
+    assert report["large_moves"][0]["ticker"] == "XLE"
+    assert all(p["covered"] for p in report["stress_periods"])
+    assert report["risk_free"]["carried_forward_days"] == 1
+    assert report["steps"][-1]["rows"] == len(prices)
+
+
+def test_load_cleaning_report_missing(tmp_data_dirs):
+    assert data.load_cleaning_report() is None
+
+
+def test_cleaning_notebook_runs_and_matches_script(tmp_data_dirs, monkeypatch):
+    import json
+
+    import matplotlib
+
+    matplotlib.use("Agg")
+    raw = synthetic_prices()
+    raw.loc[raw.index[100], "EEM"] = np.nan
+    config.RAW_DIR.mkdir()
+    raw.to_csv(config.RAW_PRICES_FILE)
+    synthetic_rf(raw.index).to_csv(config.RAW_RISK_FREE_FILE)
+    monkeypatch.chdir(config.ROOT)
+
+    notebook = config.ROOT / "notebooks" / "data_cleaning.ipynb"
+    cells = json.loads(notebook.read_text())["cells"]
+    source = "\n".join("".join(c["source"]) for c in cells if c["cell_type"] == "code")
+    namespace = {}
+    exec(compile(source, str(notebook), "exec"), namespace)
+    assert namespace["filled"]["EEM"] == 1

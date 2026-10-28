@@ -9,6 +9,7 @@ Owner: Sameera Ekanayaka
 """
 
 import argparse
+import json
 import sys
 
 import numpy as np
@@ -56,17 +57,8 @@ def download_risk_free(series: str = config.RISK_FREE_SERIES) -> pd.DataFrame:
     return raw.rename(columns={raw.columns[0]: series})
 
 
-def clean_prices(
-    raw: pd.DataFrame,
-    tickers: list[str] = config.TICKERS,
-    start: str = config.START_DATE,
-    end: str = config.END_DATE,
-    max_fill: int = MAX_FILL_DAYS,
-) -> tuple[pd.DataFrame, pd.Series]:
-    """Clean raw adjusted closes.
-
-    Returns the cleaned prices and the number of filled days per ticker.
-    """
+def tidy(raw: pd.DataFrame, tickers: list[str] = config.TICKERS) -> pd.DataFrame:
+    """Keep our tickers in config order, with a plain sorted date index."""
     missing = [t for t in tickers if t not in raw.columns]
     if missing:
         raise ValueError(f"Raw prices are missing {', '.join(missing)}")
@@ -74,19 +66,36 @@ def clean_prices(
     prices = raw[tickers].apply(pd.to_numeric, errors="coerce")
     prices.index = pd.to_datetime(prices.index).tz_localize(None).normalize()
     prices.index.name = "Date"
-    prices = prices[~prices.index.duplicated(keep="last")].sort_index()
-    prices = prices.loc[start : pd.Timestamp(end) - pd.Timedelta(days=1)]
+    return prices[~prices.index.duplicated(keep="last")].sort_index()
 
-    # Zero or negative prices are bad ticks, treat them as missing
-    prices = prices.where(prices > 0)
-    # Rows where nothing traded are exchange holidays
-    prices = prices.dropna(how="all")
 
+def trim_dates(
+    prices: pd.DataFrame, start: str = config.START_DATE, end: str = config.END_DATE
+) -> pd.DataFrame:
+    return prices.loc[start : pd.Timestamp(end) - pd.Timedelta(days=1)]
+
+
+def remove_bad_ticks(prices: pd.DataFrame) -> pd.DataFrame:
+    """Zero or negative prices are bad ticks, so treat them as missing."""
+    return prices.where(prices > 0)
+
+
+def drop_holidays(prices: pd.DataFrame) -> pd.DataFrame:
+    """Rows where nothing traded are exchange holidays."""
+    return prices.dropna(how="all")
+
+
+def start_when_all_trade(prices: pd.DataFrame) -> pd.DataFrame:
     complete = prices.dropna()
     if complete.empty:
         raise ValueError("No date has a price for every ticker")
-    prices = prices.loc[complete.index[0] :]
+    return prices.loc[complete.index[0] :]
 
+
+def fill_short_gaps(
+    prices: pd.DataFrame, max_fill: int = MAX_FILL_DAYS
+) -> tuple[pd.DataFrame, pd.Series]:
+    """Carry the last price over gaps up to max_fill days, stop on longer ones."""
     was_missing = prices.isna()
     prices = prices.ffill(limit=max_fill)
     still_missing = prices.isna()
@@ -98,8 +107,55 @@ def clean_prices(
             f"Gaps longer than {max_fill} days, for example {listed}. "
             "Check the raw data before going further."
         )
-
     filled = (was_missing & ~prices.isna()).sum().rename("filled_days")
+    return prices, filled
+
+
+def clean_prices(
+    raw: pd.DataFrame,
+    tickers: list[str] = config.TICKERS,
+    start: str = config.START_DATE,
+    end: str = config.END_DATE,
+    max_fill: int = MAX_FILL_DAYS,
+    steps: list | None = None,
+) -> tuple[pd.DataFrame, pd.Series]:
+    """Clean raw adjusted closes.
+
+    Returns the cleaned prices and the number of filled days per ticker. Pass a
+    list as steps to get the row count after each step appended to it.
+    """
+    log = steps if steps is not None else []
+
+    def record(name: str, frame: pd.DataFrame, detail: str = "") -> None:
+        before = log[-1]["rows"] if log else len(frame)
+        log.append(
+            {
+                "step": name,
+                "rows": len(frame),
+                "removed": before - len(frame),
+                "detail": detail,
+            }
+        )
+
+    record("Raw download", raw, f"{raw.shape[1]} columns")
+    prices = tidy(raw, tickers)
+    record("Tidy dates and columns", prices, "duplicate dates dropped")
+    prices = trim_dates(prices, start, end)
+    record("Trim to study period", prices, f"{start} to before {end}")
+    bad_ticks = int((prices <= 0).sum().sum())
+    prices = drop_holidays(remove_bad_ticks(prices))
+    record("Drop holidays", prices, f"{bad_ticks} zero or negative prices removed")
+    prices = start_when_all_trade(prices)
+    record(
+        "Start when all tickers trade", prices, f"first day {prices.index[0].date()}"
+    )
+    missing_cells = int(prices.isna().sum().sum())
+    prices, filled = fill_short_gaps(prices, max_fill)
+    record(
+        "Fill short gaps",
+        prices,
+        f"{missing_cells} missing prices filled, limit {max_fill} days",
+    )
     return prices, filled
 
 
@@ -146,7 +202,7 @@ def summary(
     ]
 
     for name, (start, end) in config.STRESS_PERIODS.items():
-        status = "covered" if _covers(prices, start, end) else "NOT COVERED"
+        status = "covered" if covers_period(prices, start, end) else "NOT COVERED"
         lines.append(f"{name}: {status}")
 
     moves = large_moves(prices)
@@ -158,14 +214,56 @@ def summary(
     return lines
 
 
-def _covers(prices: pd.DataFrame, start: str, end: str) -> bool:
+def covers_period(prices: pd.DataFrame, start: str, end: str) -> bool:
     return prices.index[0] <= pd.Timestamp(start) and prices.index[-1] >= pd.Timestamp(
         end
     )
 
 
 def stress_periods_covered(prices: pd.DataFrame) -> bool:
-    return all(_covers(prices, s, e) for s, e in config.STRESS_PERIODS.values())
+    return all(covers_period(prices, s, e) for s, e in config.STRESS_PERIODS.values())
+
+
+def cleaning_report(
+    steps: list[dict],
+    prices: pd.DataFrame,
+    filled: pd.Series,
+    raw_rf: pd.DataFrame,
+    risk_free: pd.DataFrame,
+) -> dict:
+    """Everything the Data page shows, so the app never needs the raw files."""
+    rf_raw = pd.to_numeric(raw_rf.iloc[:, 0], errors="coerce").dropna()
+    rf_raw.index = pd.to_datetime(rf_raw.index).tz_localize(None).normalize()
+    published = prices.index.isin(rf_raw.index)
+    rf = risk_free.iloc[:, 0]
+    return {
+        "sources": {
+            "prices": "Yahoo Finance adjusted close (yfinance)",
+            "risk_free": f"FRED {config.RISK_FREE_SERIES}, annualised percent",
+        },
+        "tickers": list(prices.columns),
+        "first_date": str(prices.index[0].date()),
+        "last_date": str(prices.index[-1].date()),
+        "days": len(prices),
+        "steps": steps,
+        "max_fill_days": MAX_FILL_DAYS,
+        "filled_days": {t: int(n) for t, n in filled.items()},
+        "large_move_threshold": LARGE_MOVE,
+        "large_moves": [
+            {"date": str(d.date()), "ticker": t, "log_return": round(float(r), 6)}
+            for (d, t), r in large_moves(prices).items()
+        ],
+        "stress_periods": [
+            {"name": name, "start": s, "end": e, "covered": covers_period(prices, s, e)}
+            for name, (s, e) in config.STRESS_PERIODS.items()
+        ],
+        "risk_free": {
+            "published_days": int(published.sum()),
+            "carried_forward_days": int((~published).sum()),
+            "min_percent": round(float(rf.min()), 4),
+            "max_percent": round(float(rf.max()), 4),
+        },
+    }
 
 
 def run(from_raw: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -182,7 +280,8 @@ def run(from_raw: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
         raw_prices.to_csv(config.RAW_PRICES_FILE)
         raw_rf.to_csv(config.RAW_RISK_FREE_FILE)
 
-    prices, filled = clean_prices(raw_prices)
+    steps = []
+    prices, filled = clean_prices(raw_prices, steps=steps)
     risk_free = clean_risk_free(raw_rf, prices.index)
 
     if not stress_periods_covered(prices):
@@ -191,9 +290,12 @@ def run(from_raw: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
     config.CLEAN_DIR.mkdir(parents=True, exist_ok=True)
     prices.to_csv(config.PRICES_FILE, float_format="%.6f")
     risk_free.to_csv(config.RISK_FREE_FILE, float_format="%.4f")
+    report = cleaning_report(steps, prices, filled, raw_rf, risk_free)
+    config.REPORT_FILE.write_text(json.dumps(report, indent=2) + "\n")
 
     print("\n".join(summary(prices, filled, risk_free)))
-    print(f"Saved {config.PRICES_FILE.name} and {config.RISK_FREE_FILE.name}")
+    saved = [config.PRICES_FILE, config.RISK_FREE_FILE, config.REPORT_FILE]
+    print("Saved " + ", ".join(f.name for f in saved))
     return prices, risk_free
 
 

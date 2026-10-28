@@ -1,0 +1,20 @@
+[project]
+name = "quantedge-finals"
+version = "0.1.0"
+description = "Risk analysis and portfolio recommendation for the Serendib University Endowment Fund"
+requires-python = ">=3.12,<3.13"
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,135 @@
+{
+  "sources": {
+    "prices": "Yahoo Finance adjusted close (yfinance)",
+    "risk_free": "FRED DTB3, annualised percent"
+  },
+  "tickers": [
+    "SPY",
+    "EFA",
+    "EEM",
+    "AGG",
+    "GLD",
+    "XLE",
+    "XLK"
+  ],
+  "first_date": "2004-11-18",
+  "last_date": "2026-10-27",
+  "days": 5519,
+  "steps": [
+    {
+      "step": "Raw download",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "7 columns"
+    },
+    {
+      "step": "Tidy dates and columns",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "duplicate dates dropped"
+    },
+    {
+      "step": "Trim to study period",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "2004-11-18 to before 2026-10-28"
+    },
+    {
+      "step": "Drop holidays",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "0 zero or negative prices removed"
+    },
+    {
+      "step": "Start when all tickers trade",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "first day 2004-11-18"
+    },
+    {
+      "step": "Fill short gaps",
+      "rows": 5519,
+      "removed": 0,
+      "detail": "0 missing prices filled, limit 3 days"
+    }
+  ],
+  "max_fill_days": 3,
+  "filled_days": {
+    "SPY": 0,
+    "EFA": 0,
+    "EEM": 0,
+    "AGG": 0,
+    "GLD": 0,
+    "XLE": 0,
+    "XLK": 0
+  },
+  "large_move_threshold": 0.15,
+  "large_moves": [
+    {
+      "date": "2008-10-09",
+      "ticker": "XLE",
+      "log_return": -0.155444
+    },
+    {
+      "date": "2008-10-13",
+      "ticker": "EEM",
+      "log_return": 0.205141
+    },
+    {
+      "date": "2008-10-13",
+      "ticker": "XLE",
+      "log_return": 0.152503
+    },
+    {
+      "date": "2008-10-15",
+      "ticker": "EEM",
+      "log_return": -0.176334
+    },
+    {
+      "date": "2008-10-15",
+      "ticker": "XLE",
+      "log_return": -0.155997
+    },
+    {
+      "date": "2008-10-28",
+      "ticker": "EEM",
+      "log_return": 0.190064
+    },
+    {
+      "date": "2020-03-09",
+      "ticker": "XLE",
+      "log_return": -0.22491
+    },
+    {
+      "date": "2020-03-18",
+      "ticker": "XLE",
+      "log_return": -0.154984
+    }
+  ],
+  "stress_periods": [
+    {
+      "name": "2008 financial crisis",
+      "start": "2008-09-01",
+      "end": "2009-03-31",
+      "covered": true
+    },
+    {
+      "name": "March 2020 Covid crash",
+      "start": "2020-02-19",
+      "end": "2020-03-23",
+      "covered": true
+    },
+    {
+      "name": "2022 rate hikes",
+      "start": "2022-01-03",
+      "end": "2022-12-30",
+      "covered": true
+    }
+  ],
+  "risk_free": {
+    "published_days": 5478,
+    "carried_forward_days": 41,
+    "min_percent": -0.05,
+    "max_percent": 5.36
+  }
+}

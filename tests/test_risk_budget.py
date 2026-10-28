@@ -71,5 +71,5 @@ def test_invalid_weights_sum(returns_df):
 
 
 def test_invalid_method(returns_df, equal_weights):
-    with pytest.raises(ValueError, match="Unknown risk budgeting method"):
+    with pytest.raises(ValueError, match="Unknown method"):
         risk_budget(returns_df, equal_weights, method="invalid_method")

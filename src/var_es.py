@@ -1,5 +1,6 @@
-"""Value at Risk (VaR) and Expected Shortfall (ES): historical, parametric and Monte Carlo.
+"""Value at Risk (VaR) and Expected Shortfall (ES).
 
+Historical, parametric and Monte Carlo methodologies.
 Owner: Aadhila Anees
 Layer 2 & 3: Quantitative Risk Measurement
 """
@@ -17,10 +18,14 @@ def _validate_inputs(returns: pd.Series, alpha: float, method: str) -> pd.Series
         raise TypeError("returns must be a pandas Series or numpy 1D array")
     clean_returns = pd.Series(returns).dropna()
     if len(clean_returns) < 30:
-        raise ValueError(f"Insufficient data points ({len(clean_returns)}) to compute reliable VaR/ES.")
+        raise ValueError(
+            f"Insufficient data points ({len(clean_returns)}) for reliable VaR/ES."
+        )
 
     if not (0.0 < alpha < 1.0):
-        raise ValueError(f"Confidence level alpha must be strictly between 0 and 1, got {alpha}")
+        raise ValueError(
+            f"Confidence level alpha must be strictly between 0 and 1, got {alpha}"
+        )
 
     if method not in config.VAR_METHODS:
         valid_methods = list(config.VAR_METHODS.keys())
@@ -174,9 +179,13 @@ def var_es(
     if method == "historical":
         return _historical_var_es(clean_returns, alpha)
     elif method == "normal":
-        return _parametric_normal_var_es(clean_returns, alpha, include_drift=include_drift)
+        return _parametric_normal_var_es(
+            clean_returns, alpha, include_drift=include_drift
+        )
     elif method == "student_t":
-        return _parametric_student_t_var_es(clean_returns, alpha, include_drift=include_drift)
+        return _parametric_student_t_var_es(
+            clean_returns, alpha, include_drift=include_drift
+        )
     elif method == "monte_carlo":
         return _monte_carlo_var_es(
             clean_returns,

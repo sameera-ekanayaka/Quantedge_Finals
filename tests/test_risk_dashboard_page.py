@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from streamlit.testing.v1 import AppTest
 
 PAGE = Path(__file__).resolve().parent.parent / "app" / "pages" / "3_risk_dashboard.py"
@@ -9,9 +10,7 @@ def test_risk_dashboard_page_renders_cleanly():
     # Pre-populate sidebar session state values that ui.py expects
     at.session_state["confidence"] = 0.95
     at.session_state["var_method"] = "historical"
-    at.session_state["backtest_range"] = (
-        Path().resolve(),  # Dummy placeholder
-    )
+    at.session_state["backtest_range"] = (Path().resolve(),)  # Dummy placeholder
     at.run()
 
     assert not at.exception

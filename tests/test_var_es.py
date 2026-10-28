@@ -63,7 +63,8 @@ def test_parametric_normal_known_analytical():
     expected_var = 1.6448536 * 0.02
     assert var == pytest.approx(expected_var, rel=1e-2)
 
-    # Theoretical normal ES at 95% = sigma * phi(1.64485) / 0.05 = 0.02 * 0.103135 / 0.05 = 0.04125
+    # Theoretical normal ES at 95% = sigma * phi(1.64485) / 0.05
+    # = 0.02 * 0.103135 / 0.05 = 0.04125
     expected_es = 0.02 * (0.10313564 / 0.05)
     assert es == pytest.approx(expected_es, rel=1e-2)
 

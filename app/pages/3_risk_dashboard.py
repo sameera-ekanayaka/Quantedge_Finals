@@ -4,13 +4,12 @@ Owner: Aadhila Anees
 Layers 2 & 3: VaR, Expected Shortfall, and Risk Budgeting
 """
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
 from src import config
-from src.data import load_prices, load_returns, load_risk_free, log_to_simple
+from src.data import load_returns, load_risk_free
 from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
 from src.risk_budget import risk_budget
 from src.ui import get_settings
@@ -38,7 +37,11 @@ def format_pct(val: float) -> str:
 
 
 def render_tail_gap_chart(
-    returns_series: pd.Series, var_val: float, es_val: float, alpha: float, method_name: str
+    returns_series: pd.Series,
+    var_val: float,
+    es_val: float,
+    alpha: float,
+    method_name: str,
 ):
     """Plot return distribution highlighting VaR threshold and ES tail region."""
     # Convert series to percentage terms
@@ -80,7 +83,10 @@ def render_tail_gap_chart(
     )
 
     fig.update_layout(
-        title=f"Return Distribution & Tail Risk Gap ({method_name} at {alpha:.0%} Confidence)",
+        title=(
+            f"Return Distribution & Tail Risk Gap "
+            f"({method_name} at {alpha:.0%} Confidence)"
+        ),
         xaxis_title="Daily Return (%)",
         yaxis_title="Probability Density",
         template="plotly_white",
@@ -135,7 +141,9 @@ def render_risk_budget_chart(budget_df: pd.DataFrame):
 
 # ---------------- MAIN PAGE EXECUTION ----------------
 st.title("Risk Dashboard")
-st.caption("Owner: Aadhila Anees | Layers 2 & 3: VaR, Expected Shortfall & Risk Budgeting")
+st.caption(
+    "Owner: Aadhila Anees | Layers 2 & 3: VaR, Expected Shortfall & Risk Budgeting"
+)
 
 settings = get_settings()
 alpha = settings.confidence
@@ -149,14 +157,20 @@ with col_sel:
     portfolio_name = st.selectbox(
         "Candidate Portfolio",
         options=list(candidates.columns),
-        index=list(candidates.columns).index("Risk parity")
-        if "Risk parity" in candidates.columns
-        else 0,
+        index=(
+            list(candidates.columns).index("Risk parity")
+            if "Risk parity" in candidates.columns
+            else 0
+        ),
         help="Select a candidate portfolio to inspect its risk profile.",
     )
 with col_fund:
     fund_size = config.PORTFOLIO_VALUE_USD
-    st.metric("Mandate Fund Size", format_currency(fund_size), help="Serendib Endowment capital pool")
+    st.metric(
+        "Mandate Fund Size",
+        format_currency(fund_size),
+        help="Serendib Endowment capital pool",
+    )
 
 weights = candidates[portfolio_name]
 port_returns = portfolio_returns(returns_df, weights)
@@ -204,10 +218,9 @@ st.markdown("---")
 # Section 2: Side-by-Side Methodology Comparison
 st.subheader("2. Multi-Methodology Comparison")
 st.markdown(
-    """
-    The brief requires comparing **Historical, Parametric, and Monte Carlo** models at the same confidence level.
-    The gap between them highlights distributional assumptions and tail fatness.
-    """
+    "The brief requires comparing **Historical, Parametric, and Monte Carlo** "
+    "models at the same confidence level.\n"
+    "The gap between them highlights distributional assumptions and tail fatness."
 )
 
 # Compute across all methods
@@ -258,16 +271,19 @@ st.dataframe(comp_df, hide_index=True, use_container_width=True)
 
 with st.expander("Why do these methods disagree? (Investment Committee Insights)"):
     st.markdown(
-        """
-        - **Parametric (Normal) vs. Fat Tails:**  
-          Normal VaR assumes returns follow a Gaussian bell curve. At $99\\%$, it severely **understates risk** because real market drawdowns have extreme kurtosis (fat tails).
-        - **Parametric (Student's $t$):**  
-          By fitting degrees of freedom, the Student's $t$ model captures tail kurtosis directly, producing higher and more realistic tail loss estimates than Normal.
-        - **Historical Simulation:**  
-          Empirical and model-free, reflecting true historical crashes (like 2008 and March 2020), but cannot forecast losses beyond the worst historically observed drawdown.
-        - **Why Expected Shortfall (CVaR) is Mandatory:**  
-          VaR is **not a coherent risk measure** because it fails subadditivity (diversification can mathematically increase VaR in pathological non-normal distributions). ES is coherent, convex, and answers the committee's vital question: *"If our risk limit is breached, how bad is the loss?"*
-        """
+        "- **Parametric (Normal) vs. Fat Tails:**\n"
+        "  Normal VaR assumes Gaussian returns. At 99%, it severely "
+        "**understates risk** because financial markets exhibit extreme kurtosis.\n"
+        "- **Parametric (Student's $t$):**\n"
+        "  By fitting degrees of freedom, the Student's $t$ model captures "
+        "leptokurtosis, yielding realistic tail loss estimates.\n"
+        "- **Historical Simulation:**\n"
+        "  Empirical and model-free, capturing true historical crises (2008 GFC, "
+        "COVID 2020), but cannot forecast losses beyond observed history.\n"
+        "- **Why Expected Shortfall (CVaR) is Mandatory:**\n"
+        "  VaR is **not a coherent risk measure** because it fails subadditivity. "
+        "ES is coherent, convex, and answers the critical question: "
+        "*'If our limit is breached, how bad is the loss?'*"
     )
 
 st.markdown("---")
@@ -288,15 +304,18 @@ st.markdown("---")
 # Section 4: Risk Budgeting & Risk Attribution
 st.subheader("4. Risk Budgeting & Position Sizing (Euler Decomposition)")
 st.markdown(
-    """
-    Risk budgeting decomposes total portfolio tail risk into asset-level **Marginal** and **Component** risk contributions.
-    """
+    "Risk budgeting decomposes total portfolio tail risk into asset-level "
+    "**Marginal** and **Component** risk contributions."
 )
 
 budget_method = st.radio(
     "Risk Attribution Method",
     options=["parametric", "historical"],
-    format_func=lambda x: "Parametric (Gaussian Euler)" if x == "parametric" else "Historical (Tail Expectation)",
+    format_func=lambda x: (
+        "Parametric (Gaussian Euler)"
+        if x == "parametric"
+        else "Historical (Tail Expectation)"
+    ),
     horizontal=True,
 )
 
@@ -323,10 +342,10 @@ table_display = pd.DataFrame(
 st.dataframe(table_display, use_container_width=True)
 
 st.info(
-    f"""
-    **Euler Check:**  
-    Sum of Component VaR = **{format_pct(budget_df['component_var'].sum())}** (matches portfolio VaR) | 
-    Sum of Component ES = **{format_pct(budget_df['component_es'].sum())}** (matches portfolio ES) | 
-    Total Risk Contribution = **{budget_df['pct_es_contrib'].sum():.1%}**.
-    """
+    f"**Euler Check:**\n"
+    f"- Sum of Component VaR = **{format_pct(budget_df['component_var'].sum())}** "
+    f"(matches portfolio VaR)\n"
+    f"- Sum of Component ES = **{format_pct(budget_df['component_es'].sum())}** "
+    f"(matches portfolio ES)\n"
+    f"- Total Risk Contribution = **{budget_df['pct_es_contrib'].sum():.1%}**."
 )

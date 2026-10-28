@@ -8,9 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from src import config
 from src.data import log_to_simple
-from src.var_es import var_es
 
 
 def _clean_inputs(
@@ -75,7 +73,6 @@ def parametric_risk_budget(
     # Portfolio variance and volatility
     port_var = float(w_arr @ cov_arr @ w_arr)
     port_vol = np.sqrt(port_var) if port_var > 0 else 1e-8
-    port_mu = float(w_arr @ mu_arr)
 
     # Standard normal critical value and density
     z = float(stats.norm.ppf(alpha))
@@ -98,7 +95,9 @@ def parametric_risk_budget(
     total_es = float(component_es.sum())
 
     # Percentage risk contributions (%RC)
-    pct_var = component_var / total_var if total_var > 0 else np.zeros_like(component_var)
+    pct_var = (
+        component_var / total_var if total_var > 0 else np.zeros_like(component_var)
+    )
     pct_es = component_es / total_es if total_es > 0 else np.zeros_like(component_es)
 
     df = pd.DataFrame(
@@ -176,7 +175,9 @@ def historical_risk_budget(
 
     component_var = w.values * marginal_var
     total_var = float(component_var.sum())
-    pct_var = component_var / total_var if total_var > 0 else np.zeros_like(component_var)
+    pct_var = (
+        component_var / total_var if total_var > 0 else np.zeros_like(component_var)
+    )
 
     df = pd.DataFrame(
         {
@@ -222,4 +223,6 @@ def risk_budget(
     elif method == "historical":
         return historical_risk_budget(returns, weights, alpha=alpha)
     else:
-        raise ValueError(f"Unknown risk budgeting method '{method}'. Choose 'parametric' or 'historical'.")
+        raise ValueError(
+            f"Unknown method '{method}'. Choose 'parametric' or 'historical'."
+        )

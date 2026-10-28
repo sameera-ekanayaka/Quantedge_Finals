@@ -9,6 +9,7 @@ CLEAN_DIR = DATA_DIR / "clean"
 
 PRICES_FILE = CLEAN_DIR / "prices.csv"
 RISK_FREE_FILE = CLEAN_DIR / "risk_free.csv"
+REPORT_FILE = CLEAN_DIR / "cleaning_report.json"
 RAW_PRICES_FILE = RAW_DIR / "prices_raw.csv"
 RAW_RISK_FREE_FILE = RAW_DIR / "risk_free_raw.csv"
 

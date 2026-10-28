@@ -3,6 +3,8 @@
 Owner: Sameera Ekanayaka
 """
 
+import json
+
 import numpy as np
 import pandas as pd
 
@@ -31,11 +33,26 @@ def load_returns(prices: pd.DataFrame | None = None) -> pd.DataFrame:
     return np.log(prices).diff().dropna(how="all")
 
 
+def load_risk_free_annual() -> pd.Series:
+    """The FRED 3-month T-bill as published, annualised percent."""
+    return _read_clean_csv(config.RISK_FREE_FILE).iloc[:, 0]
+
+
 def load_risk_free() -> pd.Series:
     """Daily risk-free rate as a decimal, from the FRED 3-month T-bill."""
-    rf = _read_clean_csv(config.RISK_FREE_FILE).iloc[:, 0]
-    # DTB3 is an annualised percent
-    return (rf / 100 / config.TRADING_DAYS).rename("risk_free")
+    return (load_risk_free_annual() / 100 / config.TRADING_DAYS).rename("risk_free")
+
+
+def load_cleaning_report() -> dict | None:
+    """What the cleaning did on the last run, or None if there is no report yet."""
+    if not config.REPORT_FILE.exists():
+        return None
+    return json.loads(config.REPORT_FILE.read_text())
+
+
+def rebase(prices: pd.DataFrame, base: float = 100.0) -> pd.DataFrame:
+    """Scale each column to start at base, so series can share one chart."""
+    return prices / prices.iloc[0] * base
 
 
 def log_to_simple(log_returns: pd.DataFrame | pd.Series):

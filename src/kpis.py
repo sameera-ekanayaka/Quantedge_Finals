@@ -1,4 +1,4 @@
-﻿"""Performance KPIs: Sharpe, Sortino, Treynor, Jensen's alpha, IR, drawdown, Calmar.
+"""Performance KPIs: Sharpe, Sortino, Treynor, Jensen's alpha, IR, drawdown, Calmar.
 
 Owner: Imasha Karunathilaka
 """
@@ -13,7 +13,7 @@ TRADING_DAYS = 252
 
 def annual_return(returns: pd.Series) -> float:
     """Return the compound annual growth rate of daily simple returns."""
-    growth = (1 + returns).prod()
+    growth = float((1 + returns).prod())
     return float(growth ** (TRADING_DAYS / len(returns)) - 1)
 
 
@@ -55,10 +55,10 @@ def capm_beta_alpha(
     returns: pd.Series, market: pd.Series, rf_annual: float
 ) -> tuple[float, float]:
     """Return CAPM beta and Jensen's alpha (yearly) against the market."""
-    beta = returns.cov(market) / market.var()
-    port_excess = returns.mean() * TRADING_DAYS - rf_annual
-    market_excess = market.mean() * TRADING_DAYS - rf_annual
-    alpha = port_excess - beta * market_excess
+    beta = float(returns.cov(market) / market.var())
+    port_excess = float(returns.mean()) * TRADING_DAYS - rf_annual
+    market_excess = float(market.mean()) * TRADING_DAYS - rf_annual
+    alpha = float(port_excess - beta * market_excess)
     return float(beta), float(alpha)
 
 
@@ -67,16 +67,16 @@ def treynor_ratio(returns: pd.Series, market: pd.Series, rf_annual: float) -> fl
     beta, _ = capm_beta_alpha(returns, market, rf_annual)
     if np.isclose(beta, 0):
         return float("nan")
-    return float((returns.mean() * TRADING_DAYS - rf_annual) / beta)
+    return float((float(returns.mean()) * TRADING_DAYS - rf_annual) / beta)
 
 
 def information_ratio(returns: pd.Series, benchmark: pd.Series) -> float:
     """Return yearly active return divided by tracking error."""
     active = returns - benchmark
-    tracking_error = active.std()
+    tracking_error = float(active.std())
     if np.isclose(tracking_error, 0):
         return float("nan")
-    return float(active.mean() / tracking_error * np.sqrt(TRADING_DAYS))
+    return float(float(active.mean()) / tracking_error * np.sqrt(TRADING_DAYS))
 
 
 def calmar_ratio(returns: pd.Series) -> float:

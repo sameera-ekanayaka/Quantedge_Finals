@@ -46,13 +46,23 @@ def render_sidebar() -> None:
 
 
 def get_settings() -> Settings:
-    """Current sidebar choices."""
-    dates = st.session_state["backtest_range"]
-    # The date picker returns one date while the user is still choosing the end
-    start, end = (dates[0], dates[-1]) if len(dates) else (None, None)
+    """Current sidebar choices, falling back to config defaults if not yet rendered."""
+    if "confidence" not in st.session_state:
+        render_sidebar()
+
+    default_start = pd.Timestamp(config.DEFAULT_BACKTEST_START).date()
+    default_end = date.today()
+    dates = st.session_state.get("backtest_range", (default_start, default_end))
+    if isinstance(dates, tuple | list) and len(dates) >= 2:
+        start, end = dates[0], dates[-1]
+    elif isinstance(dates, tuple | list) and len(dates) == 1:
+        start, end = dates[0], dates[0]
+    else:
+        start, end = default_start, default_end
+
     return Settings(
-        confidence=st.session_state["confidence"],
-        var_method=st.session_state["var_method"],
+        confidence=float(st.session_state.get("confidence", 0.99)),
+        var_method=str(st.session_state.get("var_method", "historical")),
         backtest_start=start,
         backtest_end=end,
     )

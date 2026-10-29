@@ -7,7 +7,7 @@ Layer 2 & 3: Quantitative Risk Measurement
 
 import numpy as np
 import pandas as pd
-from scipy import stats
+from scipy import integrate, stats
 
 from src import config
 
@@ -42,7 +42,7 @@ def _historical_var_es(returns: pd.Series, alpha: float) -> tuple[float, float]:
     Both returned as positive loss decimals.
     """
     # At alpha = 0.95, we look at the lowest 5% quantile of returns (which are negative)
-    cutoff = float(np.quantile(returns, 1.0 - alpha))
+    cutoff = float(np.quantile(np.asarray(returns), 1.0 - alpha))
     var = -cutoff
 
     # Tail returns are those worse than or equal to the cutoff
@@ -101,7 +101,7 @@ def _parametric_student_t_var_es(
         es = -loc + scale * expected_standardized_loss
     else:
         # Fallback to numerical integration if df <= 1 (undefined theoretical mean)
-        tail_integral, _ = stats.quad(
+        tail_integral, _ = integrate.quad(
             lambda x: x * stats.t.pdf(x, df, loc=loc, scale=scale),
             -np.inf,
             cutoff,

@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.optimize import minimize
 
 from src.data import log_to_simple
-from src.kpis import kpi_table
+from src.kpis import annual_return, annual_volatility, kpi_table, max_drawdown
 
 TICKERS = ["SPY", "EFA", "EEM", "AGG", "GLD", "XLE", "XLK"]
 TRADING_DAYS = 252
@@ -163,3 +163,33 @@ def candidate_kpis(
         for name in weights.columns
     }
     return pd.DataFrame(table)
+
+
+def risk_shares(weights: pd.Series, cov: pd.DataFrame) -> pd.Series:
+    """Return each ETF's share of total portfolio risk, adding up to 1."""
+    w = weights.reindex(cov.columns).to_numpy()
+    c = cov.to_numpy()
+    share = w * (c @ w) / (w @ c @ w)
+    return pd.Series(share, index=cov.columns)
+
+
+def candidate_risk_shares(returns: pd.DataFrame, weights: pd.DataFrame) -> pd.DataFrame:
+    """Return the risk share of every ETF, one column per candidate."""
+    _, cov = asset_stats(returns)
+    return pd.DataFrame(
+        {name: risk_shares(weights[name], cov) for name in weights.columns}
+    )
+
+
+def candidate_tradeoffs(returns: pd.DataFrame, weights: pd.DataFrame) -> pd.DataFrame:
+    """Return the return versus risk trade-off, one row per candidate."""
+    rows = {}
+    for name in weights.columns:
+        port = portfolio_returns(returns, weights[name])
+        rows[name] = {
+            "Annual return": annual_return(port),
+            "Annual volatility": annual_volatility(port),
+            "Max drawdown": max_drawdown(port),
+            "Worst day": float(port.min()),
+        }
+    return pd.DataFrame(rows).T

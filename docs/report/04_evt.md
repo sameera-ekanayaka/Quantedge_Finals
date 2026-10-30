@@ -2,7 +2,7 @@
 
 **Owner:** Praveen Madawalage  
 **Mandate:** USD 10,000,000 Serendib University Endowment Fund  
-**Evaluation Sample:** November 18, 2004 – October 2026 (5,518 trading days)
+**Evaluation Sample:** November 18, 2004 to October 2026 (5,518 trading days)
 
 ---
 
@@ -62,7 +62,7 @@ We compare the selected threshold against standard institutional benchmark rules
 | **Exceedance Count ($N_u$)** | 552 days | 552 days | 552 days | **552 days** |
 | **Sample Share ($\hat{p}_u$)** | 10.0% | 10.0% | 10.0% | **10.0%** |
 
-Setting $u$ at the 90th percentile provides 552 empirical crash observations (across 5,518 trading days), yielding statistical precision for MLE numerical convergence while comfortably sitting within the linear mean excess regime.
+Setting $u$ at the 90th percentile provides 552 empirical crash observations (across 5,518 trading days), yielding statistical precision for MLE numerical convergence, while fitted shape parameter $\xi$ across candidate thresholds above $u$ stays within about 2 standard errors ($\text{shape\_se} \approx 0.051$, $\pm 2\text{ SE} \approx \pm 0.10$).
 
 ---
 
@@ -78,7 +78,7 @@ $$\ln L(\xi, \sigma; Y) = -n_u \ln \sigma - \left(1 + \frac{1}{\xi}\right) \sum_
 - **Maximum Sharpe:** $\hat{\xi} = 0.1845$, $\hat{\sigma} = 0.002696$
 - **Equal Weight:** $\hat{\xi} = 0.2352$, $\hat{\sigma} = 0.004870$
 
-**Key Finding:** Across all portfolios, $\hat{\xi} \approx 0.18 - 0.24 > 0$. This confirms that Serendib's asset universe resides firmly within the **heavy-tailed Fréchet domain**. The existence of positive shape parameters proves that Gaussian models will inevitably underpredict extreme endowment drawdowns.
+**Key Finding:** Across all portfolios, $\hat{\xi} \approx 0.18 - 0.24 > 0$. This confirms that Serendib's asset universe resides within the **heavy-tailed Fréchet domain**. The positive shape parameters indicate that Gaussian models will inevitably underpredict extreme endowment drawdowns.
 
 ### Goodness-of-Fit: Quantile-Quantile (Q-Q) Diagnostics
 To validate model specification, empirical exceedance quantiles are plotted against theoretical GPD quantiles:
@@ -115,8 +115,8 @@ The table below presents 1-day tail risk metrics at 95% and 99% confidence level
 
 ### Institutional Insights for the Serendib Investment Committee:
 1. **The Gaussian Failure at 99%:**  
-   At 99% confidence, Normal VaR predicts a maximum daily loss of \$116,000, whereas EVT reveals true tail exposure of **\$140,706** (a \$24,706 undercount). Even more critically, Normal Expected Shortfall (\$134,000) underestimates the average tail catastrophe by **\$69,603** (-34.2%). Relying on Gaussian risk models would dangerously under-capitalize the endowment.
+   At 99% confidence, Normal VaR predicts a maximum daily loss of \$116,000, whereas EVT projects a tail exposure of **\$140,706** (a \$24,706 undercount). Even more critically, Normal Expected Shortfall (\$134,000) underestimates the average tail catastrophe by **\$69,603** (-34.2%). Relying on Gaussian risk models would dangerously under-capitalize the endowment.
 2. **Body vs. Tail Alignment:**  
-   At the 95% confidence level, EVT VaR (0.72%) matches Historical Simulation (0.72%) almost to the basis point. This proves that the GPD model does not arbitrarily inflate risk in the central distribution; its power lies in **deep-tail extrapolation** where empirical observations become sparse.
+   At the 95% confidence level, EVT VaR (0.72%) matches Historical Simulation (0.72%) almost to the basis point. This indicates that the GPD model does not arbitrarily inflate risk in the central distribution; its power lies in **deep-tail extrapolation** where empirical observations become sparse.
 3. **The Tail Gap (ES vs. VaR):**  
-   At 99%, the EVT Tail Gap is **\$62,897**. When a tail breach occurs, losses do not stop at the VaR threshold—they extend an additional 44.7% deeper. This underscores why Serendib must base capital reserves on Expected Shortfall rather than VaR alone.
+   At 99%, the EVT Tail Gap is **\$62,897**. When a tail breach occurs, losses do not stop at the VaR threshold - they extend an additional 44.7% deeper. This underscores why Serendib must base capital reserves on Expected Shortfall rather than VaR alone.

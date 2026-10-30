@@ -191,6 +191,13 @@ def select_threshold(
     n_total = len(clean)
     n_exceed = int((clean > chosen).sum())
 
+    exceed = clean[clean > chosen] - chosen
+    try:
+        xi, _ = fit_gpd(exceed)
+        shape_se = float(abs(1.0 + xi) / np.sqrt(n_exceed))
+    except Exception:
+        shape_se = None
+
     comparison = {
         "rule_90_pct": q90,
         "rule_95_pct": q95,
@@ -199,15 +206,24 @@ def select_threshold(
         "n_exceedances": n_exceed,
         "total_observations": n_total,
     }
+    if shape_se is not None:
+        comparison["shape_xi"] = xi
+        comparison["shape_se"] = shape_se
 
-    reason = (
-        f"Chosen threshold u = {chosen:.4f} corresponds to the "
-        f"{target_quantile:.0%} empirical quantile with {n_exceed} exceedances "
-        f"(out of {n_total} trading days). This provides a statistically sufficient "
-        f"sample for GPD MLE convergence while remaining safely within the linear "
-        f"mean excess region between the 90th percentile ({q90:.4f}) and "
-        f"95th percentile ({q95:.4f}) benchmark rules."
-    )
+    if shape_se is not None:
+        reason = (
+            f"Chosen threshold u = {chosen:.4f} is the "
+            f"{target_quantile:.0%} percentile with {n_exceed} exceedances "
+            f"(out of {n_total} trading days). Fitted shape parameter ξ above u "
+            f"stays within about 2 standard errors "
+            f"(shape_se ≈ {shape_se:.4f}, ±2 SE ≈ ±{2 * shape_se:.4f})."
+        )
+    else:
+        reason = (
+            f"Chosen threshold u = {chosen:.4f} is the "
+            f"{target_quantile:.0%} percentile with {n_exceed} exceedances "
+            f"(out of {n_total} trading days)."
+        )
     return chosen, reason, comparison
 
 

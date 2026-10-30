@@ -97,19 +97,20 @@ def render_mep_chart(mep_df: pd.DataFrame, chosen_u: float) -> go.Figure:
 
 
 def render_stability_chart(stab_df: pd.DataFrame, chosen_u: float) -> go.Figure:
-    """Plot GPD shape parameter stability across thresholds."""
+    """Plot GPD shape parameter stability across thresholds with ±2 SE band."""
     fig = go.Figure()
 
     fig.add_trace(
         go.Scatter(
             x=list(stab_df["threshold"] * 100) + list(stab_df["threshold"][::-1] * 100),
-            y=list(stab_df["shape_xi"] + 1.96 * stab_df["shape_se"])
-            + list((stab_df["shape_xi"] - 1.96 * stab_df["shape_se"])[::-1]),
+            y=list(stab_df["shape_xi"] + 2.0 * stab_df["shape_se"])
+            + list((stab_df["shape_xi"] - 2.0 * stab_df["shape_se"])[::-1]),
             fill="toself",
             fillcolor="rgba(0, 204, 150, 0.15)",
             line=dict(color="rgba(255,255,255,0)"),
             hoverinfo="skip",
-            name="Shape 95% CI",
+            showlegend=True,
+            name="±2 SE Band",
         )
     )
 
@@ -134,7 +135,7 @@ def render_stability_chart(stab_df: pd.DataFrame, chosen_u: float) -> go.Figure:
     )
 
     fig.update_layout(
-        title="Parameter Stability Plot: Shape (ξ) vs. Threshold",
+        title="Parameter Stability Plot: Shape (ξ) vs. Threshold (±2 SE)",
         xaxis_title="Threshold u (%)",
         yaxis_title="Fitted Shape (ξ)",
         template="plotly_white",
@@ -388,7 +389,7 @@ with st.expander("Investment Committee Briefing: Why EVT Matters for Serendib"):
         "  Historical simulation is constrained to the past sample. If the worst "
         "day in history was -5.8%, it cannot imagine a -7.5% crash.\n"
         "- **Why Peaks-Over-Threshold GPD Wins:**\n"
-        "  EVT models the mathematical tail directly. It proves that the Serendib "
+        "  EVT models the mathematical tail directly. It indicates that the Serendib "
         "endowment's portfolio exhibits fat-tailed Fréchet behavior (ξ > 0), "
         "allowing the committee to provision realistic capital buffers."
     )

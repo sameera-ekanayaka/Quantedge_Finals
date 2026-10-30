@@ -135,13 +135,13 @@ with tab_port:
 
     st.markdown("#### 2. Stationary Asset Return Expectations")
     st.markdown(
-        "- **Assumption:** Historic means and covariances over 2004–2026 "
+        "- **Assumption:** Historic means and covariances over 2004 to 2026 "
         "provide an unbiased estimate of future risk and return distributions.\n"
         "- **Limitation:** Macroeconomic regimes shift. The post-GFC "
-        "zero-interest-rate environment (2009–2021) does not reflect future "
+        "zero-interest-rate environment (2009 to 2021) does not reflect future "
         "higher-for-longer rate regimes.\n"
         "- **Mitigation:** We enforce structural mandate limits (minimum 30% "
-        "AGG bond floor, single sector caps at 10–15%) rather than relying "
+        "AGG bond floor, single sector caps at 10 to 15%) rather than relying "
         "solely on unconstrained mathematical optimization."
     )
 
@@ -149,12 +149,12 @@ with tab_port:
 with tab_data:
     st.subheader("Data Sourcing & Cleaning Assumptions")
 
-    st.markdown("#### 1. Sample Horizon Selection (Nov 2004 – Present)")
+    st.markdown("#### 1. Sample Horizon Selection (Nov 2004 to Present)")
     st.markdown(
         "- **Assumption:** Commencing the dataset on November 18, 2004 ensures "
         "all 7 ETFs are traded simultaneously and captures 22 years of market "
         "history, including three major market crises.\n"
-        "- **Limitation:** The 2000–2002 dot-com crash is omitted because GLD "
+        "- **Limitation:** The 2000 to 2002 dot-com crash is omitted because GLD "
         "and several sector ETFs did not exist.\n"
         "- **Mitigation:** The 2008 GFC, 2020 COVID crash, and 2022 "
         "stagflationary rate hikes provide ample multi-regime stress."

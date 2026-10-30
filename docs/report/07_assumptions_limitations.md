@@ -25,17 +25,17 @@ This section provides a rigorous audit of assumptions, limitations, and mitigati
 - **Institutional Mitigation:** The endowment implements **tolerance-band rebalancing** rather than calendar daily rebalancing. Asset weights are allowed to drift within a $\pm 2.5\%$ corridor around target weights before triggering rebalancing trades, typically executed quarterly.
 
 ### 2. Stationarity of Risk-Return Moments
-- **Core Assumption:** Sample means, standard deviations, and correlation matrices computed over the 2004–2026 sample provide unbiased estimates of future asset returns.
-- **Vulnerability & Limitation:** The investment landscape undergoes macroeconomic regime shifts. The 2009–2021 post-GFC era was characterized by unprecedented central bank quantitative easing and near-zero rates, conditions that will not persist in an era of persistent fiscal deficits and deglobalization.
+- **Core Assumption:** Sample means, standard deviations, and correlation matrices computed over the 2004-2026 sample provide unbiased estimates of future asset returns.
+- **Vulnerability & Limitation:** The investment landscape undergoes macroeconomic regime shifts. The 2009 to 2021 post-GFC era was characterized by unprecedented central bank quantitative easing and near-zero rates, conditions that will not persist in an era of persistent fiscal deficits and deglobalization.
 - **Institutional Mitigation:** We do not rely on unconstrained mean-variance optimization (which notoriously functions as an "error maximizer"). Instead, we impose strict mandate limits: a **30% minimum floor on US Aggregate Bonds (AGG)** and individual sector/asset caps (10% on EEM/XLE, 15% on XLK/GLD).
 
 ---
 
 ## 7.3 Data Pipeline and Empirical Hygiene
 
-### 1. Sample Horizon Selection (Nov 2004 – Oct 2026)
+### 1. Sample Horizon Selection (Nov 2004 to Oct 2026)
 - **Core Assumption:** Commencing the dataset on November 18, 2004 aligns the trading histories of all seven ETFs while providing 5,518 trading days of rich multi-regime market dynamics.
-- **Vulnerability & Limitation:** The 2000–2002 dot-com equity collapse is omitted because SPDR Gold Shares (GLD) did not list until late 2004.
+- **Vulnerability & Limitation:** The 2000 to 2002 dot-com equity collapse is omitted because SPDR Gold Shares (GLD) did not list until late 2004.
 - **Institutional Mitigation:** The 22-year common sample spans three profound crisis regimes: the 2008 Global Financial Crisis (systemic banking collapse), the March 2020 COVID shock (liquidity freeze), and the 2022 global rate-hiking cycle (joint stock-bond drawdown).
 
 ### 2. Price Imputation and Calendar Alignment
@@ -76,7 +76,7 @@ This section provides a rigorous audit of assumptions, limitations, and mitigati
 ## 7.6 Layer 5: Backtesting and Model Validation
 
 ### 1. Statistical Power in Finite Horizons
-- **Core Assumption:** Kupiec Proportion of Failures (POF) and Christoffersen independence tests provide definitive proof of model validity.
+- **Core Assumption:** Kupiec Proportion of Failures (POF) and Christoffersen independence tests provide rigorous statistical validation of model accuracy.
 - **Vulnerability & Limitation:** At 99% confidence over a 250-day window, expected breaches are only 2.5 days. With so few observations, binomial tests suffer from low statistical power (Type II error), often failing to reject an inaccurate risk model.
 - **Institutional Mitigation:** We conduct backtesting across the complete 22-year sample (over 5,000 days), assess sub-period performance during known market panics, and apply the Basel traffic-light classification framework.
 

@@ -238,3 +238,23 @@ def min_es(returns: pd.DataFrame, alpha: float = 0.95) -> pd.Series:
     if not result.success:
         raise RuntimeError(f"Optimiser failed: {result.message}")
     return pd.Series(result.x[:n_assets], index=TICKERS)
+
+
+# Final recommended portfolio (Maximum Sharpe), frozen by the team
+FINAL_WEIGHTS = {
+    "SPY": 0.0955,
+    "EFA": 0.0,
+    "EEM": 0.0,
+    "AGG": 0.5885,
+    "GLD": 0.15,
+    "XLE": 0.016,
+    "XLK": 0.15,
+}
+
+
+def final_weights() -> pd.Series:
+    """Return the frozen final portfolio weights in ticker order."""
+    weights = pd.Series(FINAL_WEIGHTS, dtype=float)[TICKERS]
+    if not check_weights(weights):
+        raise ValueError("Final weights break the mandate")
+    return weights

@@ -22,6 +22,14 @@ streamlit run app.py
 yfinance for the data download plus the test and lint tools, so use that one
 for local work.
 
+Run the checks before opening a pull request:
+
+```bash
+pytest
+ruff check .
+black --check .
+```
+
 ## Live app
 
 The app is deployed on Streamlit Community Cloud: **LIVE_APP_URL**
@@ -36,14 +44,6 @@ It redeploys by itself whenever `main` changes. The settings it uses:
 The app reads the committed CSVs in `data/clean/`, so the cloud copy needs no
 download step and no secrets. To try the same setup locally, install only
 `requirements.txt` in a fresh environment and run `streamlit run app.py`.
-
-Run the checks before opening a pull request:
-
-```bash
-pytest
-ruff check .
-black --check .
-```
 
 ## Project layout
 

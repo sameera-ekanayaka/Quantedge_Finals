@@ -8,8 +8,8 @@
 
 | Ticker | Asset Class / Fund Name | Target Weight | Capital (USD) | Mandate Limit | Status |
 |---|---|---|---|---|---|
-| **SPY** | US Large Cap Equities (S&P 500) | 9.55% | \$955,000 | Max 60% | Pass |
-| **EFA** | Developed International Equities | 0.00% | \$0 | Max 20% | Pass |
+| **SPY** | US Large Cap Equities (S&P 500) | 9.55% | \$955,000 | Max 40% | Pass |
+| **EFA** | Developed International Equities | 0.00% | \$0 | Max 30% | Pass |
 | **EEM** | Emerging Market Equities | 0.00% | \$0 | Max 10% | Pass |
 | **AGG** | US Aggregate Fixed Income (Core Anchor) | 58.85% | \$5,885,000 | Min 30%, Max 60% | Pass |
 | **GLD** | SPDR Gold Shares (Inflation Hedge) | 15.00% | \$1,500,000 | Max 15% | Pass |
@@ -21,10 +21,10 @@
 
 ### 2. Performance & Risk-Adjusted Summary
 
-- **Annual Return:** **7.4% a year** (Meets endowment hurdle: spending 4.9% + inflation 2.5% = 7.4%; NACUBO average target is 7.3%).
+- **Annual Return:** **7.4% a year historically**, in-sample (Meets endowment hurdle: spending 4.9% + inflation 2.5% = 7.4%; NACUBO average target is 7.3%).
 - **Sharpe Ratio:** **0.79** (Highest risk-adjusted return across all candidate portfolios).
-- **Annual Volatility:** **6.2%** (Conservative risk profile dominated by 58.85% core fixed income).
-- **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while generating +0.9% additional yield annually).
+- **Annual Volatility:** **7.2%** (Conservative risk profile dominated by 58.85% core fixed income).
+- **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while earning about 0.9 points more a year).
 
 ---
 
@@ -45,10 +45,10 @@
 
 | Scenario | Nature | Period / Assumption | Portfolio Loss (%) | Capital Impact (USD) |
 |---|---|---|---|---|
-| **2008 Global Financial Crisis** | Historical Replay | 2007-10 to 2009-03 | -5.2% | -\$520,000 |
+| **2008 Global Financial Crisis** | Historical Replay | 2008-09 to 2009-03 | -5.2% | -\$520,000 |
 | **March 2020 COVID-19 Shock** | Historical Replay | 2020-02 to 2020-03 | -9.9% | -\$990,000 |
 | **2022 Joint Rate Hiking Cycle** | Historical Replay | 2022-01 to 2022-12 | **-12.6%** | **-\$1,260,000** |
-| **Stagflationary Inflation Shock** | Synthetic / Hypothetical | Equities -20%, Bonds -10%, Gold +10% | **-17.2%** | **-\$1,720,000** |
+| **Stagflationary Inflation Shock** | Hypothetical (assumption) | SPY/EFA -25%, EEM -30%, AGG -15%, GLD -5%, XLE 0%, XLK -35% | **-17.2%** | **-\$1,720,000** |
 
 *Worst Historical Replay:* 2022 rate hikes (-12.6%), driven by simultaneous declines in equities and fixed income.
 
@@ -60,9 +60,10 @@
 |---|---|---|---|
 | **One-Day 99% Value at Risk (VaR)** | USD 150,000 (1.50%) | **USD 116,000 (1.16%)** | **Compliant (PASS)** |
 | **One-Day 99% Expected Shortfall (ES)** | USD 200,000 (2.00%) | **USD 173,000 (1.73%)** | **Compliant (PASS)** |
-| **Maximum Crisis Replay Loss** | USD 1,500,000 (15.00%) | **12.6% (USD 1,260,000)** | **Compliant (PASS)** |
+| **Loss over one crisis replay** | USD 1,500,000 (15.00%) | **12.6% (USD 1,260,000), 2022** | **Compliant (PASS)** |
+| **Inflation shock (assumption)** | USD 1,500,000 (15.00%) | **17.2% (USD 1,720,000)** | **Exceeds, disclosed** |
+
+The limit is measured over the whole crisis window. Inside 2022 the fall from peak to trough reached 17.2%.
 
 **Committee Action Protocol:**  
-- If persistent inflation materializes, rotate capital from XLK into XLE (each 1% shifted lowers inflation shock drawdown by ~0.35%).
-- Maintain tolerance-band rebalancing ($\pm 2.5\%$) quarterly to eliminate daily transaction slippage.
-
+- If persistent inflation materializes, rotate capital from XLK into XLE (each point shifted lowers the inflation shock loss by about 0.35 points; about 6.5 points brings it inside 15%).

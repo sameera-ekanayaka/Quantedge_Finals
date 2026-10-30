@@ -32,8 +32,8 @@ INFLATION_SHOCK_REASONS = {
 
 HYPOTHETICAL_SCENARIOS = {"Inflation shock, stocks and bonds fall": INFLATION_SHOCK}
 
-# Proposed limit on loss in a crisis. The team sets the final number in the memo
-DEFAULT_LOSS_LIMIT = 0.10
+# Crisis loss limit agreed in the committee memo (Section 8)
+DEFAULT_LOSS_LIMIT = 0.15
 
 
 def _weights(weights, tickers) -> pd.Series:
@@ -165,20 +165,25 @@ def reverse_stress(weights, shocks: dict[str, float], loss_limit: float) -> floa
 def main() -> None:
     """Print the stress tables used in the report."""
     from src.data import load_returns, load_risk_free
-    from src.portfolio import annual_risk_free, candidate_portfolios
+    from src.portfolio import annual_risk_free, candidate_portfolios, final_weights
 
     returns = load_returns()
     rf = annual_risk_free(load_risk_free(), returns.index)
     candidates = candidate_portfolios(returns, rf)
-    weights = candidates["Risk parity"]
-    print("Risk parity\n", stress_table(returns, weights).to_string())
+    weights = final_weights()
+    print("Final portfolio\n", stress_table(returns, weights).to_string())
     print("\nAll candidates\n", stress_across_candidates(returns, candidates).round(4))
     for name, (start, end) in config.STRESS_PERIODS.items():
         print(f"\nContributions, {name}")
         print(contributions(returns, weights, start, end).round(4).to_string())
+    print("\nInflation shock in USD, by ETF")
+    shock_usd = weights * pd.Series(INFLATION_SHOCK) * config.PORTFOLIO_VALUE_USD
+    print(shock_usd.round(0).to_string())
     for name in candidates.columns:
         multiple = reverse_stress(candidates[name], INFLATION_SHOCK, DEFAULT_LOSS_LIMIT)
         print(f"Reverse stress multiple, {name}: {multiple:.2f}")
+    multiple = reverse_stress(weights, INFLATION_SHOCK, DEFAULT_LOSS_LIMIT)
+    print(f"Reverse stress multiple, final portfolio: {multiple:.2f}")
 
 
 if __name__ == "__main__":

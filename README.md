@@ -5,7 +5,7 @@ seven ETFs (SPY, EFA, EEM, AGG, GLD, XLE, XLK). It goes from real prices to a
 recommendation: portfolio construction and KPIs, VaR and ES, extreme value
 theory, backtesting, risk budgeting and stress tests.
 
-Team Nexora.
+Team Nexora. Live app: https://nexora-serendib.streamlit.app/
 
 ## Running the app
 
@@ -32,7 +32,7 @@ black --check .
 
 ## Live app
 
-The app is deployed on Streamlit Community Cloud: **LIVE_APP_URL**
+The app is deployed on Streamlit Community Cloud: https://nexora-serendib.streamlit.app/
 
 It redeploys by itself whenever `main` changes. The settings it uses:
 

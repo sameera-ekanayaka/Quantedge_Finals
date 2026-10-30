@@ -1,4 +1,7 @@
 -r requirements.txt
+# Data download (python -m src.get_data), tests and tooling. Not needed by the app.
+yfinance==1.7.0
+matplotlib==3.11.2
 pytest==9.2.0
 black==26.10.1
 ruff==0.17.3

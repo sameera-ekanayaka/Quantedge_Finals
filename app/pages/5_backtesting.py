@@ -119,7 +119,7 @@ col_portfolio, col_method, col_window = st.columns(3)
 portfolio = col_portfolio.selectbox(
     "Portfolio",
     list(candidates.columns),
-    index=list(candidates.columns).index("Risk parity"),
+    index=list(candidates.columns).index("Maximum Sharpe"),
 )
 methods = list(backtest.MODEL_LABELS)
 if not backtest.evt_available():

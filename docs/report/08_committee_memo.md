@@ -37,9 +37,9 @@ raised from 10% to 15% of the fund.
   single biggest driver of losses.
 - **The return is in-sample.** The weights were chosen on the same 2004 to
   2026 data the 7.4% is measured on, so the future return is likely lower.
-- **Daily risk.** One-day 99% historical VaR is 1.16% (USD 116k) and ES is
-  1.73% (USD 173k). The fat tails in Section 4 mean the normal model would
-  understate both.
+- **Daily risk.** One-day 99% Student t VaR is 1.16% (USD 116k) and ES is
+  1.73% (USD 173k). The normal model understates both: in the backtest
+  (Section 5) it breaches twice as often as it should.
 
 ## 8.4 Limits we propose
 
@@ -49,18 +49,24 @@ raised from 10% to 15% of the fund.
 | One-day 99% ES | USD 200k (2.0%) | USD 173k |
 | Loss in one crisis | USD 1.5m (15%) | 12.6% worst replay (2022) |
 
-The 10% crisis limit in Section 6 is breached in 2022 (12.6%), and even
-Minimum variance loses 12.5% that year, so no candidate can meet it. We
-propose 15%. The inflation shock (17.2%) still exceeds it, and we say so
+A 10% crisis limit is breached in 2022 (12.6%), and even Minimum variance
+loses 12.5% that year, so no candidate can meet it. We propose 15%, measured
+as the loss over the whole crisis window. Inside 2022 the fall from peak to
+trough reached 17.2% (to 20 Oct 2022), so a peak-to-trough limit would already
+be breached. The inflation shock (17.2%) also exceeds it, and we say so
 openly rather than set the limit to fit.
+
+We monitor the daily limits with Student t or EVT VaR. Historical VaR breached
+67 times against 50 expected at 99% (Section 5); both of these pass.
 
 ## 8.5 What would change our mind
 
 - **Inflation picks up.** We cut XLK. AGG is close to its 60% cap, so the
   weight would move mostly to XLE: each point moved from XLK to XLE lowers the
-  shock loss by about 0.35 points, and about 6 points brings it inside 15%.
+  shock loss by about 0.35 points, and about 6.5 points brings it inside 15%.
 - **The stock-bond correlation turns positive and stays there**, which would
   remove the hedge this portfolio relies on.
-- **The backtest moves into the Basel red zone** on the final weights.
+- **The backtest moves into the Basel red zone.** Today every model except
+  the normal one is green over the last 250 days.
 - **The committee wants a lower drawdown over return.** Then Minimum variance
   is the fallback: almost the same crisis losses, about 0.9 points less return.

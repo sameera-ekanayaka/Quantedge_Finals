@@ -158,8 +158,8 @@ with col_sel:
         "Candidate Portfolio",
         options=list(candidates.columns),
         index=(
-            list(candidates.columns).index("Risk parity")
-            if "Risk parity" in candidates.columns
+            list(candidates.columns).index("Maximum Sharpe")
+            if "Maximum Sharpe" in candidates.columns
             else 0
         ),
         help="Select a candidate portfolio to inspect its risk profile.",

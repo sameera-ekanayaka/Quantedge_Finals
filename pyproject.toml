@@ -19,10 +19,4 @@ select = ["E", "F", "W", "I", "B", "UP"]
 testpaths = ["tests"]
 pythonpath = ["."]
 
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-
-[tool.pyrefly]
-python-interpreter-path = ".venv/bin/python"
 

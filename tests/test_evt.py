@@ -99,7 +99,8 @@ def test_select_threshold(sample_losses):
         float(np.quantile(sample_losses, 0.90))
     )
     assert comp["n_exceedances"] > 0
-    assert "benchmark rules" in reason
+    assert "standard errors" in reason
+    assert "exceedances" in reason
 
 
 def test_evt_var_es_returns_positive_floats(sample_losses):

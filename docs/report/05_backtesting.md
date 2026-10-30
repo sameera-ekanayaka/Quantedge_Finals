@@ -5,8 +5,8 @@
 **App page:** Backtesting
 **Reproduce:** `python -m src.backtest`
 
-All numbers below are for the risk parity candidate, the default on the risk
-dashboard. They will be rerun on the frozen weights. Data runs to 27 Oct 2026.
+All numbers below are for the final portfolio (`final_weights()`, the Maximum
+Sharpe mix in Section 8). Data runs to 27 Oct 2026.
 
 ## 5.1 What a backtest asks
 
@@ -66,56 +66,62 @@ for 97.5% over 250 days, so we treat them as indicative only.
 
 | Model | Breaches (50.2 expected) | Kupiec p | Independence p | Cond. coverage p | Whole range | Last 250 days | ES Z2 |
 |---|---|---|---|---|---|---|---|
-| Historical simulation | 70 | 0.008 | <0.001 | <0.001 | Yellow | Green (4) | +0.56 |
-| Parametric (normal) | 103 | <0.001 | <0.001 | <0.001 | Red | Yellow (6) | +1.78 |
-| Parametric (Student t) | 39 | 0.099 | <0.001 | <0.001 | Green | Green (1) | -0.23 |
-| Monte Carlo (Student t) | 39 | 0.099 | <0.001 | <0.001 | Green | Green (1) | -0.20 |
-| EVT (GPD) | 65 | 0.044 | <0.001 | <0.001 | Yellow | Yellow (5) | +0.81 |
+| Historical simulation | 67 | 0.023 | <0.001 | <0.001 | Yellow | Green (4) | +0.51 |
+| Parametric (normal) | 105 | <0.001 | <0.001 | <0.001 | Red | Yellow (6) | +1.75 |
+| Parametric (Student t) | 41 | 0.179 | <0.001 | <0.001 | Green | Green (4) | -0.08 |
+| Monte Carlo (Student t) | 41 | 0.179 | <0.001 | <0.001 | Green | Green (4) | -0.04 |
+| EVT (GPD) | 56 | 0.418 | <0.001 | <0.001 | Green | Green (4) | +0.60 |
 
 ## 5.5 Results at 95%
 
 | Model | Breaches (250.9 expected) | Kupiec p | Independence p | ES Z2 |
 |---|---|---|---|---|
-| Historical simulation | 270 | 0.221 | <0.001 | +0.15 |
-| Parametric (normal) | 248 | 0.851 | <0.001 | +0.26 |
-| Parametric (Student t) | 256 | 0.742 | <0.001 | -0.06 |
-| Monte Carlo (Student t) | 254 | 0.841 | <0.001 | -0.06 |
-| EVT (GPD) | 275 | 0.124 | <0.001 | +0.20 |
+| Historical simulation | 277 | 0.096 | <0.001 | +0.16 |
+| Parametric (normal) | 270 | 0.221 | <0.001 | +0.33 |
+| Parametric (Student t) | 257 | 0.694 | <0.001 | -0.08 |
+| Monte Carlo (Student t) | 261 | 0.516 | <0.001 | -0.06 |
+| EVT (GPD) | 284 | 0.036 | <0.001 | +0.21 |
 
 ## 5.6 Calm and stressed periods (99%)
 
 | Period | Days | Expected | Historical | Normal | Student t | EVT |
 |---|---|---|---|---|---|---|
-| 2008 financial crisis | 146 | 1.5 | 14 | 19 | 12 | 15 |
-| March 2020 Covid crash | 24 | 0.2 | 8 | 8 | 5 | 8 |
-| 2022 rate hikes | 251 | 2.5 | 6 | 13 | 5 | 5 |
-| Calm days | 4,597 | 46.0 | 42 | 63 | 17 | 37 |
+| 2008 financial crisis | 146 | 1.5 | 12 | 16 | 15 | 14 |
+| March 2020 Covid crash | 24 | 0.2 | 7 | 8 | 5 | 7 |
+| 2022 rate hikes | 251 | 2.5 | 5 | 12 | 3 | 4 |
+| Calm days | 4,597 | 46.0 | 43 | 69 | 18 | 31 |
 
 ## 5.7 What this means
 
 1. **The normal model fails at 99%.** It is breached twice as often as it
-   should be (103 against 50) and lands in the red zone over the whole range.
-   Its breaches are also deeper than it expects (Z2 = +1.78). This is the
+   should be (105 against 50) and lands in the red zone over the whole range.
+   Its breaches are also deeper than it expects (Z2 = +1.75). This is the
    fat-tail problem from Section 3, now confirmed out of sample. At 95% the
    same model passes Kupiec, which is why a 95% backtest alone would hide it.
-2. **Student t is the only model that passes Kupiec at 99%**, but it gets there
-   by being too cautious in calm years (17 breaches against 46 expected) and
-   too slow in crises (12 in 146 days of 2008). Monte Carlo draws from the same
-   fitted Student t, so it gives the same breaches, as it should.
-3. **Every model fails the independence test**, at both 95% and 99%. Breaches
+2. **Student t, Monte Carlo and EVT pass Kupiec at 99%.** EVT is closest to
+   the target (56 breaches against 50, p = 0.42). Student t gets its count
+   right only on average: too cautious in calm years (18 breaches against 46
+   expected) and too slow in crises (15 in 146 days of 2008). Monte Carlo
+   draws from the same fitted Student t, so it gives the same count.
+3. **Historical simulation, used for the daily limits in Section 8, is
+   breached a little too often** (67 against 50, p = 0.02, yellow over the
+   whole range). Its 99% VaR of 1.16% is therefore slightly optimistic. The
+   USD 150k VaR limit in the memo leaves room for this.
+4. **Every model fails the independence test**, at both 95% and 99%. Breaches
    bunch in 2008 and March 2020. This is the most important finding: a model
    with a fixed 500-day window reacts slowly when volatility jumps. It points
    to a conditional model (GARCH-filtered HS or GARCH-EVT) as the next step,
    and it is why we also rely on stress tests (Section 6) rather than VaR
    alone.
-4. **Historical and EVT sit in the yellow zone** over 20 years but are green
-   or borderline over the last 250 days. We would not call that a fix; it is a
-   calm year.
+5. **The final portfolio is not in the red zone.** Over the last 250 days
+   every model except the normal one is green with 4 breaches. The memo lists
+   a move into the red zone as a reason to change our mind; that has not
+   happened.
 
-**Recommendation for the risk limit.** Use the Student t (or Monte Carlo) 99%
-model for the daily limit, since it is the only one with correct coverage, and
-report historical ES alongside it. Do not use the normal model at 99%. Pair the
-limit with the stress loss limit in Section 6, because no unconditional model
+**Recommendation for the risk limit.** Monitor the daily limit with the EVT or
+Student t 99% model, which have correct coverage, and keep historical ES
+alongside as a check. Do not use the normal model at 99%. Pair the daily limit
+with the 15% crisis loss limit in Section 6, because no unconditional model
 here warns in time when a crisis starts.
 
 ## 5.8 Limitations

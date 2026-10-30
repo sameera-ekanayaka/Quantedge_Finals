@@ -58,7 +58,7 @@ col_portfolio, col_limit = st.columns(2)
 portfolio = col_portfolio.selectbox(
     "Portfolio",
     list(candidates.columns),
-    index=list(candidates.columns).index("Risk parity"),
+    index=list(candidates.columns).index("Maximum Sharpe"),
 )
 loss_limit = col_limit.slider(
     "Crisis loss limit",

@@ -5,12 +5,13 @@
 **App page:** Stress tests
 **Reproduce:** `python -m src.stress`
 
-Numbers are for the four candidate portfolios on data to 27 Oct 2026. They
-will be rerun on the frozen weights.
+Numbers are for the final portfolio (`final_weights()`, the Maximum Sharpe mix
+in Section 8) on data to 27 Oct 2026, with the other candidates for
+comparison.
 
 ## 6.1 Why stress tests
 
-VaR and ES describe a normal bad day. Section 5 showed that every model lets
+VaR and ES describe a normal bad day. Section 5 shows that every model lets
 breaches pile up when a crisis starts. Stress tests answer the committee's
 question directly: if 2008 happened again tomorrow, how much of the USD 10m
 would we lose?
@@ -43,53 +44,67 @@ would we lose?
 
 The shocks can be edited on the app page.
 
-- **Reverse stress test.** How many times worse would our scenario have to be
-  before the portfolio lost the crisis loss limit? We propose a limit of 10%
-  of the fund (USD 1m) in one crisis; the final number is set in the memo.
+- **Crisis loss limit: 15% of the fund (USD 1.5m)**, as set in the committee
+  memo (Section 8). The reverse stress test asks how many times as severe our
+  scenario would have to be to reach it.
 
-## 6.3 Results: risk parity
+## 6.3 Results: final portfolio
 
 | Scenario | Type | Return | P&L (USD) | Max drawdown | Worst day | SPY |
 |---|---|---|---|---|---|---|
-| 2008 financial crisis | Replay | -8.7% | -866,810 | -17.7% | -5.76% (10 Oct 2008) | -36.9% |
-| March 2020 Covid crash | Replay | -12.7% | -1,266,817 | -15.7% | -5.73% (12 Mar 2020) | -33.4% |
-| 2022 rate hikes | Replay | -8.9% | -893,372 | -15.2% | -2.63% (13 Jun 2022) | -18.2% |
-| Inflation shock | Assumption | -16.4% | -1,643,756 | | | -25.0% |
+| 2008 financial crisis | Replay | -5.2% | -517,024 | -14.6% | -5.86% (10 Oct 2008) | -36.9% |
+| March 2020 Covid crash | Replay | -9.9% | -989,191 | -12.8% | -5.28% (12 Mar 2020) | -33.4% |
+| 2022 rate hikes | Replay | -12.6% | -1,264,453 | -17.2% | -2.45% (13 Jun 2022) | -18.2% |
+| Inflation shock | Assumption | -17.2% | -1,721,500 | | | -25.0% |
+
+**Contribution by ETF, in points of return**
+
+| Scenario | SPY | AGG | GLD | XLE | XLK |
+|---|---|---|---|---|---|
+| 2008 financial crisis | -3.5 | +2.0 | +1.6 | -0.7 | -4.6 |
+| March 2020 Covid crash | -3.2 | -0.8 | -0.5 | -0.9 | -4.6 |
+| 2022 rate hikes | -1.7 | -7.7 | -0.1 | +1.0 | -4.2 |
+| Inflation shock | -2.4 | -8.8 | -0.8 | 0.0 | -5.3 |
+
+EFA and EEM have zero weight, so they contribute nothing.
 
 ## 6.4 Results: every candidate
 
-| Scenario | Equal weight | Minimum variance | Maximum Sharpe | Risk parity |
+| Scenario | Equal weight | Minimum variance | Maximum Sharpe (final) | Risk parity |
 |---|---|---|---|---|
 | 2008 financial crisis | -19.0% | -5.6% | -5.2% | -8.7% |
 | March 2020 Covid crash | -21.4% | -9.6% | -9.9% | -12.7% |
 | 2022 rate hikes | -7.2% | -12.5% | -12.6% | -8.9% |
 | Inflation shock | -18.8% | -16.0% | -17.2% | -16.4% |
-| Reverse stress multiple at 10% | 0.53 | 0.62 | 0.58 | 0.61 |
+| Reverse stress multiple at 15% | 0.80 | 0.94 | 0.87 | 0.91 |
 
 ## 6.5 What this means
 
-1. **Diversification works in equity crashes.** In 2008 risk parity lost 8.7%
-   while SPY lost 36.9%. AGG (+1.9 points) and GLD (+1.4 points) offset part of
-   the equity losses.
-2. **It does not work when rates rise.** In 2022 AGG fell 13% and was the
-   largest single drag on risk parity (-7.1 points of the -8.9%). The two
-   bond-heavy candidates, minimum variance and maximum Sharpe, lost the most
-   in 2022 (-12.5% and -12.6%), the reverse of their ranking in 2008 and 2020.
-   XLE, up 64%, was the only real hedge.
-3. **Our inflation scenario breaks a 10% limit for every candidate.** Risk
-   parity would lose 16.4%, and a scenario only 0.61 times as severe would
-   already hit the limit. No mix of these seven ETFs under the current
-   mandate keeps an inflation shock of this size under 10%.
-4. **Short crises are not small crises.** March 2020 lasted 24 trading days
-   but cost risk parity more (-12.7%) than the six months of 2008 in our
-   window (-8.7%). In 2008 AGG and GLD added to returns; in March 2020 both
-   fell slightly in the dash for cash (-0.8 and -0.4 points), so nothing
-   offset the equity losses.
+1. **Diversification works in equity crashes.** In 2008 the final portfolio
+   lost 5.2% while SPY lost 36.9%. AGG (+2.0 points) and GLD (+1.6 points)
+   paid for most of the equity losses.
+2. **It does not work when rates rise.** In 2022 AGG fell 13% and, at 59% of
+   the fund, cost 7.7 points of the 12.6% loss. That is why the two bond-heavy
+   candidates (Maximum Sharpe and Minimum variance) lose least in 2008 and
+   2020 but most in 2022. XLE, up 64% that year, was the only hedge, and the
+   final portfolio holds just 1.6% of it.
+3. **Every historical replay ends inside the 15% limit, but 2022 does not stay
+   inside it.** The year ended at -12.6%, yet the deepest fall within it was
+   -17.2% (to October 2022). A fund that judged the limit on peak-to-trough
+   loss, rather than the loss over the whole episode, would have breached it.
+4. **Our inflation scenario breaks the 15% limit for every candidate.** The
+   final portfolio loses 17.2% (USD 1.72m). AGG is USD 883k of that and XLK
+   USD 525k. The scenario only needs to be 0.87 times as severe to hit the
+   limit. Minimum variance comes closest to passing (0.94).
+5. **Short crises are not small crises.** March 2020 lasted 24 trading days
+   but cost almost twice the six months of 2008 in our window (-9.9% against
+   -5.2%), because AGG and GLD fell too in the dash for cash instead of
+   offsetting the equity losses.
 
-**For the decision layer.** Either the crisis loss limit is set nearer 15%
-than 10%, or the mandate gives more room to assets that hold up when rates
-rise (energy, or a smaller bond floor). That trade-off goes to the committee
-memo; it is a choice, not a modelling result.
+**For the decision layer.** The limit should be defined as the loss over a
+crisis, not peak-to-trough, or the 2022 replay already breaches it. The
+largest single risk is rates through AGG; the next is XLK. Section 8 sets out
+what we would change if inflation picks up.
 
 ## 6.6 Limitations
 

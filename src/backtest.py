@@ -302,14 +302,11 @@ def backtest_by_period(
 
 
 def main() -> None:
-    """Print the backtest tables used in the report, for the risk parity mix."""
-    from src.data import load_returns, load_risk_free
-    from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+    """Print the backtest tables used in the report, for the final portfolio."""
+    from src.data import load_returns
+    from src.portfolio import final_weights, portfolio_returns
 
-    returns = load_returns()
-    rf = annual_risk_free(load_risk_free(), returns.index)
-    weights = candidate_portfolios(returns, rf)["Risk parity"]
-    series = portfolio_returns(returns, weights)
+    series = portfolio_returns(load_returns(), final_weights())
     methods = [m for m in MODEL_LABELS if m != "evt" or evt_available()]
     for alpha in (0.95, 0.99):
         rows = {}

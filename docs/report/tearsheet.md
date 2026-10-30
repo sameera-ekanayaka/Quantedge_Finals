@@ -65,3 +65,4 @@
 **Committee Action Protocol:**  
 - If persistent inflation materializes, rotate capital from XLK into XLE (each 1% shifted lowers inflation shock drawdown by ~0.35%).
 - Maintain tolerance-band rebalancing ($\pm 2.5\%$) quarterly to eliminate daily transaction slippage.
+

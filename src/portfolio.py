@@ -5,10 +5,12 @@ Owner: Imasha Karunathilaka
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import minimize
+from scipy import sparse
+from scipy.optimize import linprog, minimize
 
 from src.data import log_to_simple
 from src.kpis import annual_return, annual_volatility, kpi_table, max_drawdown
+from src.var_es import var_es
 
 TICKERS = ["SPY", "EFA", "EEM", "AGG", "GLD", "XLE", "XLK"]
 TRADING_DAYS = 252
@@ -193,3 +195,46 @@ def candidate_tradeoffs(returns: pd.DataFrame, weights: pd.DataFrame) -> pd.Data
             "Worst day": float(port.min()),
         }
     return pd.DataFrame(rows).T
+
+
+def portfolio_es(returns: pd.DataFrame, weights, alpha: float = 0.95) -> float:
+    """Return the one-day historical ES of a portfolio, using var_es."""
+    port = portfolio_returns(returns, weights)
+    _, es = var_es(port, alpha, "historical")
+    return es
+
+
+def min_es(returns: pd.DataFrame, alpha: float = 0.95) -> pd.Series:
+    """Return the allowed mix with the lowest historical ES at level alpha.
+
+    ES is not smooth, so the optimiser from earlier would struggle.
+    It is solved as a linear programme instead (Rockafellar and Uryasev).
+    """
+    simple = log_to_simple(returns)[TICKERS].to_numpy()
+    n_days, n_assets = simple.shape
+    tail_weight = 1 / ((1 - alpha) * n_days)
+    cost = np.concatenate([np.zeros(n_assets), [1.0], np.full(n_days, tail_weight)])
+    a_ub = sparse.hstack(
+        [
+            sparse.csr_matrix(-simple),
+            sparse.csr_matrix(-np.ones((n_days, 1))),
+            -sparse.identity(n_days, format="csr"),
+        ],
+        format="csr",
+    )
+    a_eq = sparse.csr_matrix(
+        np.concatenate([np.ones(n_assets), np.zeros(1 + n_days)]).reshape(1, -1)
+    )
+    bounds = get_bounds() + [(None, None)] + [(0, None)] * n_days
+    result = linprog(
+        cost,
+        A_ub=a_ub,
+        b_ub=np.zeros(n_days),
+        A_eq=a_eq,
+        b_eq=[1.0],
+        bounds=bounds,
+        method="highs",
+    )
+    if not result.success:
+        raise RuntimeError(f"Optimiser failed: {result.message}")
+    return pd.Series(result.x[:n_assets], index=TICKERS)

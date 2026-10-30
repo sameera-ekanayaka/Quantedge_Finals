@@ -54,15 +54,15 @@ also remains constant. Computing MLE fits across a grid of candidate thresholds 
 ### 3. Quantitative Cross-Validation with Benchmark Rules
 We compare the selected threshold against standard institutional benchmark rules (the 90th and 95th percentiles of historical daily losses):
 
-| Metric | Equal Weight | Minimum Variance | Maximum Sharpe | Risk Parity (Recommended) |
+| Metric | Equal Weight | Minimum Variance | Maximum Sharpe (Final) | Risk Parity |
 |---|---|---|---|---|
-| **90th Percentile Rule** | 0.78% | 0.41% | 0.45% | **0.49%** |
-| **95th Percentile Rule** | 1.14% | 0.60% | 0.66% | **0.72%** |
-| **Selected Threshold ($u$)** | **0.78%** | **0.41%** | **0.45%** | **0.49%** |
-| **Exceedance Count ($N_u$)** | 552 days | 552 days | 552 days | **552 days** |
-| **Sample Share ($\hat{p}_u$)** | 10.0% | 10.0% | 10.0% | **10.0%** |
+| **90th Percentile Rule** | 0.78% | 0.41% | **0.45%** | 0.49% |
+| **95th Percentile Rule** | 1.14% | 0.60% | **0.66%** | 0.72% |
+| **Selected Threshold ($u$)** | 0.78% | 0.41% | **0.45%** | 0.49% |
+| **Exceedance Count ($N_u$)** | 552 days | 552 days | **552 days** | 552 days |
+| **Sample Share ($\hat{p}_u$)** | 10.0% | 10.0% | **10.0%** | 10.0% |
 
-Setting $u$ at the 90th percentile provides 552 empirical crash observations (across 5,518 trading days), yielding statistical precision for MLE numerical convergence, while fitted shape parameter $\xi$ across candidate thresholds above $u$ stays within about 2 standard errors ($\text{shape\_se} \approx 0.051$, $\pm 2\text{ SE} \approx \pm 0.10$).
+Setting $u$ at the 90th percentile provides 552 empirical crash observations (across 5,518 trading days), yielding statistical precision for MLE numerical convergence, while fitted shape parameter $\xi$ across candidate thresholds above $u$ stays within about 2 standard errors ($\text{shape\_se} \approx 0.050$, $\pm 2\text{ SE} \approx \pm 0.10$).
 
 ---
 
@@ -102,21 +102,21 @@ $$\text{ES}_\alpha^{\text{EVT}} = E[L \mid L > \text{VaR}_\alpha] = \frac{\text{
 
 ## 4.5 Empirical Results: Comparing EVT with Competing Frameworks
 
-The table below presents 1-day tail risk metrics at 95% and 99% confidence levels on the **USD 10,000,000 Risk Parity Portfolio**:
+The table below presents 1-day tail risk metrics at 95% and 99% confidence levels on the **USD 10,000,000 Maximum Sharpe Portfolio (Final Portfolio)**:
 
 | Confidence ($\alpha$) | Methodology | 1-Day VaR (%) | 1-Day VaR ($) | 1-Day ES (%) | 1-Day ES ($) | Tail Gap (ES - VaR) |
 |---|---|---|---|---|---|---|
-| **95% Confidence** | Normal (Gaussian) | 0.81% | \$81,000 | 1.03% | \$103,000 | 0.22% (\$22,000) |
-| | Historical Simulation | 0.72% | \$72,000 | 1.17% | \$117,000 | 0.45% (\$45,000) |
-| | **EVT (POT / GPD)** | **0.72%** | **\$72,193** | **1.17%** | **\$117,395** | **0.45% (\$45,202)** |
-| **99% Confidence** | Normal (Gaussian) | 1.16% | \$116,000 | 1.34% | \$134,000 | 0.18% (\$18,000) |
-| | Historical Simulation | 1.36% | \$136,000 | 2.08% | \$208,000 | 0.72% (\$72,000) |
-| | **EVT (POT / GPD)** | **1.41%** | **\$140,706** | **2.04%** | **\$203,603** | **0.63% (\$62,897)** |
+| **95% Confidence** | Normal (Gaussian) | 0.71% | \$71,300 | 0.90% | \$90,100 | 0.19% (\$18,800) |
+| | Historical Simulation | 0.66% | \$66,200 | 1.02% | \$102,300 | 0.36% (\$36,100) |
+| | **EVT (POT / GPD)** | **0.65%** | **\$64,637** | **1.02%** | **\$102,200** | **0.38% (\$37,563)** |
+| **99% Confidence** | Normal (Gaussian) | 1.02% | \$102,000 | 1.17% | \$117,300 | 0.15% (\$15,300) |
+| | Historical Simulation | 1.16% | \$116,300 | 1.73% | \$173,400 | 0.57% (\$57,100) |
+| | **EVT (POT / GPD)** | **1.22%** | **\$122,044** | **1.73%** | **\$172,578** | **0.51% (\$50,534)** |
 
 ### Institutional Insights for the Serendib Investment Committee:
 1. **The Gaussian Failure at 99%:**  
-   At 99% confidence, Normal VaR predicts a maximum daily loss of \$116,000, whereas EVT projects a tail exposure of **\$140,706** (a \$24,706 undercount). Even more critically, Normal Expected Shortfall (\$134,000) underestimates the average tail catastrophe by **\$69,603** (-34.2%). Relying on Gaussian risk models would dangerously under-capitalize the endowment.
+   At 99% confidence, Normal VaR predicts a maximum daily loss of \$102,000, whereas EVT projects a tail exposure of **\$122,044** (a \$20,044 undercount). Even more critically, Normal Expected Shortfall (\$117,300) underestimates the average tail catastrophe by **\$55,278** (-32.0%). Relying on Gaussian risk models would dangerously under-capitalize the endowment.
 2. **Body vs. Tail Alignment:**  
-   At the 95% confidence level, EVT VaR (0.72%) matches Historical Simulation (0.72%) almost to the basis point. This indicates that the GPD model does not arbitrarily inflate risk in the central distribution; its power lies in **deep-tail extrapolation** where empirical observations become sparse.
+   At the 95% confidence level, EVT ES (1.02%, \$102,200) aligns almost to the dollar with Historical Simulation (1.02%, \$102,300). This indicates that the GPD model does not arbitrarily inflate risk in the central tail; its power lies in **deep-tail extrapolation** where empirical observations become sparse.
 3. **The Tail Gap (ES vs. VaR):**  
-   At 99%, the EVT Tail Gap is **\$62,897**. When a tail breach occurs, losses do not stop at the VaR threshold - they extend an additional 44.7% deeper. This underscores why Serendib must base capital reserves on Expected Shortfall rather than VaR alone.
+   At 99%, the EVT Tail Gap is **\$50,534**. When a tail breach occurs, losses do not stop at the VaR threshold - they extend an additional 41.4% deeper (reaching \$172,578). This underscores why Serendib must base capital reserves on Expected Shortfall rather than VaR alone.

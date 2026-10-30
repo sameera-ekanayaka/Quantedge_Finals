@@ -12,4 +12,4 @@ produced by the code. Sameera compiles the final report.
 | `05_backtesting.md` | Tharindu |
 | `06_stress_tests.md` | Tharindu |
 | `07_assumptions_limitations.md` | Praveen |
-| `08_committee_memo.md` | Imasha |
+| `08_committee_memo.md` | Sameera |

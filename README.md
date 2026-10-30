@@ -18,6 +18,25 @@ pip install -r requirements-dev.txt
 streamlit run app.py
 ```
 
+`requirements.txt` has only what the app needs. `requirements-dev.txt` adds
+yfinance for the data download plus the test and lint tools, so use that one
+for local work.
+
+## Live app
+
+The app is deployed on Streamlit Community Cloud: **LIVE_APP_URL**
+
+It redeploys by itself whenever `main` changes. The settings it uses:
+
+- Repository `sameera-ekanayaka/Quantedge_Finals`, branch `main`
+- Main file `app.py`
+- Python 3.12 (set under Advanced settings when the app is created)
+- Packages from `requirements.txt`, config from `.streamlit/config.toml`
+
+The app reads the committed CSVs in `data/clean/`, so the cloud copy needs no
+download step and no secrets. To try the same setup locally, install only
+`requirements.txt` in a fresh environment and run `streamlit run app.py`.
+
 Run the checks before opening a pull request:
 
 ```bash

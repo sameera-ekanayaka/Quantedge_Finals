@@ -78,8 +78,7 @@ The final weights are SPY 9.6%, AGG 58.9%, GLD 15%, XLK 15% and XLE 1.6%. They a
 4. **It has a cost.** In the inflation shock Maximum Sharpe loses 17.2%, about USD 120k more than minimum variance.
 5. **Its beta to SPY is 0.29.** The information ratio is -0.33. This is expected for a portfolio that is mostly bonds, since it lags SPY in good years. SPY lost 36.9% over the 2008 window, while our portfolio lost 5.2%.
 
-**Where the risk comes from.** Technology is 15% of the money but 35.9% of the risk. Bonds are 58.9% of the money and 21.5% of the risk. Gold adds 20.2% and SPY adds 18.9%.
-
+**Where the risk comes from.** We used Aadhila's risk budget (Section 3), which splits the risk of the final portfolio between the ETFs. Technology is 15% of the money but about 36% of the risk. This is the same under the normal method (36.0%) and the historical method at 99% (37.8% of VaR and 36.5% of ES), so it does not depend on the method. Bonds are 58.9% of the money but only about 21% of the risk. Gold adds 15.9% of the tail loss, less than its 20.1% share under the normal method, so it helps a little on the worst days. SPY adds 21.7%. The historical numbers use about 55 bad days at 99%, so we read them as rough. **Reproduce:** `risk_budget(returns, final_weights(), alpha=0.99, method='historical')` in `src/risk_budget.py`.
 **Verdict for the committee:** accept with an adjusted risk limit (Section 8).
 
 ## 2.5 What we tested and what we did not

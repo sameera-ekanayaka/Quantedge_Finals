@@ -102,7 +102,6 @@ def rolling_breach_chart(results: pd.DataFrame) -> go.Figure:
 
 
 st.title("Backtesting")
-st.caption("Owner: Tharindu Dhanushka")
 
 settings = get_settings()
 alpha = settings.confidence

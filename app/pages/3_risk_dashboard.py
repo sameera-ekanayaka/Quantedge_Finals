@@ -5,6 +5,7 @@ Layers 2 & 3: VaR, Expected Shortfall, and Risk Budgeting
 """
 
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -141,9 +142,6 @@ def render_risk_budget_chart(budget_df: pd.DataFrame):
 
 # ---------------- MAIN PAGE EXECUTION ----------------
 st.title("Risk Dashboard")
-st.caption(
-    "Owner: Aadhila Anees | Layers 2 & 3: VaR, Expected Shortfall & Risk Budgeting"
-)
 
 settings = get_settings()
 alpha = settings.confidence
@@ -218,15 +216,22 @@ st.markdown("---")
 # Section 2: Side-by-Side Methodology Comparison
 st.subheader("2. Multi-Methodology Comparison")
 st.markdown(
-    "The brief requires comparing **Historical, Parametric, and Monte Carlo** "
+    "Compare **Historical, Parametric, and Monte Carlo** "
     "models at the same confidence level.\n"
     "The gap between them highlights distributional assumptions and tail fatness."
 )
 
 # Compute across all methods
 comp_records = []
+chart_records = []
 for m_key, m_label in config.VAR_METHODS.items():
     v, e = var_es(port_returns, alpha=alpha, method=m_key)
+    chart_records.extend(
+        [
+            {"Method": m_label, "Measure": "VaR", "Loss (%)": v * 100},
+            {"Method": m_label, "Measure": "ES", "Loss (%)": e * 100},
+        ]
+    )
     comp_records.append(
         {
             "Methodology": m_label,
@@ -245,6 +250,12 @@ try:
     evt_losses = -port_returns
     evt_threshold, _, _ = select_threshold(evt_losses, target_quantile=0.90)
     evt_v, evt_e, _ = evt_var_es(evt_losses, alpha=alpha, threshold=evt_threshold)
+    chart_records.extend(
+        [
+            {"Method": "EVT / GPD", "Measure": "VaR", "Loss (%)": evt_v * 100},
+            {"Method": "EVT / GPD", "Measure": "ES", "Loss (%)": evt_e * 100},
+        ]
+    )
     comp_records.append(
         {
             "Methodology": "Extreme Value Theory (EVT / GPD)",
@@ -255,7 +266,8 @@ try:
             "Tail Gap (ES - VaR)": format_pct(evt_e - evt_v),
         }
     )
-except Exception:
+except (ValueError, RuntimeError, FloatingPointError) as exc:
+    st.warning(f"EVT estimation failed: {exc}")
     comp_records.append(
         {
             "Methodology": "Extreme Value Theory (EVT / GPD)",
@@ -267,6 +279,18 @@ except Exception:
         }
     )
 
+
+st.plotly_chart(
+    px.bar(
+        pd.DataFrame(chart_records),
+        x="Method",
+        y="Loss (%)",
+        color="Measure",
+        barmode="group",
+        title=f"One-day tail risk at {alpha:.0%} confidence",
+    ),
+    use_container_width=True,
+)
 comp_df = pd.DataFrame(comp_records)
 st.dataframe(comp_df, hide_index=True, use_container_width=True)
 

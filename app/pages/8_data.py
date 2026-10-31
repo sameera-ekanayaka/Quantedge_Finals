@@ -5,7 +5,6 @@ import streamlit as st
 from src import data
 
 st.title("Data")
-st.caption("Owner: Sameera Ekanayaka")
 
 report = data.load_cleaning_report()
 if report is None:

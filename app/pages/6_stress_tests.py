@@ -93,6 +93,12 @@ with st.expander("Our scenario: inflation shock (edit the assumptions)"):
             / 100
         )
         right.caption(stress.INFLATION_SHOCK_REASONS[ticker])
+    st.caption(
+        "AGG's -15% shock is the first-order duration approximation -DΔy: "
+        "duration 6 × a parallel 250bp yield rise. It ignores convexity, spread "
+        "changes, changing duration and the path of rates, so it is a scenario "
+        "assumption rather than a bond-price forecast."
+    )
 
 scenarios = {"Inflation shock (our scenario)": shocks}
 table = stress.stress_table(returns, weights, scenarios=scenarios)

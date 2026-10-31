@@ -94,5 +94,8 @@ what we would change if inflation picks up.
 - **History will not repeat exactly**, which is why we add our own scenario.
   Its shocks are judgement, applied instantly (no path or drawdown), and the
   reverse stress test assumes they scale in proportion.
+- **The AGG shock is approximate.** The calculation $-D\Delta y$ assumes a
+  parallel 250bp yield shift and duration 6. It ignores convexity, spread and
+  duration changes, and the rate path; actual losses can be higher or lower.
 - **No transaction costs or liquidity effects.** ETF spreads widened sharply
   in March 2020, so selling in a crisis would cost more than shown.

@@ -13,8 +13,9 @@ arrive one at a time rather than in clusters (independence)?
 
 ## 5.1 Set-up
 
-- **Out of sample.** The forecast for day t uses only the 500 returns before
-  it. A unit test checks a crash never sits inside its own forecast window.
+- **Out of sample, conditional on fixed weights.** Day t uses only the prior
+  500 returns. The weights were selected on the full 2004 to 2026 sample, so
+  this tests the risk forecasts, not the portfolio-selection rule.
 - **500-day window (about two years).** It is above the Basel one-year
   minimum, leaves five observations in the 1% tail, and puts the first
   forecast on 14 Nov 2006, so all of 2008 is tested out of sample. The app
@@ -73,7 +74,8 @@ EVT 284 (0.036). Independence is rejected for every model (p < 0.001).
 
 1. **The normal model fails at 99%:** 105 breaches against 50, red over the
    whole range, and breaches deeper than it expects (Z2 = +1.75). This is the
-   fat-tail problem from Section 3, confirmed out of sample. Its Kupiec test
+   fat-tail problem from Section 3, confirmed in rolling forecasts conditional
+   on the fixed portfolio weights. Its Kupiec test
    passes at 95%, so a 95% coverage test alone would hide it; independence is
    still rejected.
 2. **Student t, Monte Carlo and EVT pass Kupiec at 99%.** EVT is closest
@@ -97,5 +99,6 @@ EVT 284 (0.036). Independence is rejected for every model (p < 0.001).
   year can rarely reject a bad model. We test over 20 years and by period;
   the short stress periods give only rough p-values.
 - **Held forecasts.** Monthly refits keep a forecast fixed for up to 20 days.
-- **Fixed weights.** The backtest rebalances daily; Section 6 uses buy and
+- **Fixed weights.** The portfolio selection is in sample. The risk forecasts
+  use only prior returns. This section rebalances daily; Section 6 uses buy and
   hold.

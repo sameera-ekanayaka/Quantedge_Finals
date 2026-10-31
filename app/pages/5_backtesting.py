@@ -151,7 +151,7 @@ if len(results) < backtest.BASEL_DAYS:
 
 summary = backtest.summarise(results, alpha)
 st.caption(
-    f"{summary['days']:,} out-of-sample days, {results.index[0].date()} to "
+    f"{summary['days']:,} rolling forecast days, {results.index[0].date()} to "
     f"{results.index[-1].date()}. Model refit every "
     f"{backtest.REFIT_EVERY[method]} day(s) on the previous {window} days."
 )
@@ -278,8 +278,10 @@ if st.toggle("Compare every model (takes about a minute the first time)"):
 
 with st.expander("How the backtest is set up"):
     st.markdown(f"""
-- **Out of sample.** The forecast for each day only uses the {window} days
-  before it, so a crash never sits in its own forecast window.
+- **Out of sample, conditional on fixed weights.** The forecast for each day
+  only uses the {window} days before it, so a crash never sits in its own
+  forecast window. The weights were selected using the full history, so this
+  does not test the portfolio-selection rule out of sample.
 - **Window.** 500 days (about two years) is the default. It is above the Basel
   minimum of one year, gives five tail observations at 99%, and puts the first
   forecast in late 2006 so the whole 2008 crisis is tested out of sample.
@@ -287,7 +289,8 @@ with st.expander("How the backtest is set up"):
 - **Refitting.** Historical and normal VaR are refit every day. Student t,
   Monte Carlo and EVT are refit every 21 trading days and held in between,
   because each fit is slow and a month of new data barely moves a 500-day fit.
-- **Portfolio returns** are daily simple returns with fixed weights.
+- **Portfolio returns** are daily simple returns with fixed weights selected
+  from the full 2004 to 2026 sample.
 - **Traffic light.** Only defined for 99% VaR. At 90% and 95% we show the
   tests without it.
 """)

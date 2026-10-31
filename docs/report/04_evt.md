@@ -65,5 +65,5 @@ The table compares 1-day tail risk metrics on the **USD 10m Maximum Sharpe Portf
 ## 4.4 Practical Committee Takeaways
 
 1. **Gaussian Blindspot:** At 99% confidence, Normal VaR predicts a daily loss of \$102k, while EVT projects \$122k. More critically, Normal ES (\$117k) understates tail loss by **\$55,278 (-32.0%)**. Sizing capital on Gaussian models leaves the fund dangerously under-buffered.
-2. **Body vs. Tail Alignment:** At 95% confidence, EVT ES (\$102,200) matches Historical Simulation (\$102,300) almost to the dollar. GPD modeling does not distort central risk, but adds precision in sparse tails.
+2. **Body vs. Tail Alignment:** At 95% confidence, EVT ES (\$102,200) matches Historical Simulation (\$102,300) almost to the dollar. This agreement is a consistency check, not evidence of improved precision; tail estimates remain sensitive to the threshold and sample.
 3. **Tail Gap & Capital Policy:** At 99%, the EVT Tail Gap is **\$50,534**: when breaches occur, losses extend 41.4% deeper than VaR. This supports the Section 8 policy: use **Expected Shortfall (\$173k)** for capital sizing and adopt the proposed **USD 200,000 daily ES limit**.

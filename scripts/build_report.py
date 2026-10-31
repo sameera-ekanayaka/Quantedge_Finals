@@ -51,8 +51,8 @@ MAX_PAGES = 15
 WORDS_PER_PAGE = 400
 
 CSS = """
-@page { size: A4 portrait; margin: 14mm 15mm; }
-body { font-family: sans-serif; font-size: 10.5pt; line-height: 1.22; }
+@page { size: A4 portrait; margin: 12mm 15mm; }
+body { font-family: sans-serif; font-size: 10.5pt; line-height: 1.15; }
 h1 { font-size: 16pt; margin-top: 14pt; }
 h2 { font-size: 12.5pt; }
 h3 { font-size: 11pt; }
@@ -62,7 +62,7 @@ code { font-size: 8.5pt; }
 """
 
 TITLE_CSS = """
-@page { size: A4 portrait; margin: 14mm 15mm; }
+@page { size: A4 portrait; margin: 12mm 15mm; }
 body { font-family: sans-serif; text-align: center; }
 h1 { font-size: 24pt; margin-top: 160pt; }
 h2 { font-size: 15pt; font-weight: normal; }
@@ -123,7 +123,7 @@ def estimate_pages(text: str) -> float:
 
 
 def build_pdf(title_md: str, body_md: str, path: Path, root: Path) -> int:
-    """Write the PDF and return the number of body pages (title page left out)."""
+    """Write the PDF and count all pages, including the title."""
     try:
         import pymupdf
         from markdown_pdf import MarkdownPdf, Section
@@ -140,7 +140,7 @@ def build_pdf(title_md: str, body_md: str, path: Path, root: Path) -> int:
     pdf.save(str(path))
 
     with pymupdf.open(str(path)) as doc:
-        return doc.page_count - 1
+        return doc.page_count
 
 
 def check_pages(pages: float) -> bool:
@@ -178,9 +178,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.pdf:
         pdf_path = args.out / "report.pdf"
         pages = build_pdf(title_md, body_md, pdf_path, REPORT_DIR)
-        print(f"Wrote {pdf_path.name}: {pages} pages plus the title page")
+        print(f"Wrote {pdf_path.name}: {pages} pages including the title page")
     else:
-        pages = estimate_pages(body_md)
+        pages = 1 + estimate_pages(body_md)
         print(f"About {pages:.1f} pages (estimate, use --pdf for the real count)")
 
     if check_pages(pages):

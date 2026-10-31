@@ -42,7 +42,7 @@ The committee told us that avoiding large losses matters more than making large 
 
 ## 2.2 How we built the candidates
 
-All five candidates follow the same weight limits. The optimiser stops with an error if it fails, so no wrong result is used quietly.
+The optimized candidates follow the stated weight limits. Equal weight is an unconstrained benchmark and breaches the bond floor and some asset caps. The optimiser stops with an error if it fails, so no wrong result is used quietly.
 
 - **Equal weight.** The closest allowed mix to 1/7 in each ETF. Plain 1/7 breaks the 30% bond floor.
 - **Minimum variance.** The calmest allowed mix.

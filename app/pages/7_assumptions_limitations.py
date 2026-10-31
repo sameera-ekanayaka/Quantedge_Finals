@@ -50,7 +50,7 @@ with tab_overview:
             "Core Assumption": "Long-only, no leverage, daily costless rebalancing",
             "Primary Vulnerability": ("Transaction costs, illiquidity during crashes"),
             "Committee Defense": (
-                "Defensive ETF universe; quarterly rebalancing bands"
+                "Defensive ETF universe; calendar-quarter rebalancing to target weights"
             ),
         },
         {

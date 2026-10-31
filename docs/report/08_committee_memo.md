@@ -1,30 +1,31 @@
 # Section 8: Committee memo
 
-**Decision requested:** Conditional acceptance of Maximum Sharpe for the USD 10m endowment, with a 15% crisis-window monitoring limit. Committee approval of the disclosed inflation-stress exception is required; this portfolio does not satisfy a hard 15% ceiling across all scenarios.
+**Decision: ADJUST the scenario-loss limit to 18%, retaining Maximum Sharpe.** This is a proposed mandate change; if the committee requires 15%, reject this allocation under that ceiling. The 18% limit measures complete historical windows or instantaneous hypothetical losses, not peak-to-trough drawdown.
 
 | SPY | EFA | EEM | AGG | GLD | XLE | XLK |
 |---|---|---|---|---|---|---|
 | 9.55% | 0% | 0% | 58.85% | 15% | 1.60% | 15% |
 
-## Rationale and trade-off
+## Rationale and construction
 
-The portfolio historically returned 7.4% annually with 7.2% volatility, Sharpe 0.79 and maximum drawdown -18.3%. Minimum variance returned 6.5% with -17.8% maximum drawdown. The extra return supports our assumed 7.0% objective (4.5% spending plus 2.5% inflation). It approximately meets the 7.4% spending sensitivity and misses the 7.8% inflation sensitivity. These are team assumptions, not forecasts. Income payments and trading costs are not separately modeled.
+Historical CAGR is 7.42%, volatility 7.16%, Sharpe 0.786 and maximum drawdown 18.27%. Our 7.0%, 7.4% and 7.8% return hurdles are team assumptions; income, costs and taxes are not separately modeled. The final solve enforces asset bounds, full investment, 99% historical daily VaR ≤ 1.5%, ES ≤ 2.0%, and loss ≤ 18% in all five tested scenarios. Frozen rounded weights pass the same checks.
 
-## Measured downside and proposed limits
+We revised the limit after reviewing results, not through independent calibration. The inflation scenario loses 17.215%, leaving only 0.785 percentage points below the proposed limit. A feasible 15%-constrained mix exists but increases maximum drawdown to 19.58% and March 2020 loss to 11.38%. We prefer the retained allocation's historical drawdown and request the policy adjustment openly.
 
-| Measure | Portfolio | Proposed limit |
+## Measured downside
+
+| Measure | Retained allocation | Proposed constraint |
 |---|---|---|
-| One-day 99% Student t VaR | 1.16%, USD 116k | 1.5%, USD 150k |
-| One-day 99% Student t ES | 1.73%, USD 173k | 2.0%, USD 200k |
-| Worst historical crisis-window loss | 12.6%, 2022 | 15%, USD 1.5m |
-| Hypothetical inflation loss | 17.2%, USD 1.72m | Exceeds 15% |
+| 99% historical daily VaR | 1.163%, USD 116,306 | 1.5%, USD 150,000 |
+| 99% historical daily ES | 1.734%, USD 173,429 | 2.0%, USD 200,000 |
+| Worst historical full-window loss | 12.64%, 2022 | 18%, USD 1,800,000 |
+| Inflation scenario | 17.215%, USD 1,721,500 | 18%, USD 1,800,000 |
+| Equity-crash/dollar-spike scenario | 8.54%, USD 854,000 | 18%, USD 1,800,000 |
 
-Historical crisis losses were 5.2% in 2008 and 9.9% in March 2020. The 2022 peak-to-trough loss was 17.2%; the 15% limit measures the full crisis window, not drawdown. Almost 59% in bonds creates rate exposure, while technology contributes about 37% of historical ES despite a 15% capital weight.
+The 18.27% maximum drawdown exceeds 18%; no 18% drawdown cap is claimed. Technology contributes about 36.5% of historical ES with 15% of capital. Bonds comprise 58.85%, leaving material rate and correlation risk.
 
-We prefer Maximum Sharpe for its return advantage with similar historical crisis losses to Minimum variance. Neither meets the hypothetical 15% limit. If that ceiling is mandatory, do not approve these weights: require a revised allocation and rerun every risk test. Disclosure alone does not cure a breach.
+## Validation and governance
 
-## Monitoring and conditions
+Weights were selected in sample. Walk-forward Maximum Sharpe earns 7.10% with Sharpe 0.807, versus Minimum variance 6.82% and 0.839: the risk-adjusted advantage does not hold out of sample. GARCH improves some clustering diagnostics, but all compared models still fail independence. EVT sensitivity and bootstrap intervals expose tail uncertainty. No model is a guarantee.
 
-Monitor Student t and EVT daily risk, stock-bond correlation, technology concentration and inflation stress. A shift of about 6.5 percentage points from XLK to XLE reduces the specified inflation shock below 15%, but depends on the assumed XLE shock and requires fresh return/risk validation before adoption. Use Minimum variance if lower historical drawdown takes priority over the return objective.
-
-Weights were selected in sample. Risk forecasts use prior observations conditional on those fixed weights. Student t and EVT pass 99% coverage, but all models fail breach independence: losses cluster. Daily rebalancing underlies headline numbers; quarterly rebalancing gives 7.3% return and -18.7% drawdown. Limits are review triggers, not guarantees. Review the allocation on a limit breach, persistent positive stock-bond correlation or a 99%/250-day Basel red signal.
+Headline returns assume daily rebalancing; quarterly sensitivity is 7.3% return and −18.7% drawdown. Monitor Student-t/EVT daily risk, conditional-model diagnostics, concentration and both scenarios. Review on a limit breach, persistent adverse correlation or a 99%/250-day Basel red signal. Reject the retained policy if the committee declines the 18% adjustment.

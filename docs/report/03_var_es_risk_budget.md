@@ -1,98 +1,38 @@
 # Section 3: VaR, Expected Shortfall and risk budget
 
-**Owner:** Aadhila Anees
-**Code:** `src/var_es.py` and `src/risk_budget.py`, tested in `tests/test_var_es.py` and `tests/test_risk_budget.py`
-**App page:** Risk dashboard
+All estimates are one-day positive losses on USD 10m. VaR is a loss quantile; ES measures average loss beyond that quantile. ES is coherent under its population definition; finite-sample estimates remain uncertain. Historical daily VaR/ES are hard constraints in the final construction, while other models are independent monitoring estimates.
 
-All numbers are for the final portfolio (`final_weights()`), one day ahead,
-on the USD 10m fund, using daily returns from Nov 2004 to Oct 2026.
+## 3.1 Methods and results
 
-## 3.1 Four ways to measure a bad day
+Historical simulation uses the empirical quantile and tail mean. Gaussian VaR/ES use the sample mean and variance; Student t fits degrees of freedom, location and scale. The original Monte Carlo samples that fitted portfolio-level t and is retained as a parametric reference. Its agreement with Student t is expected, not independent corroboration. The new joint ETF bootstrap instead samples entire seven-ETF return vectors before applying weights, preserving empirical contemporaneous dependence. Static estimates use 100,000 draws, seed 42. It is close to historical simulation by design, ignores serial dependence and cannot generate unseen crash regimes. GARCH-filtered alternatives are evaluated in Section 5.
 
-VaR at 99% is the loss we expect to beat on only 1 day in 100. ES is the
-average loss on those worst days, so it says how deep the tail goes once VaR
-is breached. We measure both four ways:
+| Confidence   | Model                  | VaR    | ES     |
+|:-------------|:-----------------------|:-------|:-------|
+| 95%          | Historical simulation  | 0.662% | 1.023% |
+| 95%          | Parametric (normal)    | 0.713% | 0.901% |
+| 95%          | Parametric (Student t) | 0.606% | 0.981% |
+| 95%          | Monte Carlo            | 0.606% | 0.969% |
+| 95%          | Joint ETF bootstrap    | 0.660% | 1.025% |
+| 95%          | EVT / GPD              | 0.646% | 1.022% |
+| 99%          | Historical simulation  | 1.163% | 1.734% |
+| 99%          | Parametric (normal)    | 1.020% | 1.173% |
+| 99%          | Parametric (Student t) | 1.157% | 1.726% |
+| 99%          | Monte Carlo            | 1.152% | 1.674% |
+| 99%          | Joint ETF bootstrap    | 1.169% | 1.735% |
+| 99%          | EVT / GPD              | 1.220% | 1.726% |
 
-- **Historical simulation** reads the quantile straight from the 5,518 real
-  daily returns. It assumes this sample represents future risk and cannot see
-  a loss worse than history, but it imposes no distributional form.
-- **Parametric normal** fits a mean and a standard deviation.
-- **Parametric Student t** fits the tail thickness as well. On our portfolio
-  the fitted degrees of freedom is about 3.3, which is a very fat tail.
-- **Monte Carlo** draws 100,000 returns from the fitted Student t with a fixed
-  seed (42), so every run gives the same number.
+To convert a decimal risk estimate into dollars, multiply by USD 10m. Across all new documents percentages use consistent rounding and dollar amounts are derived from full-precision estimates. Normal 99% ES is about USD 117,310 versus EVT USD 172,578: an approximate USD 55,268 gap. This is a model comparison, not an error bound. The dashboard shows grouped VaR/ES bars and a numeric table at the selected confidence.
 
-The normal and Student t estimates include the sample mean as one-day drift,
-which is the implementation default. We also reran them with zero drift, a
-more conservative short-horizon assumption. At 99%, normal VaR/ES move from
-1.02%/1.17% to 1.05%/1.20%, and Student t VaR/ES move from 1.16%/1.73% to
-1.20%/1.77%. The largest change is 0.04 percentage points, so the limit verdict
-does not depend on this choice.
+## 3.2 Concentration and attribution
 
-## 3.2 Results
+| ETF   | weight   | component_var   | component_es   | pct_es_contrib   |
+|:------|:---------|:----------------|:---------------|:-----------------|
+| SPY   | 9.55%    | 0.300%          | 0.376%         | 21.67%           |
+| EFA   | 0.00%    | 0.000%          | 0.000%         | 0.00%            |
+| EEM   | 0.00%    | 0.000%          | 0.000%         | 0.00%            |
+| AGG   | 58.85%   | 0.266%          | 0.365%         | 21.04%           |
+| GLD   | 15.00%   | 0.240%          | 0.277%         | 15.95%           |
+| XLE   | 1.60%    | 0.060%          | 0.083%         | 4.80%            |
+| XLK   | 15.00%   | 0.526%          | 0.634%         | 36.54%           |
 
-| Level | Method | VaR | VaR (USD) | ES | ES (USD) |
-|---|---|---|---|---|---|
-| 95% | Historical | 0.66% | 66,200 | 1.02% | 102,300 |
-| 95% | Normal | 0.71% | 71,300 | 0.90% | 90,100 |
-| 95% | Student t | 0.61% | 60,600 | 0.98% | 98,100 |
-| 95% | Monte Carlo | 0.61% | 60,600 | 0.97% | 96,900 |
-| 99% | Historical | 1.16% | 116,300 | 1.73% | 173,400 |
-| 99% | Normal | 1.02% | 102,000 | 1.17% | 117,300 |
-| 99% | Student t | 1.16% | 115,700 | 1.73% | 172,600 |
-| 99% | Monte Carlo | 1.15% | 115,200 | 1.67% | 167,400 |
-
-## 3.3 Why the models disagree
-
-At 95% the normal model gives the highest VaR, because real returns are more
-peaked in the middle than a bell curve. At 99% it flips: the normal model
-gives the lowest VaR and by far the lowest ES. Its 99% ES of USD 117k is
-**USD 56k below** what history shows (USD 173k). The returns have fat tails
-(Section 1), and a normal curve gives almost no chance to the 4 and 5 standard
-deviation days that happened in 2008 and 2020.
-
-The Student t and Monte Carlo numbers land within 4% of history at 99%,
-because they fit the tail. This is why the memo (Section 8) monitors the
-daily limits with Student t, and why Section 5 finds the normal model breaches
-twice as often as it should.
-
-**Why ES as well as VaR.** VaR only says where the tail starts. ES says what
-an average bad day in the tail costs, here USD 173k against a VaR of USD 116k.
-ES is also coherent: the ES of a combined portfolio is never more than the sum
-of its parts, so it never punishes diversification. VaR does not have this
-property (Artzner et al., 1999).
-
-## 3.4 Risk budget: where the tail risk comes from
-
-Because ES scales with the weights, each asset's share can be split exactly
-by Euler allocation: weight times marginal ES, summed over assets, gives the
-portfolio ES. The table uses historical ES at 99%. Historical VaR is a sample
-quantile and is not smooth, so its component allocation is only a local
-estimate from returns around the quantile; unlike ES, it does not reconcile
-exactly to portfolio VaR.
-
-| ETF | Weight | Marginal ES | Contribution (USD) | Share of ES |
-|---|---|---|---|---|
-| SPY | 9.55% | 3.94% | 37,585 | 21.7% |
-| AGG | 58.85% | 0.62% | 36,497 | 21.0% |
-| GLD | 15.00% | 1.84% | 27,658 | 15.9% |
-| XLE | 1.60% | 5.20% | 8,324 | 4.8% |
-| XLK | 15.00% | 4.22% | 63,366 | 36.5% |
-| **Total** | **100%** | | **173,429** | **100%** |
-
-EFA and EEM have zero weight, so they add nothing. The parametric (normal)
-split puts XLK at 36% too, so the main finding does not depend on the
-method.
-
-What this tells the committee:
-
-1. **Capital is not risk.** AGG is 59% of the money but only 21% of the tail
-   risk. XLK is 15% of the money but **37% of the tail risk**, the largest
-   single source.
-2. **XLK is the clearest position to monitor.** Its marginal ES is almost
-   seven times AGG's, so a direct cut lowers technology exposure. It is not a
-   complete fix by itself: the lower-cap test in Section 2 shifts most of the
-   money into SPY and improves the inflation shock by only 0.4 percentage
-   points when the cap falls from 15% to 5%.
-3. **GLD earns its place.** It is as large as XLK but adds well under half as
-   much tail risk, because it moves little with stocks.
+Technology is only 15% of capital but about 36.5% of historical ES. Historical ES contributions sum to portfolio ES through tail conditional expectations. Historical component VaR is a local approximation around the empirical quantile and need not reconcile exactly; it must not be presented as exact Euler allocation. Parametric Gaussian contributions use Euler derivatives. A large bond weight reduces ordinary volatility but creates rate and correlation risk, as 2022 demonstrates. The mean tail contains only about 55 days at 99%, so concentration figures are imprecise.

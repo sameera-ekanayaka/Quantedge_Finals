@@ -4,7 +4,12 @@ import streamlit as st
 
 from src import backtest
 from src.data import load_returns, load_risk_free
-from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+from src.portfolio import (
+    annual_risk_free,
+    candidate_portfolios,
+    final_weights,
+    portfolio_returns,
+)
 from src.ui import get_settings
 
 ZONE_COLOURS = {"green": "#2e7d32", "yellow": "#f9a825", "red": "#c62828"}
@@ -15,7 +20,9 @@ SIGNIFICANCE = 0.05
 def load_candidates() -> tuple[pd.DataFrame, pd.DataFrame]:
     returns = load_returns()
     rf = annual_risk_free(load_risk_free(), returns.index)
-    return returns, candidate_portfolios(returns, rf)
+    candidates = candidate_portfolios(returns, rf)
+    candidates["Maximum Sharpe"] = final_weights()
+    return returns, candidates
 
 
 @st.cache_data(show_spinner="Running the rolling backtest...")
@@ -293,3 +300,9 @@ with st.expander("How the backtest is set up"):
 - **Traffic light.** Only defined for 99% VaR. At 90% and 95% we show the
   tests without it.
 """)
+
+st.info(
+    "The Extended validation page compares GARCH-filtered HS and GARCH-EVT "
+    "with unfiltered models on identical 99% forecast dates. These "
+    "conditional models still fail independence; see the replacement report."
+)

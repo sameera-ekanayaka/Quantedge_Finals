@@ -10,8 +10,14 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from src import config
+from src.advanced_validation import joint_bootstrap_risk
 from src.data import load_returns, load_risk_free
-from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+from src.portfolio import (
+    annual_risk_free,
+    candidate_portfolios,
+    final_weights,
+    portfolio_returns,
+)
 from src.risk_budget import risk_budget
 from src.ui import get_settings
 from src.var_es import var_es
@@ -24,6 +30,7 @@ def get_cached_data():
     rf = load_risk_free()
     rf_ann = annual_risk_free(rf, returns.index)
     candidates = candidate_portfolios(returns, rf_ann)
+    candidates["Maximum Sharpe"] = final_weights()
     return returns, candidates
 
 
@@ -242,6 +249,24 @@ for m_key, m_label in config.VAR_METHODS.items():
             "Tail Gap (ES - VaR)": format_pct(e - v),
         }
     )
+
+joint_v, joint_e = joint_bootstrap_risk(returns_df, weights, alpha)
+chart_records.extend(
+    [
+        {"Method": "Joint ETF bootstrap", "Measure": "VaR", "Loss (%)": joint_v * 100},
+        {"Method": "Joint ETF bootstrap", "Measure": "ES", "Loss (%)": joint_e * 100},
+    ]
+)
+comp_records.append(
+    {
+        "Methodology": "Joint ETF bootstrap",
+        f"1-Day VaR ({alpha:.0%})": format_pct(joint_v),
+        "1-Day VaR ($)": format_currency(joint_v * fund_size),
+        f"1-Day ES ({alpha:.0%})": format_pct(joint_e),
+        "1-Day ES ($)": format_currency(joint_e * fund_size),
+        "Tail Gap (ES - VaR)": format_pct(joint_e - joint_v),
+    }
+)
 
 # Check EVT from Praveen
 try:

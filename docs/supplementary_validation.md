@@ -1,5 +1,7 @@
 # Supplementary validation — 31 October 2026
 
+**Historical research record.** The replacement submission now integrates these analyses and explicitly proposes an 18% scenario-loss limit. Read `docs/report/` and the current PDFs in `submission/` for the final decision. References below to the submitted/unchanged PDFs describe the earlier submission, now archived in `submission/previous_submission/`.
+
 These additions were prepared after the submitted PDF. They supplement that fixed document; they do not replace its portfolio, change its limits or revise its headline results. Exact copies of the PDFs supplied for submission are archived in `submission/`.
 
 ## Clarifications to the submitted report

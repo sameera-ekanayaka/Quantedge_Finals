@@ -10,11 +10,12 @@ from src.ui import get_settings
 
 st.title("Assumptions & Limitations")
 st.warning(
-    "Weights were selected in sample. Weight bounds are enforced "
-    "during optimisation; VaR, ES and stress limits are checked "
-    "afterward. The inflation scenario loses 17.2%, exceeding the"
-    " proposed 15% monitoring limit. Acceptance requires an "
-    "explicit exception."
+    "Weights were selected in sample. Decision: ADJUST the scenario-loss limit "
+    "to 18%, retaining the allocation. The final solve enforces historical "
+    "daily VaR/ES and all five scenario limits as well as weight bounds. The "
+    "17.215% inflation loss meets the revised scenario limit; 18.27% maximum "
+    "drawdown exceeds 18%, and no 18% drawdown cap is claimed. The revised "
+    "limit was chosen after reviewing results and is not independently calibrated."
 )
 
 settings = get_settings()
@@ -82,7 +83,7 @@ with tab_overview:
                 "Volatility clustering; Normal VaR understates tail risk"
             ),
             "Committee Defense": (
-                "Student-t & Historical simulation; ES captures tail severity"
+                "Historical/t/EVT monitoring and GARCH diagnostics; clustering persists"
             ),
         },
         {
@@ -94,7 +95,7 @@ with tab_overview:
                 "Threshold selection sensitivity; finite-sample bias"
             ),
             "Committee Defense": (
-                "Dual diagnostics (MEP + parameter stability); 90/95th cross-check"
+                "Diagnostics, sensitivity, alternative threshold and bootstrap"
             ),
         },
         {
@@ -112,13 +113,13 @@ with tab_overview:
         {
             "Area": "Stress Testing",
             "Core Assumption": (
-                "Historical replay represents plausible worst-case joint shocks"
+                "Selected historical replays represent severe observed joint shocks"
             ),
             "Primary Vulnerability": (
                 "Correlations break down; stock-bond hedge failure under stagflation"
             ),
             "Committee Defense": (
-                "Dedicated inflation/rate shock scenario (stocks & bonds fall)"
+                "Inflation and equity/dollar scenarios; no future worst-case bound"
             ),
         },
     ]

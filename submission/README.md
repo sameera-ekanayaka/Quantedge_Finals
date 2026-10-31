@@ -1,9 +1,7 @@
-# Submitted documents
+# Replacement submission — 31 October 2026
 
-These are byte-for-byte copies of the final generated PDFs supplied to Sameera for submission. They remain unchanged while supplementary validation is added to GitHub and the app. The repository cannot independently verify which files were attached to the submission portal.
+The current report, committee memo and tear sheet implement the final decision: **ADJUST the scenario-loss limit to 18%, retaining the original allocation**. This is an explicit retrospective policy proposal, not independent calibration or a drawdown cap. The committee must agree; the original 15% policy is not silently treated as satisfied.
 
-- report.pdf: 15 pages including cover
-- committee_memo.pdf: 1 page
-- tearsheet.pdf: 1 page
+The report integrates all new analyses. The 15%-constrained alternative remains a counterfactual, and conditional models still fail independence. Earlier documents are preserved under `previous_submission/` and must not be attached as the replacement package.
 
-See ../docs/supplementary_validation.md for subsequent clarifications and supplementary results. Do not treat that note as a replacement for the submitted PDF.
+Current files and their page counts/checksums are recorded in SHA256SUMS and the validation note. Rebuild source tables/narrative using `python scripts/build_submission_sources.py`, then build report and executive PDFs. PDF generation requires requirements-report.txt. All model output archives remain in advanced/ and supplementary/.

@@ -30,10 +30,22 @@ INFLATION_SHOCK_REASONS = {
     "XLK": "Long-duration tech falls most when rates rise, as in 2022",
 }
 
-HYPOTHETICAL_SCENARIOS = {"Inflation shock, stocks and bonds fall": INFLATION_SHOCK}
+DOLLAR_CRASH_SHOCK = {
+    "SPY": -0.35,
+    "EFA": -0.40,
+    "EEM": -0.45,
+    "AGG": 0.05,
+    "GLD": -0.10,
+    "XLE": -0.40,
+    "XLK": -0.40,
+}
+HYPOTHETICAL_SCENARIOS = {
+    "Inflation shock, stocks and bonds fall": INFLATION_SHOCK,
+    "Equity crash and dollar spike (assumption)": DOLLAR_CRASH_SHOCK,
+}
 
 # Crisis loss limit agreed in the committee memo (Section 8)
-DEFAULT_LOSS_LIMIT = 0.15
+DEFAULT_LOSS_LIMIT = config.SCENARIO_LOSS_LIMIT
 
 
 def _weights(weights, tickers) -> pd.Series:

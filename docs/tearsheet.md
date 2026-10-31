@@ -1,69 +1,50 @@
-# Serendib University Endowment Fund: Portfolio Tear Sheet
+# Serendib University Endowment Fund — Portfolio Tear Sheet
 
-**Mandate:** USD 10,000,000 Capital Pool | **Recommended Portfolio:** Maximum Sharpe | **Sample:** Nov 2004 to Oct 2026 (5,518 days)
+**USD 10m | Decision: ADJUST scenario limit to 18% | Sample: 19 Nov 2004–27 Oct 2026**
 
----
+## Allocation and construction
 
-### 1. Asset Allocation & Mandate Weights
+| ETF   | Weight   |   Capital USD |
+|:------|:---------|--------------:|
+| SPY   | 9.55%    |       955,000 |
+| EFA   | 0.00%    |             0 |
+| EEM   | 0.00%    |             0 |
+| AGG   | 58.85%   |     5,885,000 |
+| GLD   | 15.00%   |     1,500,000 |
+| XLE   | 1.60%    |       160,000 |
+| XLK   | 15.00%   |     1,500,000 |
 
-| Ticker | Asset Class / Fund Name | Target Weight | Capital (USD) | Mandate Limit | Status |
-|---|---|---|---|---|---|
-| **SPY** | US Large Cap Equities (S&P 500) | 9.55% | \$955,000 | Max 40% | Pass |
-| **EFA** | Developed International Equities | 0.00% | \$0 | Max 30% | Pass |
-| **EEM** | Emerging Market Equities | 0.00% | \$0 | Max 10% | Pass |
-| **AGG** | US Aggregate Fixed Income (Core Anchor) | 58.85% | \$5,885,000 | Min 30%, Max 60% | Pass |
-| **GLD** | SPDR Gold Shares (Real-Asset Diversifier) | 15.00% | \$1,500,000 | Max 15% | Pass |
-| **XLE** | Energy Select Sector | 1.60% | \$160,000 | Max 10% | Pass |
-| **XLK** | Technology Select Sector | 15.00% | \$1,500,000 | Max 15% | Pass |
-| **Total** | **Serendib Endowment Portfolio** | **100.00%** | **\$10,000,000** | **Long-only, No Leverage** | **Pass** |
+Full investment, original ETF bounds, 99% historical daily VaR ≤ 1.5%, ES ≤ 2.0%, and all five scenario losses ≤ 18% are enforced in construction. The 18% proposal was selected after reviewing results; it is not independently calibrated. If 15% is mandatory, reject this retained allocation under that mandate.
 
----
+## Performance and validation
 
-### 2. Performance & Risk-Adjusted Summary
+Historical CAGR **7.42%**, volatility **7.16%**, Sharpe **0.786**, maximum drawdown **18.27%**. Return hurdles 7.0%/7.4%/7.8% are team assumptions, not forecasts. Weights were selected in sample. Walk-forward Maximum Sharpe: 7.10% return, Sharpe 0.807; Minimum variance: 6.82%, 0.839. Maximum Sharpe has no demonstrated walk-forward Sharpe advantage. Policy benchmark: 40% SPY/60% AGG; information ratio 0.197.
 
-- **Annual Return:** **7.4% a year historically**, in-sample. It clears our 7.0% base objective (4.5% long-run spending + 2.5% inflation), matches the stricter 7.4% hurdle (4.9% spending + 2.5% inflation), and falls short of the 7.8% hurdle (4.5% spending + 3.3% higher-education inflation).
-- **Sharpe Ratio:** **0.79** (Highest risk-adjusted return across all candidate portfolios).
-- **Annual Volatility:** **7.2%** (Conservative risk profile dominated by 58.85% core fixed income).
-- **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while earning about 0.9 points more a year).
+## One-day risk on USD 10m
 
----
+| Model                  | VaR    | ES     |
+|:-----------------------|:-------|:-------|
+| Historical simulation  | 1.163% | 1.734% |
+| Parametric (normal)    | 1.020% | 1.173% |
+| Parametric (Student t) | 1.157% | 1.726% |
+| Monte Carlo            | 1.152% | 1.674% |
+| Joint ETF bootstrap    | 1.169% | 1.735% |
+| EVT / GPD              | 1.220% | 1.726% |
 
-### 3. Tail Risk Metrics (1-Day Horizon on USD 10M Capital)
+Historical 99% VaR USD 116,306; ES USD 173,429. Technology is 15% of money but about 36.5% of historical ES. EVT 99% bootstrap 95% intervals: VaR 1.123–1.299%, ES 1.488–1.966% (200 IID replicates; clustering may widen uncertainty).
 
-| Risk Framework | 95% 1-Day VaR | 95% 1-Day ES | 99% 1-Day VaR | 99% 1-Day ES | Tail Gap (ES - VaR) |
-|---|---|---|---|---|---|
-| **Parametric Normal (Gaussian)** | 0.71% (\$71,300) | 0.90% (\$90,100) | 1.02% (\$102,000) | 1.17% (\$117,300) | 0.15% (\$15,300) |
-| **Historical Simulation** | 0.66% (\$66,200) | 1.02% (\$102,300) | 1.16% (\$116,300) | 1.73% (\$173,400) | 0.57% (\$57,100) |
-| **Parametric Student-t** | 0.61% (\$60,600) | 0.98% (\$98,100) | **1.16% (\$115,700)** | **1.73% (\$172,600)** | 0.57% (\$56,900) |
-| **Extreme Value Theory (EVT GPD)** | 0.65% (\$64,637) | 1.02% (\$102,200) | **1.22% (\$122,044)** | **1.73% (\$172,578)** | 0.51% (\$50,534) |
+## Stress and decision
 
-*Observation:* Normal models underestimate deep tail risk by \$55k+ at 99% ES. Student-t and EVT pass 99% coverage, but all models fail breach independence because losses cluster in crises.
+| Scenario                                   | Loss    |   Loss USD |
+|:-------------------------------------------|:--------|-----------:|
+| 2008 financial crisis                      | 5.170%  |    517,024 |
+| March 2020 Covid crash                     | 9.892%  |    989,191 |
+| 2022 rate hikes                            | 12.645% |  1,264,453 |
+| Inflation shock                            | 17.215% |  1,721,500 |
+| Equity crash and dollar spike (assumption) | 8.540%  |    854,000 |
 
----
+Inflation loss is 17.215%, below revised 18% but above former 15%. The limit is scenario loss, **not drawdown**. A 15%-constrained alternative exists but worsens drawdown to 19.58%. Both hypothetical scenarios are assumptions, including XLE 0% in inflation. Energy rotation is not a universal hedge.
 
-### 4. Stress Testing & Crisis Scenario Losses
+## Monitoring and limitations
 
-| Scenario | Nature | Period / Assumption | Portfolio Loss (%) | Capital Impact (USD) |
-|---|---|---|---|---|
-| **2008 Global Financial Crisis** | Historical Replay | 2008-09 to 2009-03 | -5.2% | -\$520,000 |
-| **March 2020 COVID-19 Shock** | Historical Replay | 2020-02 to 2020-03 | -9.9% | -\$990,000 |
-| **2022 Joint Rate Hiking Cycle** | Historical Replay | 2022-01 to 2022-12 | **-12.6%** | **-\$1,260,000** |
-| **Stagflationary Inflation Shock** | Hypothetical (assumption) | SPY/EFA -25%, EEM -30%, AGG -15%, GLD -5%, XLE 0%, XLK -35% | **-17.2%** | **-\$1,720,000** |
-
-*Worst Historical Replay:* 2022 rate hikes (-12.6%), driven by simultaneous declines in equities and fixed income.
-
----
-
-### 5. Risk Policy Limits & Committee Governance
-
-| Governing Policy Limit | Mandated Limit Level | Final Portfolio Level | Compliance Status |
-|---|---|---|---|
-| **One-Day 99% Value at Risk (VaR)** | USD 150,000 (1.50%) | **USD 116,000 (1.16%)** | **Within limit** |
-| **One-Day 99% Expected Shortfall (ES)** | USD 200,000 (2.00%) | **USD 173,000 (1.73%)** | **Within limit** |
-| **Loss over one crisis replay** | USD 1,500,000 (15.00%) | **12.6% (USD 1,260,000), 2022** | **Within limit** |
-| **Inflation shock (assumption)** | USD 1,500,000 (15.00%) | **17.2% (USD 1,720,000)** | **Exceeds, disclosed** |
-
-The limit is measured over the whole crisis window. Inside 2022 the fall from peak to trough reached 17.2%.
-
-**Committee Action Protocol:**  
-- If persistent inflation materializes, rotate capital from XLK into XLE (each point shifted lowers the inflation shock loss by about 0.35 points; about 6.5 points brings it inside 15%).
+All compared models, including GARCH, still fail independence. GARCH filtered HS also fails coverage. Daily rebalancing/costless execution underlies headline results; quarterly sensitivity: 7.3% return, −18.7% drawdown. Liquidity reserves and multi-day risk are not implemented. Monitor Student-t, EVT, conditional diagnostics and scenarios; review on limit breaches, adverse correlations or a 99%/250-day Basel red signal. Scenario feasibility does not guarantee future compliance.

@@ -43,3 +43,8 @@ VAR_METHODS = {
 }
 
 DEFAULT_BACKTEST_START = "2008-01-01"
+
+# Explicit revised mandate for the replacement submission; not a drawdown cap.
+SCENARIO_LOSS_LIMIT = 0.18
+DAILY_VAR_LIMIT = 0.015
+DAILY_ES_LIMIT = 0.02

@@ -330,3 +330,22 @@ def rebalancing_comparison(
             "1-day ES 99%": var_es(port, 0.99, "historical")[1],
         }
     return pd.DataFrame(rows).T
+
+
+def construct_final_portfolio(returns: pd.DataFrame, rf_annual: float) -> pd.Series:
+    """Construct the final allocation under the explicitly revised mandate.
+
+    18% scenario loss, 1.5% 99% historical daily VaR and 2% ES are hard
+    construction constraints, alongside full investment and asset bounds.
+    The frozen target is rounded from this solve and validated separately.
+    """
+    from src import config
+    from src.advanced_validation import constrained_sharpe
+
+    return constrained_sharpe(
+        returns,
+        rf_annual,
+        stress_limit=config.SCENARIO_LOSS_LIMIT,
+        es_limit=config.DAILY_ES_LIMIT,
+        var_limit=config.DAILY_VAR_LIMIT,
+    )

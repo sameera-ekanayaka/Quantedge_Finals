@@ -1,101 +1,25 @@
-# Section 6: Stress tests
+# Section 6: Historical and hypothetical stress tests
 
-**Owner:** Tharindu Dhanushka
-**Code:** `src/stress.py`, tested in `tests/test_stress.py`
-**App page:** Stress tests
-**Reproduce:** `python -m src.stress`
+Historical replays use buy-and-hold asset returns over each complete crisis window: September 2008–March 2009, 19 February–23 March 2020, and calendar 2022. Daily performance KPIs instead assume daily rebalancing. Full-window loss is distinct from intrawindow drawdown, and all results are conditional on today's fixed weights being held in those past windows.
 
-VaR describes a normal bad day, and Section 5 shows every model lets breaches
-pile up when a crisis starts. Stress tests answer the committee directly: if
-2008 happened again, how much of the USD 10m would we lose? Numbers are for
-the final portfolio (`final_weights()`, Section 8) on data to 27 Oct 2026.
+| Scenario                                   | Retained allocation   | 15% constrained alternative   | 6.5-point XLK to XLE shift   |
+|:-------------------------------------------|:----------------------|:------------------------------|:-----------------------------|
+| 2008 financial crisis                      | -5.170%               | -5.160%                       | -5.948%                      |
+| March 2020 Covid crash                     | -9.892%               | -11.378%                      | -11.527%                     |
+| 2022 rate hikes                            | -12.645%              | -5.655%                       | -6.661%                      |
+| Inflation shock                            | -17.215%              | -15.000%                      | -14.940%                     |
+| Equity crash and dollar spike (assumption) | -8.540%               | -8.500%                       | -8.540%                      |
 
-## 6.1 Method
+## 6.1 Two distinct assumed scenarios
 
-- **Historical replays** of three periods from `src/config.py`: 2008 (1 Sep
-  2008 to 31 Mar 2009), the Covid crash (19 Feb to 23 Mar 2020) and the 2022
-  rate hikes (calendar year). We buy at the close before the first day and
-  hold, so weights drift and nothing is rebalanced mid-crisis, as for a fund
-  that rebalances quarterly. ETF contributions add up exactly to the total.
-- **Our own scenario (an assumption, not data):** an inflation surprise lifts
-  yields about 250bp, so stocks and bonds fall together. This is the
-  stock-bond hedge failure we found in round 1. The shocks can be edited in
-  the app.
+Inflation shock assumes SPY/EFA −25%, EEM −30%, AGG −15%, GLD −5%, XLE 0%, XLK −35%. The bond shock approximates duration 6 times a 250bp yield increase; it ignores convexity, credit spread shifts and nonlinear responses. XLE's zero is a team assumption, not a reliable hedge. Loss on the retained allocation is 17.215%, below the **proposed revised 18%** limit but above the former 15% proposal.
 
-| ETF | Shock | Reason |
-|---|---|---|
-| SPY, EFA | -25% | Higher real rates cut valuations, about 1.4 times 2022 |
-| EEM | -30% | Strong dollar and capital outflows |
-| AGG | -15% | 250bp rise in yields times a duration of about 6 |
-| GLD | -5% | Rising real yields, so no hedge |
-| XLE | 0% | Rose 64% in 2022; we assume no help |
-| XLK | -35% | Long-duration tech falls most when rates rise |
+Equity crash with dollar spike assumes SPY −35%, EFA −40%, EEM −45%, AGG +5%, GLD −10%, XLE −40%, XLK −40%. Unlike inflation, bonds rally while energy crashes. Loss is 8.54%. No probabilities are assigned; these are scenarios, not approved-source observations or forecasts.
 
-- **Limit.** The crisis loss limit is 15% of the fund (USD 1.5m), measured
-  over the whole crisis window (Section 8). The reverse stress test asks how
-  many times as severe our scenario must be to reach it.
+## 6.2 Why not adopt the 15%-constrained mix automatically?
 
-## 6.2 Results
+The 60% AGG/15% GLD/10% XLE/15% XLK alternative meets the tested 15% scenario ceiling. However, its March 2020 loss is 11.38% versus 9.89%, and maximum drawdown is 19.58% versus 18.27%. It still depends on the assumed XLE inflation shock. Its annual return is 7.40% and Sharpe 0.764. We therefore request an explicit scenario-limit adjustment rather than hide a risk trade-off by changing the portfolio. If the committee declines the adjustment, reject the retained allocation under the 15% mandate.
 
-**Final portfolio**
+Moving 6.5 percentage points from XLK to XLE reduces the assumed inflation loss to 14.94%, but worsens March 2020 and leaves the dollar-crash loss unchanged at 8.54%. This is not an adopted trade or universal hedge. Additional scenarios could overturn its apparent benefit.
 
-| Scenario | Return | P&L (USD) | Max drawdown | Worst day | SPY |
-|---|---|---|---|---|---|
-| 2008 financial crisis | -5.2% | -517,024 | -14.6% | -5.86% (10 Oct 2008) | -36.9% |
-| March 2020 Covid crash | -9.9% | -989,191 | -12.8% | -5.28% (12 Mar 2020) | -33.4% |
-| 2022 rate hikes | -12.6% | -1,264,453 | -17.2% | -2.45% (13 Jun 2022) | -18.2% |
-| Inflation shock (assumption) | -17.2% | -1,721,500 | | | -25.0% |
-
-**Contribution by ETF, in points of return** (EFA and EEM have zero weight)
-
-| Scenario | SPY | AGG | GLD | XLE | XLK |
-|---|---|---|---|---|---|
-| 2008 financial crisis | -3.5 | +2.0 | +1.6 | -0.7 | -4.6 |
-| March 2020 Covid crash | -3.2 | -0.8 | -0.5 | -0.9 | -4.6 |
-| 2022 rate hikes | -1.7 | -7.7 | -0.1 | +1.0 | -4.2 |
-| Inflation shock | -2.4 | -8.8 | -0.8 | 0.0 | -5.3 |
-
-**Every candidate**
-
-| Scenario | Equal weight | Min. variance | Max. Sharpe (final) | Risk parity |
-|---|---|---|---|---|
-| 2008 financial crisis | -19.0% | -5.6% | -5.2% | -8.7% |
-| March 2020 Covid crash | -21.4% | -9.6% | -9.9% | -12.7% |
-| 2022 rate hikes | -7.2% | -12.5% | -12.6% | -8.9% |
-| Inflation shock | -18.8% | -16.0% | -17.2% | -16.4% |
-| Reverse stress multiple at 15% | 0.80 | 0.94 | 0.87 | 0.91 |
-
-## 6.3 What this means
-
-1. **Diversification works in equity crashes.** In 2008 the portfolio lost
-   5.2% while SPY lost 36.9%, as AGG (+2.0 points) and GLD (+1.6) offset most
-   of the equity losses.
-2. **It fails when rates rise.** In 2022 AGG, at 59% of the fund, cost 7.7 of
-   the 12.6 points. So the bond-heavy candidates (Maximum Sharpe, Minimum
-   variance) lose least in 2008 and 2020 but most in 2022. XLE, up 64% that
-   year, contributed positively in that episode; we hold 1.6% of it and do not assume this repeats.
-3. **Every replay ends inside 15%, but 2022 does not stay inside it.** The
-   deepest fall within the year was 17.2% (to 20 Oct 2022). That is why the
-   limit is measured over the whole crisis window, not peak to trough.
-4. **Our inflation scenario breaks 15% for every candidate.** The portfolio
-   loses 17.2% (USD 1.72m), of which AGG is USD 883k and XLK USD 525k. A
-   scenario 0.87 times as severe already reaches the limit.
-5. **Short crises are not small.** March 2020 lasted 24 trading days but cost
-   almost twice our 2008 window (-9.9% against -5.2%), because AGG and GLD
-   fell too in the dash for cash.
-
-The largest single risk is rates through AGG, then XLK. Section 8 sets out
-what we would change if inflation picks up.
-
-## 6.4 Limitations
-
-- **The 2008 window starts on 1 Sep 2008**, so it misses the fall from the
-  October 2007 peak and understates the full bear market.
-- **History will not repeat exactly**, which is why we add our own scenario.
-  Its shocks are judgement, applied instantly (no path or drawdown), and the
-  reverse stress test assumes they scale in proportion.
-- **The AGG shock is approximate.** The calculation −D × Δy assumes a
-  parallel 250bp yield shift and duration 6. It ignores convexity, spread and
-  duration changes, and the rate path; actual losses can be higher or lower.
-- **No transaction costs or liquidity effects.** ETF spreads widened sharply
-  in March 2020, so selling in a crisis would cost more than shown.
+The 2022 retained-allocation full-window loss is 12.64%, while its intrawindow drawdown reached about 17.2%. Full-sample drawdown is 18.27%. The revised 18% limit applies to tested scenario loss, not to either drawdown measure. Stress tests are finite examples and cannot bound future loss.

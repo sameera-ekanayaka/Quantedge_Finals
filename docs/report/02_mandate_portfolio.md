@@ -83,6 +83,18 @@ The final weights are SPY 9.6%, AGG 58.9%, GLD 15%, XLK 15% and XLE 1.6%. They a
 4. **It has a cost.** In the inflation shock Maximum Sharpe loses 17.2%, about USD 120k more than minimum variance.
 5. **Its beta to SPY is 0.29.** The information ratio is -0.33. This is expected for a portfolio that is mostly bonds, since it lags SPY in good years. SPY lost 36.9% over the 2008 window, while our portfolio lost 5.2%.
 
+### Diversification
+
+The committee asked to see the benefit of diversification. We measure it in two ways, using the full 2004 to 2026 history.
+
+The first way compares risk. If every ETF moved together, the portfolio's volatility would equal the weighted average of the ETF volatilities, which is 11.5%. The portfolio's actual volatility is 7.2%. So mixing the ETFs removes about 37% of the risk, and the diversification ratio is 1.6.
+
+The second way looks at correlations. Bonds (AGG) have a correlation of about zero with the stock ETFs: 0.00 with SPY, 0.00 with XLK, 0.04 with EFA and -0.01 with EEM. Gold is also low (0.07 with SPY and 0.06 with XLK). The stock ETFs, by contrast, move closely together (SPY with XLK 0.91, SPY with EFA 0.88, SPY with XLE 0.70). So the benefit comes from bonds and gold, not from spreading across stock funds. The stock part of the portfolio (SPY, XLK and XLE, about 26% of the money) is not diversified on its own.
+
+Two cautions. These are averages over 22 years. In 2022 stocks and bonds fell together, so the near zero correlation does not hold in every period, and our inflation shock assumes this. Also, a large part of the ratio comes from the 58.85% in bonds, which have low volatility (5.2% a year) to begin with.
+
+**Reproduce:** the ratio is the weighted average of the asset volatilities from `asset_stats` divided by the portfolio volatility, using `final_weights()`, in `src/portfolio.py`.
+
 ### Maximum Sharpe against Minimum variance
 
 These two are the closest candidates, so this is the choice a judge will test.

@@ -50,7 +50,7 @@ with tab_overview:
             "Core Assumption": "Long-only, no leverage, daily costless rebalancing",
             "Primary Vulnerability": ("Transaction costs, illiquidity during crashes"),
             "Committee Defense": (
-                "Defensive ETF universe; quarterly rebalancing bands"
+                "Defensive ETF universe; calendar-quarter rebalancing to target weights"
             ),
         },
         {
@@ -129,8 +129,7 @@ with tab_port:
         "impractical and cost-prohibitive. During liquidity freezes, "
         "rebalancing trades can incur severe market impact.\n"
         "- **Mitigation:** In practical implementation, the endowment should "
-        "employ a tolerance-band rebalancing policy (e.g., rebalance only when "
-        "an asset deviates by ±2.5% from target), typically executed quarterly."
+        "employ calendar-quarter rebalancing to target weights."
     )
 
     st.markdown("#### 2. Stationary Asset Return Expectations")

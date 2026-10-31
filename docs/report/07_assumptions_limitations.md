@@ -9,7 +9,7 @@ Quantitative risk models are simplifications of non-stationary financial markets
 
 ### 1. Portfolio Construction (Layers 0 & 1)
 - **Costless Daily Rebalancing:** Models assume continuous rebalancing without transaction friction.  
-  *Mitigation:* The endowment implements quarterly tolerance-band rebalancing ($\pm 2.5\%$).
+  *Mitigation:* The endowment implements calendar-quarter rebalancing to target weights.
 - **Stationarity of Return Moments:** Covariances over 2004-2026 are assumed representative. Macro regime shifts alter distributions.  
   *Mitigation:* We enforce strict structural mandate bounds: a 30% floor on US Aggregate Bonds (AGG) and single-asset caps (GLD 15%, XLK 15%, XLE 10%).
 
@@ -25,21 +25,21 @@ Quantitative risk models are simplifications of non-stationary financial markets
 - **Square-Root-of-Time Scaling ($\sqrt{T}$):** Extrapolating 1-day risk to multi-day horizons assumes i.i.d. returns, ignoring volatility clustering.  
   *Mitigation:* Multi-week reserves are calibrated directly against empirical crisis drawdowns.
 - **EVT Asymptotic Validity:** GPD is an asymptotic limit theorem ($n \to \infty, u \to \infty$).  
-  *Mitigation:* Threshold $u = 0.45\%$ (90th percentile) provides 552 observations, verified by Mean Excess linearity, parameter stability within $\pm 2\text{ SE}$, and Q-Q diagnostics.
+  *Mitigation:* Threshold $u = 0.45\%$ (90th percentile) provides 552 observations, supported by Mean Excess linearity, parameter stability within $\pm 2\text{ SE}$, and Q-Q diagnostics.
 
 ### 4. Backtesting and Validation (Layer 5)
 - **Binomial Test Power in Finite Samples:** At 99% confidence over 250 days, expected breaches are only 2.5 days, giving Kupiec tests low power to detect underestimation (Type II error).  
-  *Mitigation:* We backtest over the full 22-year history (5,518 days), combine coverage with independence tests, and monitor Basel traffic lights.
+  *Mitigation:* We backtest over the full 22-year history (5,518 days; with the 500-day estimation window, the out-of-sample forecast count is approximately 5,018 days), combine coverage with independence tests, and monitor Basel traffic lights.
 
 ### 5. Stress Testing and Macro Scenarios (Decision Layer)
 - **Crisis Repeatability & Hedge Breakdown:** Past drawdowns may not repeat. In 2022, stocks and bonds fell concurrently.  
-  *Mitigation:* We test a synthetic Stagflation Shock. We distinguish between true commodity inflation hedges (Energy XLE, +64% in 2022) and crisis tail assets (Gold GLD, -0.8% in 2022, resilient in equity crashes but constrained by real rates). Protocol: rotate XLK into XLE if inflation accelerates.
+  *Mitigation:* We test a synthetic Stagflation Shock. XLE performed well during the 2022 inflation episode (+64%), but we do not assume that result will repeat (Section 2 treats one-year energy performance as unreliable). The inflation scenario assigns XLE a 0% shock, reflecting our conservative stance. Gold (GLD, -0.8% in 2022) is resilient in equity crashes but constrained by real rates. Protocol: rotate XLK into XLE if inflation accelerates.
 
 ## 7.2 Governance Checklist for Investment Committee
 
 | Risk Dimension | Model Vulnerability | Institutional Defense / Guardrail |
 |---|---|---|
-| **Execution Drag** | Transaction friction from turnover | Quarterly rebalancing on $\pm 2.5\%$ tolerance bands |
+| **Execution Drag** | Transaction friction from turnover | Calendar-quarter rebalancing to target weights |
 | **Model Misspecification** | Gaussian tail undercounting | Mandatory use of EVT GPD and Expected Shortfall for sizing |
 | **Hedge Breakdown** | Stock-bond correlation flips positive | Dedicated inflation stress test; protocol to rotate XLK into XLE |
 | **Horizon Extrapolation** | $\sqrt{T}$ scaling underestimates clustering | Sizing multi-week liquidity buffers on empirical stress drawdowns |

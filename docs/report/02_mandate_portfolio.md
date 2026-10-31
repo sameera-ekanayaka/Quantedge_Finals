@@ -71,7 +71,7 @@ What the table shows:
 - The 2022 loss is lower for equal weight and risk parity. This is probably because they hold more energy, which rose that year. It is a one year effect, so we do not treat energy as a hedge.
 - Every candidate loses more than 15% in the inflation shock. This is a hypothetical stress and we report it openly.
 - Only Maximum Sharpe reaches the 7% target (7.4%). Minimum variance is about half a point short (6.5%).
-- Against the two stricter hurdles, 7.4% (latest spending rate) and 7.8% (higher education inflation), Maximum Sharpe only matches the first and falls short of the second. Only equal weight (9.0%) clears both, and it has the worst losses. This is the price of a conservative mandate.
+- Against the two stricter policy sensitivities, 7.4% (higher spending) and 7.8% (higher education inflation), Maximum Sharpe only matches the first and falls short of the second. Only equal weight (9.0%) clears both, and it has the worst losses. This is the price of a conservative mandate.
 - The final portfolio's one-day 99% ES is USD 173k (1.73% of the fund), inside the USD 200k limit. Equal weight (3.4%) and risk parity (2.1%) are above the 2.0% ES limit.
 
 ## 2.4 Why we chose Maximum Sharpe
@@ -123,7 +123,7 @@ Concentration: Minimum variance gets 51.5% of its variance from SPY alone. Maxim
 
 We do not claim the gap in Sharpe is proven, because both are in-sample. We would switch to Minimum variance if the committee ranks the inflation shock above the 7% objective.
 
-**Where the risk comes from.** We used Aadhila's risk budget (Section 3), which splits the risk of the final portfolio between the ETFs. Technology is 15% of the money but about 36% of the risk. This is the same under the normal method (36.0%) and the historical method at 99% (37.8% of VaR and 36.5% of ES), so it does not depend on the method. Bonds are 58.9% of the money but only about 21% of the risk. Gold adds 15.9% of the tail loss, less than its 20.1% share under the normal method, so it helps a little on the worst days. SPY adds 21.7%. The historical numbers use about 55 bad days at 99%, so we read them as rough. **Reproduce:** `risk_budget(returns, final_weights(), alpha=0.99, method='historical')` in `src/risk_budget.py`.
+**Where the risk comes from.** We used Aadhila's risk budget (Section 3), which splits the risk of the final portfolio between the ETFs. Technology is 15% of the money but about 36% of the risk. This is the same under the normal method (36.0%) and historical ES at 99% (36.5%), so it does not depend on the method. The historical VaR attribution is a local approximation around the sample quantile and gives XLK 37.8%; it does not reconcile exactly to portfolio VaR. Bonds are 58.9% of the money but only about 21% of the risk. Gold adds 15.9% of the tail loss, less than its 20.1% share under the normal method, so it helps a little on the worst days. SPY adds 21.7%. The historical numbers use about 55 bad days at 99%, so we read them as rough. **Reproduce:** `risk_budget(returns, final_weights(), alpha=0.99, method='historical')` in `src/risk_budget.py`.
 **Verdict for the committee:** accept with an adjusted risk limit (Section 8).
 
 ## 2.5 What we tested and what we did not

@@ -9,7 +9,13 @@ from scipy import sparse
 from scipy.optimize import linprog, minimize
 
 from src.data import log_to_simple
-from src.kpis import annual_return, annual_volatility, kpi_table, max_drawdown
+from src.kpis import (
+    annual_return,
+    annual_volatility,
+    kpi_table,
+    max_drawdown,
+    sharpe_ratio,
+)
 from src.var_es import var_es
 
 TICKERS = ["SPY", "EFA", "EEM", "AGG", "GLD", "XLE", "XLK"]
@@ -258,3 +264,32 @@ def final_weights() -> pd.Series:
     if not check_weights(weights):
         raise ValueError("Final weights break the mandate")
     return weights
+
+
+def xlk_cap_test(
+    returns: pd.DataFrame,
+    rf_annual: float,
+    caps: tuple[float, ...] = (0.15, 0.12, 0.10, 0.08, 0.05),
+) -> pd.DataFrame:
+    """Rerun Maximum Sharpe with lower caps on XLK and show the effect."""
+    from src import stress
+
+    mu, cov = asset_stats(returns)
+    original = BOUNDS["XLK"]
+    rows = {}
+    try:
+        for cap in caps:
+            BOUNDS["XLK"] = (original[0], cap)
+            weights = max_sharpe(mu, cov, rf_annual)
+            port = portfolio_returns(returns, weights)
+            losses = stress.stress_table(returns, weights)["return"]
+            rows[f"{cap:.0%}"] = {
+                "XLK weight": weights["XLK"],
+                "Annual return": annual_return(port),
+                "Sharpe": sharpe_ratio(port, rf_annual),
+                "2022 loss": losses.loc["2022 rate hikes"],
+                "Inflation shock": losses.iloc[-1],
+            }
+    finally:
+        BOUNDS["XLK"] = original
+    return pd.DataFrame(rows).T

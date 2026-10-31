@@ -1,58 +1,31 @@
-# Section 4: Extreme Value Theory (EVT) and Tail Risk Modeling
+# Section 4: Extreme Value Theory (EVT) and Tail Risk
 
 **Owner:** Praveen Madawalage  
-**Mandate:** USD 10,000,000 Serendib University Endowment Fund  
-**Evaluation Sample:** November 18, 2004 to October 2026 (5,518 trading days)
+**Mandate:** USD 10m Serendib University Endowment Fund | **Sample:** 19 Nov 2004 to 27 Oct 2026 (5,518 days)  
+**Code:** `src/evt.py`, tested in `tests/test_evt.py` | **App page:** Extreme Value Theory
 
----
+For an endowment, the core fiduciary objective is avoiding catastrophic losses. Gaussian models assume extreme crashes are virtually impossible, while Historical Simulation cannot extrapolate beyond past data. Peaks-Over-Threshold (POT) Extreme Value Theory overcomes both by modeling tail exceedances directly.
 
-## 4.1 Theoretical Foundation: The Pickands-Balkema-de Haan Theorem
+## 4.1 Theoretical Foundation: Peaks-Over-Threshold (POT)
 
-For an institutional endowment, the primary existential threat is not day-to-day volatility, but rare, catastrophic tail events. Standard parametric models (such as Gaussian distributions) assume that tail probabilities decay exponentially, severely understating the likelihood of extreme crashes. Meanwhile, Historical Simulation is inherently bounded by the worst event observed in past data, rendering it incapable of extrapolating into unprecedented loss territory.
+Under the Pickands-Balkema-de Haan Theorem, exceedances $Y = X - u$ above threshold $u$ converge to the **Generalized Pareto Distribution (GPD)**:
 
-To solve this dilemma, we implement **Extreme Value Theory (EVT)** using the **Peaks-Over-Threshold (POT)** framework.
+$$G_{\xi, \sigma}(y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi} \quad (\xi \neq 0)$$
 
-By the **Pickands-Balkema-de Haan Theorem (1974, 1975)**, for a broad class of underlying distribution functions $F$, as the threshold $u$ approaches the right endpoint of $F$, the excess distribution $F_u(y) = P(X - u \le y \mid X > u)$ converges unconditionally to the **Generalized Pareto Distribution (GPD)**:
+where $\xi$ is the shape parameter and $\sigma > 0$ is the scale parameter:
+- **$\xi > 0$ (Fréchet / Heavy-tailed):** Tails decay as a power law $P(X > x) \sim x^{-1/\xi}$. Most financial return series exhibit fat tails and crash risk.
+- **$\xi = 0$ (Gumbel):** Thin exponential tails (Gaussian).
+- **$\xi < 0$ (Weibull):** Bounded tails with a finite endpoint.
 
-$$G_{\xi, \sigma}(y) = \begin{cases} 
-1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi} & \text{if } \xi \neq 0 \\ 
-1 - \exp\left(-\frac{y}{\sigma}\right) & \text{if } \xi = 0 
-\end{cases}$$
+## 4.2 Threshold Selection and Diagnostic Evidence
 
-where:
-- $\xi$ is the **tail index (shape parameter)** determining the rate of tail decay.
-- $\sigma > 0$ is the **scale parameter** measuring tail dispersion.
-- $y = x - u > 0$ represents the loss exceedance above threshold $u$.
+Selecting threshold $u$ balances an empirical bias-variance trade-off: setting $u$ too low violates GPD convergence, while setting $u$ too high inflates MLE variance.
 
-### Tail Classification
-- **$\xi > 0$ (Fréchet domain / Heavy-tailed):** The tail decays as a power law $P(X > x) \sim x^{-1/\xi}$. Financial asset returns universally belong to this class, exhibiting heavy tails, leptokurtosis, and persistent crash risk.
-- **$\xi = 0$ (Gumbel domain / Exponential):** Thin tails (Gaussian, lognormal).
-- **$\xi < 0$ (Weibull domain / Bounded):** Distributions with a finite upper bound.
+We set $u$ at the **90th percentile of losses** ($u = 0.45\%$, giving $N_u = 552$ tail observations across 5,518 trading days). Three diagnostics confirm this threshold is defensible:
 
----
-
-## 4.2 Threshold Selection with Rigorous Evidence
-
-The central operational challenge of Peaks-Over-Threshold modeling is selecting the threshold $u$:
-- A threshold set **too low** introduces central distribution bias (violating asymptotic convergence to GPD).
-- A threshold set **too high** leaves too few exceedances, inducing severe parameter variance in Maximum Likelihood Estimation (MLE).
-
-The tournament brief explicitly mandates a **justified threshold (not picked arbitrarily)**. We establish threshold $u$ using three complementary lines of empirical evidence:
-
-### 1. Mean Excess Function Linearity
-The empirical mean excess function is defined as:
-$$e(u) = E[X - u \mid X > u] = \frac{1}{N_u} \sum_{i: X_i > u} (X_i - u)$$
-If the tail follows a GPD with $\xi < 1$, the theoretical mean excess function is linear in $u$:
-$$e(u) = \frac{\sigma + \xi u}{1 - \xi}$$
-A plot of $e(u)$ versus $u$ that is approximately linear above $u_0$ provides clear graphical evidence that GPD tail behavior begins at $u_0$.
-
-### 2. Parameter Stability Diagnostics
-By EVT properties, if exceedances follow $G_{\xi, \sigma}$ above $u_0$, then for any higher threshold $u > u_0$, the shape parameter $\xi$ remains constant, while the modified scale parameter:
-$$\sigma^*(u) = \sigma(u) - \xi \cdot u$$
-also remains constant. Computing MLE fits across a grid of candidate thresholds demonstrates stability above $u \approx 0.0045$.
-
-### 3. Quantitative Cross-Validation with Benchmark Rules
-We compare the selected threshold against standard institutional benchmark rules (the 90th and 95th percentiles of historical daily losses):
+1. **Mean Excess Linearity:** Empirical mean excess $e(u) = E[X - u \mid X > u]$ slopes upward linearly above $u \approx 0.45\%$, confirming the GPD tail domain.
+2. **Parameter Stability:** Across thresholds from 75% to 98%, fitted shape $\hat{\xi}$ stays within about 2 standard errors ($\pm 2\text{ SE} \approx \pm 0.10$, $\text{shape\_se} \approx 0.050$), and modified scale $\sigma^*(u) = \sigma(u) - \xi u$ stabilizes above $0.45\%$.
+3. **Q-Q Fit:** Theoretical GPD quantiles track empirical exceedances closely along the 45-degree line, validating fit without systematic bias.
 
 | Metric | Equal Weight | Minimum Variance | Maximum Sharpe (Final) | Risk Parity |
 |---|---|---|---|---|
@@ -60,63 +33,30 @@ We compare the selected threshold against standard institutional benchmark rules
 | **95th Percentile Rule** | 1.14% | 0.60% | **0.66%** | 0.72% |
 | **Selected Threshold ($u$)** | 0.78% | 0.41% | **0.45%** | 0.49% |
 | **Exceedance Count ($N_u$)** | 552 days | 552 days | **552 days** | 552 days |
-| **Sample Share ($\hat{p}_u$)** | 10.0% | 10.0% | **10.0%** | 10.0% |
+| **Fitted Shape ($\hat{\xi}$)** | 0.2352 | 0.1921 | **0.1843** | 0.2053 |
 
-Setting $u$ at the 90th percentile provides 552 empirical crash observations (across 5,518 trading days), yielding statistical precision for MLE numerical convergence, while fitted shape parameter $\xi$ across candidate thresholds above $u$ stays within about 2 standard errors ($\text{shape\_se} \approx 0.050$, $\pm 2\text{ SE} \approx \pm 0.10$).
+On the final Maximum Sharpe portfolio, MLE estimation yields $\hat{\xi} = 0.1843$ and $\hat{\sigma} = 0.002696$, confirming heavy-tailed Fréchet behavior.
 
----
+## 4.3 EVT VaR and Expected Shortfall
 
-## 4.3 Maximum Likelihood Estimation and Goodness-of-Fit
+With exceedance fraction $\hat{p}_u = N_u / N = 10.0\%$, closed-form EVT Value at Risk and Expected Shortfall are:
 
-With threshold $u$ established, we fit the GPD to the exceedance series $Y_i = L_i - u > 0$ using Maximum Likelihood Estimation with location fixed at $0$:
+$$\text{VaR}_\alpha^{\text{EVT}} = u + \frac{\hat{\sigma}}{\hat{\xi}}\left[\left(\frac{\hat{p}_u}{1 - \alpha}\right)^{\hat{\xi}} - 1\right], \quad \text{ES}_\alpha^{\text{EVT}} = \frac{\text{VaR}_\alpha^{\text{EVT}} + \hat{\sigma} - \hat{\xi} u}{1 - \hat{\xi}}$$
 
-$$\ln L(\xi, \sigma; Y) = -n_u \ln \sigma - \left(1 + \frac{1}{\xi}\right) \sum_{i=1}^{n_u} \ln\left(1 + \frac{\xi Y_i}{\sigma}\right)$$
+The table compares 1-day tail risk metrics on the **USD 10m Maximum Sharpe Portfolio**:
 
-### Fitted Parameters Across Candidate Portfolios
-- **Risk Parity:** $\hat{\xi} = 0.2053$, $\hat{\sigma} = 0.003116$
-- **Minimum Variance:** $\hat{\xi} = 0.1921$, $\hat{\sigma} = 0.002555$
-- **Maximum Sharpe:** $\hat{\xi} = 0.1845$, $\hat{\sigma} = 0.002696$
-- **Equal Weight:** $\hat{\xi} = 0.2352$, $\hat{\sigma} = 0.004870$
-
-**Key Finding:** Across all portfolios, $\hat{\xi} \approx 0.18 - 0.24 > 0$. This confirms that Serendib's asset universe resides within the **heavy-tailed Fréchet domain**. The positive shape parameters indicate that Gaussian models will inevitably underpredict extreme endowment drawdowns.
-
-### Goodness-of-Fit: Quantile-Quantile (Q-Q) Diagnostics
-To validate model specification, empirical exceedance quantiles are plotted against theoretical GPD quantiles:
-$$q_i^{\text{theo}} = G_{\hat{\xi}, \hat{\sigma}}^{-1}\left(\frac{i - 0.5}{N_u}\right) = \frac{\hat{\sigma}}{\hat{\xi}} \left[\left(1 - \frac{i - 0.5}{N_u}\right)^{-\hat{\xi}} - 1\right]$$
-The Q-Q diagnostic tracks the 45-degree reference line closely across all exceedance percentiles, confirming that the Generalized Pareto model fits the tail structure without systematic bias.
-
----
-
-## 4.4 Closed-Form Semi-Parametric VaR and Expected Shortfall
-
-Using the fitted GPD parameters and the empirical exceedance probability $\hat{p}_u = N_u / N$, the unconditional tail probability is:
-$$P(L > x) = P(L > u) P(L > x \mid L > u) = \hat{p}_u \left(1 + \frac{\hat{\xi}(x - u)}{\hat{\sigma}}\right)^{-1/\hat{\xi}}$$
-
-Inverting this yields the closed-form **EVT Value at Risk**:
-$$\text{VaR}_\alpha^{\text{EVT}} = u + \frac{\hat{\sigma}}{\hat{\xi}}\left[\left(\frac{\hat{p}_u}{1 - \alpha}\right)^{\hat{\xi}} - 1\right]$$
-
-By the excess mean property of the Generalized Pareto Distribution, for $\hat{\xi} < 1$, the closed-form **EVT Expected Shortfall** is:
-$$\text{ES}_\alpha^{\text{EVT}} = E[L \mid L > \text{VaR}_\alpha] = \frac{\text{VaR}_\alpha^{\text{EVT}} + \hat{\sigma} - \hat{\xi} u}{1 - \hat{\xi}}$$
-
----
-
-## 4.5 Empirical Results: Comparing EVT with Competing Frameworks
-
-The table below presents 1-day tail risk metrics at 95% and 99% confidence levels on the **USD 10,000,000 Maximum Sharpe Portfolio (Final Portfolio)**:
-
-| Confidence ($\alpha$) | Methodology | 1-Day VaR (%) | 1-Day VaR ($) | 1-Day ES (%) | 1-Day ES ($) | Tail Gap (ES - VaR) |
+| Level | Methodology | 1-Day VaR (%) | 1-Day VaR ($) | 1-Day ES (%) | 1-Day ES ($) | Tail Gap (ES - VaR) |
 |---|---|---|---|---|---|---|
-| **95% Confidence** | Normal (Gaussian) | 0.71% | \$71,300 | 0.90% | \$90,100 | 0.19% (\$18,800) |
-| | Historical Simulation | 0.66% | \$66,200 | 1.02% | \$102,300 | 0.36% (\$36,100) |
-| | **EVT (POT / GPD)** | **0.65%** | **\$64,637** | **1.02%** | **\$102,200** | **0.38% (\$37,563)** |
-| **99% Confidence** | Normal (Gaussian) | 1.02% | \$102,000 | 1.17% | \$117,300 | 0.15% (\$15,300) |
-| | Historical Simulation | 1.16% | \$116,300 | 1.73% | \$173,400 | 0.57% (\$57,100) |
-| | **EVT (POT / GPD)** | **1.22%** | **\$122,044** | **1.73%** | **\$172,578** | **0.51% (\$50,534)** |
+| **95%** | Normal (Gaussian) | 0.71% | \$71,300 | 0.90% | \$90,100 | \$18,800 |
+| | Historical Simulation | 0.66% | \$66,200 | 1.02% | \$102,300 | \$36,100 |
+| | **EVT (POT / GPD)** | **0.65%** | **\$64,637** | **1.02%** | **\$102,200** | **\$37,563** |
+| **99%** | Normal (Gaussian) | 1.02% | \$102,000 | 1.17% | \$117,300 | \$15,300 |
+| | Historical Simulation | 1.16% | \$116,300 | 1.73% | \$173,400 | \$57,100 |
+| | Student-t | 1.16% | \$115,700 | 1.73% | \$172,600 | \$56,900 |
+| | **EVT (POT / GPD)** | **1.22%** | **\$122,044** | **1.73%** | **\$172,578** | **\$50,534** |
 
-### Institutional Insights for the Serendib Investment Committee:
-1. **The Gaussian Failure at 99%:**  
-   At 99% confidence, Normal VaR predicts a maximum daily loss of \$102,000, whereas EVT projects a tail exposure of **\$122,044** (a \$20,044 undercount). Even more critically, Normal Expected Shortfall (\$117,300) underestimates the average tail catastrophe by **\$55,278** (-32.0%). Relying on Gaussian risk models would dangerously under-capitalize the endowment.
-2. **Body vs. Tail Alignment:**  
-   At the 95% confidence level, EVT ES (1.02%, \$102,200) aligns almost to the dollar with Historical Simulation (1.02%, \$102,300). This indicates that the GPD model does not arbitrarily inflate risk in the central tail; its power lies in **deep-tail extrapolation** where empirical observations become sparse.
-3. **The Tail Gap (ES vs. VaR):**  
-   At 99%, the EVT Tail Gap is **\$50,534**. When a tail breach occurs, losses do not stop at the VaR threshold - they extend an additional 41.4% deeper (reaching \$172,578). This underscores why Serendib must base capital reserves on Expected Shortfall rather than VaR alone.
+## 4.4 Practical Committee Takeaways
+
+1. **Gaussian Blindspot:** At 99% confidence, Normal VaR predicts a daily loss of \$102k, while EVT projects \$122k. More critically, Normal ES (\$117k) understates tail loss by **\$55,278 (-32.0%)**. Sizing capital on Gaussian models leaves the fund dangerously under-buffered.
+2. **Body vs. Tail Alignment:** At 95% confidence, EVT ES (\$102,200) matches Historical Simulation (\$102,300) almost to the dollar. GPD modeling does not distort central risk, but adds precision in sparse tails.
+3. **Tail Gap & Capital Policy:** At 99%, the EVT Tail Gap is **\$50,534**: when breaches occur, losses extend 41.4% deeper than VaR. This supports the Section 8 policy: use **Expected Shortfall (\$173k)** for capital sizing and adopt the proposed **USD 200,000 daily ES limit**.

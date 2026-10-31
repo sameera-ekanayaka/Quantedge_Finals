@@ -22,6 +22,13 @@ is breached. We measure both four ways:
 - **Monte Carlo** draws 100,000 returns from the fitted Student t with a fixed
   seed (42), so every run gives the same number.
 
+The normal and Student t estimates include the sample mean as one-day drift,
+which is the implementation default. We also reran them with zero drift, a
+more conservative short-horizon assumption. At 99%, normal VaR/ES move from
+1.02%/1.17% to 1.05%/1.20%, and Student t VaR/ES move from 1.16%/1.73% to
+1.20%/1.77%. The largest change is 0.04 percentage points, so the limit verdict
+does not depend on this choice.
+
 ## 3.2 Results
 
 | Level | Method | VaR | VaR (USD) | ES | ES (USD) |
@@ -57,9 +64,12 @@ property (Artzner et al., 1999).
 
 ## 3.4 Risk budget: where the tail risk comes from
 
-Because VaR and ES scale with the weights, each asset's share of the total
-can be split exactly (Euler allocation): weight times marginal risk, summed
-over assets, gives the portfolio number. The table uses historical ES at 99%.
+Because ES scales with the weights, each asset's share can be split exactly
+by Euler allocation: weight times marginal ES, summed over assets, gives the
+portfolio ES. The table uses historical ES at 99%. Historical VaR is a sample
+quantile and is not smooth, so its component allocation is only a local
+estimate from returns around the quantile; unlike ES, it does not reconcile
+exactly to portfolio VaR.
 
 | ETF | Weight | Marginal ES | Contribution (USD) | Share of ES |
 |---|---|---|---|---|
@@ -79,8 +89,10 @@ What this tells the committee:
 1. **Capital is not risk.** AGG is 59% of the money but only 21% of the tail
    risk. XLK is 15% of the money but **37% of the tail risk**, the largest
    single source.
-2. **XLK is the lever.** Its marginal ES is almost seven times AGG's, so it
-   is the first position to cut if risk has to come down. This is the same
-   conclusion the inflation shock reaches in Section 6.
+2. **XLK is the clearest position to monitor.** Its marginal ES is almost
+   seven times AGG's, so a direct cut lowers technology exposure. It is not a
+   complete fix by itself: the lower-cap test in Section 2 shifts most of the
+   money into SPY and improves the inflation shock by only 0.4 percentage
+   points when the cap falls from 15% to 5%.
 3. **GLD earns its place.** It is as large as XLK but adds well under half as
    much tail risk, because it moves little with stocks.

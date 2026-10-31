@@ -21,11 +21,13 @@ where $\xi$ is the shape parameter and $\sigma > 0$ is the scale parameter:
 
 Selecting threshold $u$ balances an empirical bias-variance trade-off: setting $u$ too low violates GPD convergence, while setting $u$ too high inflates MLE variance.
 
-We set $u$ at the **90th percentile of losses** ($u = 0.45\%$, giving $N_u = 552$ tail observations across 5,518 trading days). Three diagnostics confirm this threshold is defensible:
+We selected the **90th percentile of losses** as the threshold ($u = 0.45\%$, giving $N_u = 552$ tail observations across 5,518 trading days) after reviewing three diagnostic plots:
 
-1. **Mean Excess Linearity:** Empirical mean excess $e(u) = E[X - u \mid X > u]$ slopes upward linearly above $u \approx 0.45\%$, confirming the GPD tail domain.
-2. **Parameter Stability:** Across thresholds from 75% to 98%, fitted shape $\hat{\xi}$ stays within about 2 standard errors ($\pm 2\text{ SE} \approx \pm 0.10$, $\text{shape\_se} \approx 0.050$), and modified scale $\sigma^*(u) = \sigma(u) - \xi u$ stabilizes above $0.45\%$.
-3. **Q-Q Fit:** Theoretical GPD quantiles track empirical exceedances closely along the 45-degree line, validating fit without systematic bias.
+1. **Mean Excess Plot:** Empirical mean excess $e(u) = E[X - u \mid X > u]$ slopes upward approximately linearly above $u \approx 0.45\%$, which is consistent with the GPD assumption.
+2. **Parameter Stability Plot:** Across thresholds from 75% to 98%, fitted shape $\hat{\xi}$ stays within about 2 standard errors ($\pm 2\text{ SE} \approx \pm 0.10$, $\text{shape\_se} \approx 0.050$), and modified scale $\sigma^*(u) = \sigma(u) - \xi u$ is broadly stable above $0.45\%$.
+3. **Q-Q Plot:** Theoretical GPD quantiles track empirical exceedances reasonably along the 45-degree line.
+
+The diagnostics are broadly consistent with the selected threshold, although threshold uncertainty and finite-sample error remain. The threshold is not automatically optimized; it is a percentile-based choice whose adequacy is assessed visually.
 
 | Metric | Equal Weight | Minimum Variance | Maximum Sharpe (Final) | Risk Parity |
 |---|---|---|---|---|

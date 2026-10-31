@@ -62,7 +62,7 @@ with tab_overview:
                 "Stale prices, holiday calendar desynchronization"
             ),
             "Committee Defense": (
-                "Forward-fill capped at 3 days; conservative ADF tests"
+                "Forward-fill capped at 3 days; cleaning audit verifies 0 fill days"
             ),
         },
         {

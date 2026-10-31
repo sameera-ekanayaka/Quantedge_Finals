@@ -18,6 +18,34 @@ def test_empty_file_counts_as_missing(tmp_path):
     assert "01_data.md" in missing
 
 
+def test_ai_disclosure_is_included(tmp_path):
+    disclosure = tmp_path / "AI_DISCLOSURE.md"
+    disclosure.write_text("# AI disclosure\n\n| Tool | Purpose |\n|---|---|\n")
+
+    text, missing = br.collect_disclosure(disclosure, members=[])
+
+    assert not missing
+    assert text.startswith("# AI disclosure")
+
+
+def test_missing_ai_disclosure_becomes_todo(tmp_path):
+    text, missing = br.collect_disclosure(tmp_path / "AI_DISCLOSURE.md")
+
+    assert missing
+    assert "TODO" in text
+
+
+def test_ai_disclosure_reports_members_without_an_entry(tmp_path):
+    disclosure = tmp_path / "AI_DISCLOSURE.md"
+    disclosure.write_text("# AI disclosure\n\nSameera Ekanayaka\n")
+
+    _, missing = br.collect_disclosure(
+        disclosure, members=["Sameera Ekanayaka", "Aadhila Anees"]
+    )
+
+    assert missing == ["AI disclosure: Aadhila Anees"]
+
+
 def test_table_rules_are_not_words():
     assert br.count_words("| a | b |\n|---|---|\n| 1 | 2 |") == 4
 

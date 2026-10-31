@@ -19,6 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "docs" / "report"
+AI_DISCLOSURE_FILE = ROOT / "docs" / "AI_DISCLOSURE.md"
 OUT_DIR = ROOT / "build" / "report"
 
 TITLE = "Serendib University Endowment Fund"
@@ -50,18 +51,20 @@ MAX_PAGES = 15
 WORDS_PER_PAGE = 400
 
 CSS = """
-body { font-family: sans-serif; font-size: 11pt; line-height: 1.35; }
-h1 { font-size: 17pt; margin-top: 18pt; }
-h2 { font-size: 13pt; }
-h3 { font-size: 11.5pt; }
-table { border-collapse: collapse; font-size: 9.5pt; }
-th, td { border: 1px solid #999; padding: 2pt 5pt; }
-code { font-size: 9.5pt; }
+@page { size: A4 portrait; margin: 14mm 15mm; }
+body { font-family: sans-serif; font-size: 10.5pt; line-height: 1.28; }
+h1 { font-size: 16pt; margin-top: 14pt; }
+h2 { font-size: 12.5pt; }
+h3 { font-size: 11pt; }
+table { border-collapse: collapse; font-size: 8.5pt; }
+th, td { border: 1px solid #999; padding: 1.5pt 4pt; }
+code { font-size: 8.5pt; }
 """
 
 TITLE_CSS = """
+@page { size: A4 portrait; margin: 14mm 15mm; }
 body { font-family: sans-serif; text-align: center; }
-h1 { font-size: 24pt; margin-top: 180pt; }
+h1 { font-size: 24pt; margin-top: 160pt; }
 h2 { font-size: 15pt; font-weight: normal; }
 p { font-size: 12pt; }
 """
@@ -93,6 +96,21 @@ def collect_sections(report_dir: Path = REPORT_DIR) -> tuple[list[str], list[str
             texts.append(placeholder(number, name, title))
             missing.append(name)
     return texts, missing
+
+
+def collect_disclosure(
+    path: Path = AI_DISCLOSURE_FILE, members: list[str] = MEMBERS
+) -> tuple[str, list[str]]:
+    """Return the AI disclosure and members without an entry."""
+    if not path.exists() or not path.read_text(encoding="utf-8").strip():
+        return (
+            "# AI disclosure\n\nTODO: complete the required AI disclosure.\n",
+            [AI_DISCLOSURE_FILE.name],
+        )
+
+    text = path.read_text(encoding="utf-8").strip()
+    missing = [f"AI disclosure: {member}" for member in members if member not in text]
+    return text + "\n", missing
 
 
 def count_words(text: str) -> int:
@@ -141,6 +159,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     texts, missing = collect_sections()
+    disclosure, disclosure_missing = collect_disclosure()
+    texts.append(disclosure)
+    missing.extend(disclosure_missing)
     title_md = title_page(date.today())
     body_md = "\n\n".join(texts)
 

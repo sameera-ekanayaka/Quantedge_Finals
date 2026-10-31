@@ -14,7 +14,8 @@ average loss on those worst days, so it says how deep the tail goes once VaR
 is breached. We measure both four ways:
 
 - **Historical simulation** reads the quantile straight from the 5,518 real
-  daily returns. No assumptions, but it cannot see a loss worse than history.
+  daily returns. It assumes this sample represents future risk and cannot see
+  a loss worse than history, but it imposes no distributional form.
 - **Parametric normal** fits a mean and a standard deviation.
 - **Parametric Student t** fits the tail thickness as well. On our portfolio
   the fitted degrees of freedom is about 3.3, which is a very fat tail.

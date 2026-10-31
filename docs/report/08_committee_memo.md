@@ -14,11 +14,12 @@ raised from 10% to 15% of the fund.
 
 ## 8.2 Why this portfolio
 
-- **It meets the return target.** It has historically earned **7.4% a year**
-  (Nov 2004 to Oct 2026). A fair target is about 7%: endowments report an
-  average target nominal return of 7.3% (NACUBO-Commonfund Study of
-  Endowments), with an average effective spending rate of 4.9%. Spending
-  4.9% plus our own 2.5% inflation assumption needs about 7.4%.
+- **It meets our base return objective.** It has historically earned **7.4% a
+  year** (Nov 2004 to Oct 2026). Our base objective is about 7%: the 25-year
+  average spending rate of about 4.5% plus our 2.5% inflation assumption. It
+  only approximately meets the stricter 7.4% hurdle from the latest 4.9%
+  effective spending rate, and falls short of the 7.8% hurdle using 3.3%
+  higher-education inflation. These are sensitivities, not promised returns.
 - **It has the best risk-adjusted return** of the candidates (Sharpe 0.79)
   with a maximum drawdown of -18.3%, close to Minimum variance (-17.8%) while
   earning about 0.9 points a year more.
@@ -56,8 +57,12 @@ trough reached 17.2% (to 20 Oct 2022), so a peak-to-trough limit would already
 be breached. The inflation shock (17.2%) also exceeds it, and we say so
 openly rather than set the limit to fit.
 
-We monitor the daily limits with Student t or EVT VaR. Historical VaR breached
-67 times against 50 expected at 99% (Section 5); both of these pass.
+We monitor the daily limits with Student t and EVT VaR and ES. At 99%, Student
+t and EVT pass the Kupiec coverage test, with 41 and 56 breaches against 50.2
+expected. Neither passes the independence or conditional-coverage tests:
+breaches cluster in crises for every model. The limits are therefore monitoring
+triggers, not proof that losses arrive independently or that the models are
+fully reliable.
 
 ## 8.5 What would change our mind
 

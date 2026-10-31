@@ -73,8 +73,9 @@ EVT 284 (0.036). Independence is rejected for every model (p < 0.001).
 
 1. **The normal model fails at 99%:** 105 breaches against 50, red over the
    whole range, and breaches deeper than it expects (Z2 = +1.75). This is the
-   fat-tail problem from Section 3, confirmed out of sample. It passes at 95%,
-   so a 95% backtest alone would hide it.
+   fat-tail problem from Section 3, confirmed out of sample. Its Kupiec test
+   passes at 95%, so a 95% coverage test alone would hide it; independence is
+   still rejected.
 2. **Student t, Monte Carlo and EVT pass Kupiec at 99%.** EVT is closest
    (56 against 50, p = 0.42). Student t is right only on average: too cautious
    in calm years (18 against 46) and too slow in 2008 (15 in 146 days). Monte

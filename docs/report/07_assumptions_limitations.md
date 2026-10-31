@@ -25,7 +25,7 @@ Quantitative risk models are simplifications of non-stationary financial markets
 - **Square-Root-of-Time Scaling ($\sqrt{T}$):** Extrapolating 1-day risk to multi-day horizons assumes i.i.d. returns, ignoring volatility clustering.  
   *Mitigation:* Multi-week reserves are calibrated directly against empirical crisis drawdowns.
 - **EVT Asymptotic Validity:** GPD is an asymptotic limit theorem ($n \to \infty, u \to \infty$).  
-  *Mitigation:* Threshold $u = 0.45\%$ (90th percentile) provides 552 observations, verified by Mean Excess linearity, parameter stability within $\pm 2\text{ SE}$, and Q-Q diagnostics.
+  *Mitigation:* Threshold $u = 0.45\%$ (90th percentile) provides 552 observations, supported by Mean Excess linearity, parameter stability within $\pm 2\text{ SE}$, and Q-Q diagnostics.
 
 ### 4. Backtesting and Validation (Layer 5)
 - **Binomial Test Power in Finite Samples:** At 99% confidence over 250 days, expected breaches are only 2.5 days, giving Kupiec tests low power to detect underestimation (Type II error).  

@@ -226,13 +226,15 @@ port_returns = portfolio_returns(returns_df, weights)
 losses = -port_returns
 
 # ---------------- SECTION 1: THRESHOLD SELECTION ----------------
-st.subheader("1. Justified Threshold Selection (Not Picked Arbitrarily)")
+st.subheader("1. Threshold Selection & Diagnostics")
 st.markdown(
     "Under the Pickands-Balkema-de Haan Theorem, exceedances over a sufficiently high "
     "threshold $u$ converge in distribution to the **Generalized Pareto Distribution "
-    "(GPD)**. We select $u$ by analyzing the **Mean Excess Plot (MEP)** and "
-    "**Parameter Stability Plot**, cross-checked against 90th and 95th percentile "
-    "benchmark rules."
+    "(GPD)**. We select the **90th percentile of losses** as the threshold, with the "
+    "**Mean Excess Plot (MEP)** and **Parameter Stability Plot** serving as visual "
+    "diagnostics to check consistency. The threshold is not automatically optimized "
+    "by the algorithm; it is a percentile-based choice whose adequacy is assessed "
+    "visually."
 )
 
 chosen_u, reason_text, comparison = select_threshold(losses, target_quantile=0.90)

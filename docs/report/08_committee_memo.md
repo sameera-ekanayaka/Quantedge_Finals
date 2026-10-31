@@ -38,6 +38,9 @@ raised from 10% to 15% of the fund.
   single biggest driver of losses.
 - **The return is in-sample.** The weights were chosen on the same 2004 to
   2026 data the 7.4% is measured on, so the future return is likely lower.
+- **Rebalancing.** The headline figures assume daily rebalancing. Quarterly
+  rebalancing returns 7.3% with a -18.7% maximum drawdown, versus 7.4% and
+  -18.3% daily, so the historical difference is small (`rebalancing_comparison`).
 - **Daily risk.** One-day 99% Student t VaR is 1.16% (USD 116k) and ES is
   1.73% (USD 173k). The normal model understates both: in the backtest
   (Section 5) it breaches twice as often as it should.

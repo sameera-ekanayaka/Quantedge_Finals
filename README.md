@@ -151,6 +151,8 @@ FRED, then:
 - lines the risk-free rate up with the price dates
 - checks the 2008, March 2020 and 2022 stress periods are covered
 - lists any daily move above 15% so it can be checked by eye
+- flags adjusted closes unchanged for 3 consecutive trading days
+- runs an Augmented Dickey-Fuller stationarity test on every ETF's log returns
 
 Raw downloads go to `data/raw/` (not committed). The cleaned `prices.csv`
 and `risk_free.csv` go to `data/clean/`, along with `cleaning_report.json`,

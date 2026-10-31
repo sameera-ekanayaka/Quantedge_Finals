@@ -106,6 +106,71 @@
       "log_return": -0.154984
     }
   ],
+  "stale_run_days": 3,
+  "stale_price_runs": [],
+  "stationarity": {
+    "test": "Augmented Dickey-Fuller on daily log returns",
+    "significance": 0.05,
+    "lag_selection": "AIC, maximum 20 lags",
+    "results": {
+      "SPY": {
+        "statistic": -16.718519,
+        "p_value": 0.0,
+        "lags": 19,
+        "observations": 5498,
+        "critical_value_5pct": -2.862066,
+        "stationary_at_5pct": true
+      },
+      "EFA": {
+        "statistic": -16.235291,
+        "p_value": 0.0,
+        "lags": 19,
+        "observations": 5498,
+        "critical_value_5pct": -2.862066,
+        "stationary_at_5pct": true
+      },
+      "EEM": {
+        "statistic": -16.260024,
+        "p_value": 0.0,
+        "lags": 19,
+        "observations": 5498,
+        "critical_value_5pct": -2.862066,
+        "stationary_at_5pct": true
+      },
+      "AGG": {
+        "statistic": -15.636802,
+        "p_value": 0.0,
+        "lags": 20,
+        "observations": 5497,
+        "critical_value_5pct": -2.862066,
+        "stationary_at_5pct": true
+      },
+      "GLD": {
+        "statistic": -75.442009,
+        "p_value": 0.0,
+        "lags": 0,
+        "observations": 5517,
+        "critical_value_5pct": -2.862064,
+        "stationary_at_5pct": true
+      },
+      "XLE": {
+        "statistic": -18.208955,
+        "p_value": 0.0,
+        "lags": 17,
+        "observations": 5500,
+        "critical_value_5pct": -2.862066,
+        "stationary_at_5pct": true
+      },
+      "XLK": {
+        "statistic": -18.524231,
+        "p_value": 0.0,
+        "lags": 15,
+        "observations": 5502,
+        "critical_value_5pct": -2.862065,
+        "stationary_at_5pct": true
+      }
+    }
+  },
   "stress_periods": [
     {
       "name": "2008 financial crisis",

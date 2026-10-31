@@ -47,9 +47,21 @@ all in October 2008 (EEM, XLE) and March 2020 (XLE). They are real market
 events, so we keep them. Removing them would hide the tail risk this project
 is about.
 
+We also flag a possible stale price when an adjusted close is unchanged for
+three consecutive trading days. There are **no flagged stale-price runs** in
+the cleaned sample. The check only flags observations for review; it never
+deletes or changes a price.
+
 We model with daily **log returns** (`load_returns()`), which add up over time.
 Whenever ETFs are combined into a portfolio or a return becomes USD, we
 convert to **simple returns**, which add up across assets.
+
+The Augmented Dickey-Fuller test rejects a unit root in every ETF's daily log
+returns at the 5% level. Lag length is selected by AIC, up to 20 lags. All
+p-values round below 0.000001; the ADF statistics range from -15.64 to -75.44,
+well below their 5% critical values of about -2.86. This supports using returns
+as stationary inputs for the models over the full sample. It does not mean
+their volatility, correlations or tail behaviour are constant through time.
 
 ## 1.3 What the data looks like
 

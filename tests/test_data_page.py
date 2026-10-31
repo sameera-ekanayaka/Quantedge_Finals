@@ -25,4 +25,5 @@ def test_data_page_shows_report(tmp_data_dirs, monkeypatch):
     assert not at.exception
     report_days = data.load_cleaning_report()["days"]
     assert at.metric[0].value == f"{report_days:,}"
-    assert len(at.dataframe) == 3
+    assert len(at.dataframe) == 4
+    assert "Return stationarity" in [heading.value for heading in at.subheader]

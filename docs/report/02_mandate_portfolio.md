@@ -14,9 +14,11 @@ The committee told us that avoiding large losses matters more than making large 
 | Horizon | Long term. Rebalance every quarter in practice. | An endowment lasts for many years. |
 | Return objective | About 7% a year | See below |
 | Style | Long only, no leverage | The fund cannot borrow or short. |
+| One-day 99% VaR limit | 1.5% of the fund (USD 150k) | Proposed in Section 8 |
+| One-day 99% ES limit | 2.0% of the fund (USD 200k) | Proposed in Section 8 |
 | Crisis loss limit | 15% of the fund (USD 1.5m), measured over the whole crisis window | See below |
 
-**Return objective.** An endowment must pay its spending and keep up with inflation. The usual way to set a target is inflation plus the spending rate. The 2025 NACUBO-Commonfund study reports an average spending rate of 4.9% for fiscal year 2025 (page 3) and an average target return of 7.3% (page 6, fiscal year 2024 figure). We assume spending of about 4.5% and inflation of about 2.5%, which gives about 7%. The 2.5% inflation figure is our own assumption. A conservative mix will earn less than the endowments that hold private assets, so we show the gap honestly in 2.3.
+**Return objective.** An endowment must pay its spending and keep up with inflation. The usual way to set a target is inflation plus the spending rate. The 2025 NACUBO-Commonfund study reports an average effective spending rate of 4.9% for fiscal year 2025 (page 3). Over the past 25 years the average spending rate was about 4.5%, and endowments that set a nominal return target averaged 7.3% (Mercer's summary of the same study). We assume spending of about 4.5% and general inflation of about 2.5%, which gives about 7%. The 2.5% inflation figure is our own assumption. Higher education costs have risen faster. The same summary says the Higher Education Price Index averaged 3.3% over 25 years, which gives a hurdle of about 7.8%. Our best conservative candidate earned 7.4% in the past, so it falls short of that higher hurdle. A conservative mix earns less than endowments that hold private assets, and we show this gap openly in 2.3.
 
 **Weight limits.** These are our own judgement. They keep the fund conservative and stop one ETF from dominating.
 
@@ -63,6 +65,8 @@ What the table shows:
 - The 2022 loss is lower for equal weight and risk parity. This is probably because they hold more energy, which rose that year. It is a one year effect, so we do not treat energy as a hedge.
 - Every candidate loses more than 15% in the inflation shock. This is a hypothetical stress and we report it openly.
 - Only Maximum Sharpe reaches the 7% target (7.4%). Minimum variance is about half a point short (6.5%).
+- Against the higher 7.8% hurdle, only equal weight (9.0%) clears it, and it has the worst losses. This is the price of a conservative mandate.
+- The final portfolio's one-day 99% ES is USD 173k (1.73% of the fund), inside the USD 200k limit. Equal weight (3.4%) and risk parity (2.1%) are above the 2.0% ES limit.
 
 ## 2.4 Why we chose Maximum Sharpe
 
@@ -99,4 +103,4 @@ Return and Sharpe fall a little, the 2022 loss gets slightly worse, and the infl
 - We ignore trading costs and fees.
 - We measure risk over one day. We did not build a 10 to 20 day view.
 
-**Source:** NACUBO and Commonfund Institute (2026). Summary observations from the 2025 NACUBO-Commonfund Study of Endowments. Spending rate: page 3. Return objectives: page 6.
+**Sources:** NACUBO and Commonfund Institute (2026). Summary observations from the 2025 NACUBO-Commonfund Study of Endowments. Spending rate: page 3. Return objectives: page 6. Momjian, L. Insights from the 2025 NACUBO-Commonfund Study of Endowments. Mercer (Marsh). Source for the 25-year average spending rate of about 4.5% and the HEPI hurdle of about 7.8%.

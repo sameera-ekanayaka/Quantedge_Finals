@@ -73,7 +73,7 @@ the final portfolio (`final_weights()`, Section 8) on data to 27 Oct 2026.
 2. **It fails when rates rise.** In 2022 AGG, at 59% of the fund, cost 7.7 of
    the 12.6 points. So the bond-heavy candidates (Maximum Sharpe, Minimum
    variance) lose least in 2008 and 2020 but most in 2022. XLE, up 64% that
-   year, was the only hedge, and we hold 1.6% of it.
+   year, contributed positively in that episode; we hold 1.6% of it and do not assume this repeats.
 3. **Every replay ends inside 15%, but 2022 does not stay inside it.** The
    deepest fall within the year was 17.2% (to 20 Oct 2022). That is why the
    limit is measured over the whole crisis window, not peak to trough.
@@ -94,7 +94,7 @@ what we would change if inflation picks up.
 - **History will not repeat exactly**, which is why we add our own scenario.
   Its shocks are judgement, applied instantly (no path or drawdown), and the
   reverse stress test assumes they scale in proportion.
-- **The AGG shock is approximate.** The calculation $-D\Delta y$ assumes a
+- **The AGG shock is approximate.** The calculation −D × Δy assumes a
   parallel 250bp yield shift and duration 6. It ignores convexity, spread and
   duration changes, and the rate path; actual losses can be higher or lower.
 - **No transaction costs or liquidity effects.** ETF spreads widened sharply

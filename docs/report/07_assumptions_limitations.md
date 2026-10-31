@@ -22,10 +22,10 @@ Quantitative risk models are simplifications of non-stationary financial markets
 ### 3. Tail Risk Modeling (Layers 2, 3 & 4)
 - **Distributional Assumptions:** Normal models assume thin tails, severely understating tail losses (Normal 99% ES is USD 117k vs. USD 173k Historical/EVT, a USD 56k blindspot). Student-t assumes tail symmetry.  
   *Mitigation:* We mandate Expected Shortfall (coherent, subadditive) as the binding constraint.
-- **Square-Root-of-Time Scaling ($\sqrt{T}$):** Extrapolating 1-day risk to multi-day horizons assumes i.i.d. returns, ignoring volatility clustering.  
+- **Square-Root-of-Time Scaling (√T):** Extrapolating 1-day risk to multi-day horizons assumes i.i.d. returns, ignoring volatility clustering.
   *Mitigation:* Multi-week reserves are calibrated directly against empirical crisis drawdowns.
-- **EVT Asymptotic Validity:** GPD is an asymptotic limit theorem ($n \to \infty, u \to \infty$).  
-  *Mitigation:* Threshold $u = 0.45\%$ (90th percentile) provides 552 observations, supported by Mean Excess linearity, parameter stability within $\pm 2\text{ SE}$, and Q-Q diagnostics.
+- **EVT Asymptotic Validity:** GPD is an asymptotic limit theorem (n → ∞, u → ∞).
+  *Mitigation:* Threshold u = 0.45% (90th percentile) provides 552 observations, supported by Mean Excess linearity, parameter stability within ±2 SE, and Q-Q diagnostics.
 
 ### 4. Backtesting and Validation (Layer 5)
 - **Binomial Test Power in Finite Samples:** At 99% confidence over 250 days, expected breaches are only 2.5 days, giving Kupiec tests low power to detect underestimation (Type II error).  
@@ -42,4 +42,4 @@ Quantitative risk models are simplifications of non-stationary financial markets
 | **Execution Drag** | Transaction friction from turnover | Calendar-quarter rebalancing to target weights |
 | **Model Misspecification** | Gaussian tail undercounting | Mandatory use of EVT GPD and Expected Shortfall for sizing |
 | **Hedge Breakdown** | Stock-bond correlation flips positive | Dedicated inflation stress test; protocol to rotate XLK into XLE |
-| **Horizon Extrapolation** | $\sqrt{T}$ scaling underestimates clustering | Sizing multi-week liquidity buffers on empirical stress drawdowns |
+| **Horizon Extrapolation** | √T scaling underestimates clustering | Sizing multi-week liquidity buffers on empirical stress drawdowns |

@@ -21,6 +21,7 @@ from src.evt import (
     select_threshold,
 )
 from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+from src.supplementary import threshold_sensitivity
 from src.ui import get_settings
 from src.var_es import var_es
 
@@ -193,9 +194,6 @@ def render_qq_chart(theoretical: np.ndarray, empirical: np.ndarray) -> go.Figure
 
 # ---------------- PAGE EXECUTION ----------------
 st.title("Extreme Value Theory (EVT)")
-st.caption(
-    "Owner: Praveen Madawalage | Layer 4: Deep Tail Risk & Peaks-Over-Threshold (POT)"
-)
 
 settings = get_settings()
 alpha = settings.confidence
@@ -404,3 +402,31 @@ with st.expander("Investment Committee Briefing: Why EVT Matters for Serendib"):
         "endowment's portfolio exhibits fat-tailed Fréchet behavior (ξ > 0), "
         "allowing the committee to provision realistic capital buffers."
     )
+
+st.subheader("Supplementary validation: threshold sensitivity")
+st.caption(
+    "Added after preparation of the submitted PDF. The headline "
+    "model still uses the 90th-percentile threshold."
+)
+
+sensitivity = threshold_sensitivity(losses, alpha=alpha)
+st.dataframe(
+    sensitivity.style.format(
+        {
+            "Threshold quantile": "{:.1%}",
+            "Threshold": "{:.3%}",
+            "Shape": "{:.3f}",
+            "VaR": "{:.3%}",
+            "ES": "{:.3%}",
+        }
+    ),
+    hide_index=True,
+)
+st.caption(
+    "Each row refits the GPD. Differences show threshold "
+    "sensitivity, not statistical confidence intervals. Fewer "
+    "exceedances increase estimation uncertainty. At 90% "
+    "confidence the upper thresholds extrapolate below the fitted"
+    " tail and should not be interpreted as validated body "
+    "quantiles."
+)

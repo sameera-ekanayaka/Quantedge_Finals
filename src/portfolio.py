@@ -1,4 +1,4 @@
-﻿"""Portfolio construction: efficient frontier and candidate portfolios.
+"""Portfolio construction: efficient frontier and candidate portfolios.
 
 Owner: Imasha Karunathilaka
 """

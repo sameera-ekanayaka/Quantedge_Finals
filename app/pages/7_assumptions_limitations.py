@@ -9,18 +9,25 @@ import streamlit as st
 from src.ui import get_settings
 
 st.title("Assumptions & Limitations")
-st.caption(
-    "Owner: Praveen Madawalage | "
-    "Explicit Model Risk Governance for Serendib Endowment"
+st.warning(
+    "Weights were selected in sample. Weight bounds are enforced "
+    "during optimisation; VaR, ES and stress limits are checked "
+    "afterward. The inflation scenario loses 17.2%, exceeding the"
+    " proposed 15% monitoring limit. Acceptance requires an "
+    "explicit exception."
 )
 
 settings = get_settings()
 
 st.markdown(
-    "Every quantitative financial model is an abstraction of reality. For the "
-    "**Serendib University Endowment Fund**, where avoiding large losses "
-    "takes precedence over maximizing gains, institutional credibility demands "
-    "complete transparency regarding our underlying assumptions, mathematical "
+    "Every quantitative financial model is an abstraction of "
+    "reality. For the "
+    "**Serendib University Endowment Fund**, where avoiding large"
+    " losses "
+    "takes precedence over maximizing gains, institutional "
+    "credibility demands "
+    "complete transparency regarding our underlying assumptions, "
+    "mathematical "
     "approximations, and known failure modes."
 )
 
@@ -40,7 +47,8 @@ tab_overview, tab_port, tab_data, tab_var, tab_evt, tab_backtest, tab_stress = s
 with tab_overview:
     st.subheader("Model Risk Governance Matrix")
     st.markdown(
-        "A structured overview of core assumptions, their vulnerabilities, "
+        "A structured overview of core assumptions, their "
+        "vulnerabilities, "
         "and institutional mitigations:"
     )
 
@@ -50,7 +58,7 @@ with tab_overview:
             "Core Assumption": "Long-only, no leverage, daily costless rebalancing",
             "Primary Vulnerability": ("Transaction costs, illiquidity during crashes"),
             "Committee Defense": (
-                "Defensive ETF universe; calendar-quarter rebalancing to target weights"
+                "Daily rebalancing assumed; quarterly sensitivity reported separately"
             ),
         },
         {
@@ -122,25 +130,35 @@ with tab_port:
 
     st.markdown("#### 1. Daily Costless Rebalancing")
     st.markdown(
-        "- **Assumption:** The portfolio is rebalanced daily to exact target "
-        "weights without incurring brokerage commissions, bid-ask spread "
+        "- **Assumption:** The portfolio is rebalanced daily to exact"
+        " target "
+        "weights without incurring brokerage commissions, bid-ask "
+        "spread "
         "slippage, or market impact.\n"
-        "- **Limitation:** In a real USD 10m endowment, daily rebalancing is "
+        "- **Limitation:** In a real USD 10m endowment, daily "
+        "rebalancing is "
         "impractical and cost-prohibitive. During liquidity freezes, "
         "rebalancing trades can incur severe market impact.\n"
-        "- **Mitigation:** In practical implementation, the endowment should "
-        "employ calendar-quarter rebalancing to target weights."
+        "- **Mitigation:** In practical implementation, the endowment"
+        " should "
+        "report quarterly sensitivity; headline results assume daily "
+        "rebalancing."
     )
 
     st.markdown("#### 2. Stationary Asset Return Expectations")
     st.markdown(
-        "- **Assumption:** Historic means and covariances over 2004 to 2026 "
-        "provide an unbiased estimate of future risk and return distributions.\n"
+        "- **Assumption:** Historic means and covariances over 2004 "
+        "to 2026 "
+        "provide an unbiased estimate of future risk and return "
+        "distributions.\n"
         "- **Limitation:** Macroeconomic regimes shift. The post-GFC "
-        "zero-interest-rate environment (2009 to 2021) does not reflect future "
+        "zero-interest-rate environment (2009 to 2021) does not "
+        "reflect future "
         "higher-for-longer rate regimes.\n"
-        "- **Mitigation:** We enforce structural mandate limits (minimum 30% "
-        "AGG bond floor, single sector caps at 10 to 15%) rather than relying "
+        "- **Mitigation:** We enforce structural mandate limits "
+        "(minimum 30% "
+        "AGG bond floor, single sector caps at 10 to 15%) rather than"
+        " relying "
         "solely on unconstrained mathematical optimization."
     )
 
@@ -150,10 +168,13 @@ with tab_data:
 
     st.markdown("#### 1. Sample Horizon Selection (Nov 2004 to Present)")
     st.markdown(
-        "- **Assumption:** Commencing the dataset on November 18, 2004 ensures "
-        "all 7 ETFs are traded simultaneously and captures 22 years of market "
+        "- **Assumption:** Commencing the dataset on November 18, "
+        "2004 ensures "
+        "all 7 ETFs are traded simultaneously and captures 22 years "
+        "of market "
         "history, including three major market crises.\n"
-        "- **Limitation:** The 2000 to 2002 dot-com crash is omitted because GLD "
+        "- **Limitation:** The 2000 to 2002 dot-com crash is omitted "
+        "because GLD "
         "and several sector ETFs did not exist.\n"
         "- **Mitigation:** The 2008 GFC, 2020 COVID crash, and 2022 "
         "stagflationary rate hikes provide ample multi-regime stress."
@@ -161,13 +182,19 @@ with tab_data:
 
     st.markdown("#### 2. Price Imputation and Gap Handling")
     st.markdown(
-        "- **Assumption:** Forward-filling missing ETF prices up to 3 business "
-        "days resolves holiday mismatches without distorting return dynamics.\n"
-        "- **Limitation:** Forward-filling induces artificial zero returns on "
+        "- **Assumption:** Forward-filling missing ETF prices up to 3"
+        " business "
+        "days resolves holiday mismatches without distorting return "
+        "dynamics.\n"
+        "- **Limitation:** Forward-filling induces artificial zero "
+        "returns on "
         "closed exchanges, temporarily dampening realized volatility.\n"
-        "- **Mitigation:** In our universe, all seven ETFs trade on major US "
-        "exchanges with synchronized calendars; the cleaning audit verifies "
-        "that 0 days required fill across the equity and commodity tickers."
+        "- **Mitigation:** In our universe, all seven ETFs trade on "
+        "major US "
+        "exchanges with synchronized calendars; the cleaning audit "
+        "verifies "
+        "that 0 days required fill across the equity and commodity "
+        "tickers."
     )
 
 # ---------------- TAB 3: VAR & ES ----------------
@@ -176,25 +203,35 @@ with tab_var:
 
     st.markdown("#### 1. Distributional Assumptions (Normal vs. Student-t)")
     st.markdown(
-        "- **Assumption:** Parametric models assume returns follow a defined "
+        "- **Assumption:** Parametric models assume returns follow a "
+        "defined "
         "parametric density function.\n"
-        "- **Limitation:** Gaussian Normal VaR assumes thin exponential tails, "
-        "dangerously underestimating 99% 1-day losses. Parametric Student-t "
-        "captures kurtosis but assumes tail symmetry, failing to model negative "
+        "- **Limitation:** Gaussian Normal VaR assumes thin "
+        "exponential tails, "
+        "dangerously underestimating 99% 1-day losses. Parametric "
+        "Student-t "
+        "captures kurtosis but assumes tail symmetry, failing to "
+        "model negative "
         "skewness.\n"
-        "- **Mitigation:** We report Historical Simulation, Student-t, and EVT "
-        "side by side, and establish Expected Shortfall (which is subadditive "
+        "- **Mitigation:** We report Historical Simulation, "
+        "Student-t, and EVT "
+        "side by side, and establish Expected Shortfall (which is "
+        "subadditive "
         "and coherent) as the primary risk limit."
     )
 
     st.markdown("#### 2. 1-Day Horizon and Square-Root-of-Time Scaling")
     st.markdown(
         "- **Assumption:** Tail risk is evaluated over a 1-day horizon. "
-        "Scaling to 10-day regulatory horizons assumes returns are i.i.d.\n"
-        "- **Limitation:** Volatility clustering and autoregressive dependency "
+        "Scaling to 10-day regulatory horizons assumes returns are "
+        "i.i.d.\n"
+        "- **Limitation:** Volatility clustering and autoregressive "
+        "dependency "
         "cause multi-day losses to compound non-linearly.\n"
-        "- **Mitigation:** For endowment capital adequacy, multi-week liquidity "
-        "buffers should be calibrated against stress scenarios rather than "
+        "- **Mitigation:** For endowment capital adequacy, multi-week"
+        " liquidity "
+        "buffers are not calibrated here. Future analysis should use "
+        "stress scenarios, not "
         "purely square-root scaled 1-day figures."
     )
 
@@ -204,24 +241,35 @@ with tab_evt:
 
     st.markdown("#### 1. Peak-Over-Threshold Asymptotic Validity")
     st.markdown(
-        "- **Assumption:** Losses exceeding threshold u adhere asymptotically "
+        "- **Assumption:** Losses exceeding threshold u adhere "
+        "asymptotically "
         "to a Generalized Pareto Distribution (GPD).\n"
-        "- **Limitation:** The GPD theorem is an asymptotic result (n → ∞). "
-        "In finite samples, a threshold set too high yields high parameter "
-        "variance, while a threshold set too low introduces central bias.\n"
-        "- **Mitigation:** We employ systematic dual diagnostics (Mean Excess "
-        "Plot linearity and Parameter Stability) and anchor u to the 90th "
+        "- **Limitation:** The GPD theorem is an asymptotic result (n"
+        " → ∞). "
+        "In finite samples, a threshold set too high yields high "
+        "parameter "
+        "variance, while a threshold set too low introduces central "
+        "bias.\n"
+        "- **Mitigation:** We employ systematic dual diagnostics "
+        "(Mean Excess "
+        "Plot linearity and Parameter Stability) and anchor u to the "
+        "90th "
         "percentile to balance bias against variance."
     )
 
     st.markdown("#### 2. Tail Stationarity")
     st.markdown(
-        "- **Assumption:** Extreme tail dynamics are stationary across time.\n"
-        "- **Limitation:** Tail thickness (ξ) can expand abruptly during "
+        "- **Assumption:** Extreme tail dynamics are stationary "
+        "across time.\n"
+        "- **Limitation:** Tail thickness (ξ) can expand abruptly "
+        "during "
         "liquidity contagions.\n"
-        "- **Mitigation:** EVT is evaluated with rolling out-of-sample coverage "
-        "and independence tests, then considered alongside crisis replays. "
-        "These checks reveal breach clustering rather than proving reliability."
+        "- **Mitigation:** EVT is evaluated with rolling out-of-"
+        "sample coverage "
+        "and independence tests, then considered alongside crisis "
+        "replays. "
+        "These checks reveal breach clustering rather than proving "
+        "reliability."
     )
 
 # ---------------- TAB 5: BACKTESTING ----------------
@@ -230,14 +278,19 @@ with tab_backtest:
 
     st.markdown("#### 1. Test Power and Horizon Limits")
     st.markdown(
-        "- **Assumption:** Kupiec POF and Christoffersen independence tests "
+        "- **Assumption:** Kupiec POF and Christoffersen independence"
+        " tests "
         "provide rigorous statistical validation of model accuracy.\n"
-        "- **Limitation:** At 99% confidence over a standard 250-day window, "
-        "expected breaches are only 2.5 days. With so few breach events, "
+        "- **Limitation:** At 99% confidence over a standard 250-day "
+        "window, "
+        "expected breaches are only 2.5 days. With so few breach "
+        "events, "
         "the Kupiec test has low statistical power to detect model "
         "underestimation.\n"
-        "- **Mitigation:** We evaluate backtests across the full multi-year "
-        "sample (over 5,000 trading days) and supplement frequency tests with "
+        "- **Mitigation:** We evaluate backtests across the full "
+        "multi-year "
+        "sample (over 5,000 trading days) and supplement frequency "
+        "tests with "
         "independence tests and Basel traffic-light classification."
     )
 
@@ -245,9 +298,11 @@ with tab_backtest:
     st.markdown(
         "- **Assumption:** Out-of-sample backtests accurately represent "
         "real-time risk forecasts.\n"
-        "- **Limitation:** Backtests assume frozen weights and instantaneous "
+        "- **Limitation:** Backtests assume frozen weights and "
+        "instantaneous "
         "execution at closing prices without cash drag.\n"
-        "- **Mitigation:** Endowment mandates maintain a cash reserve for "
+        "- **Mitigation:** Cash reserves are not modeled. Future "
+        "implementation must plan for "
         "liquidity disbursements."
     )
 
@@ -257,22 +312,31 @@ with tab_stress:
 
     st.markdown("#### 1. Historical Crisis Replay Assumptions")
     st.markdown(
-        "- **Assumption:** Replaying 2008 GFC, March 2020 COVID, and 2022 "
+        "- **Assumption:** Replaying 2008 GFC, March 2020 COVID, and "
+        "2022 "
         "rate hikes captures the portfolio's drawdown behavior.\n"
-        "- **Limitation:** Future market shocks will not repeat past history "
-        "identically. Correlation structures frequently alter during novel "
+        "- **Limitation:** Future market shocks will not repeat past "
+        "history "
+        "identically. Correlation structures frequently alter during "
+        "novel "
         "crises.\n"
-        "- **Mitigation:** We introduce a dedicated inflation shock scenario "
-        "where stocks and bonds fall concurrently, directly addressing the "
+        "- **Mitigation:** We introduce a dedicated inflation shock "
+        "scenario "
+        "where stocks and bonds fall concurrently, directly "
+        "addressing the "
         "vulnerability of the classic 60/40 allocation."
     )
 
     st.markdown("#### 2. Hypothetical vs. Empirical Stress")
     st.markdown(
-        "- **Assumption:** Synthetic stress shocks provide meaningful downside "
+        "- **Assumption:** Synthetic stress shocks provide meaningful"
+        " downside "
         "bounds.\n"
-        "- **Limitation:** Hypothetical factor shifts require subjective "
+        "- **Limitation:** Hypothetical factor shifts require "
+        "subjective "
         "assumptions regarding cross-asset betas.\n"
-        "- **Mitigation:** All hypothetical stress scenarios are clearly "
-        "demarcated from historical replays in our presentation to the committee."
+        "- **Mitigation:** All hypothetical stress scenarios are "
+        "clearly "
+        "demarcated from historical replays in our presentation to "
+        "the committee."
     )

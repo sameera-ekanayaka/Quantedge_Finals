@@ -26,6 +26,7 @@ from src.portfolio import (
     portfolio_returns,
     risk_shares,
 )
+from src.supplementary import walk_forward
 from src.ui import get_settings
 
 FINAL = "Final recommendation (Maximum Sharpe)"
@@ -71,7 +72,6 @@ def risk_return(w, mu, cov):
 
 
 st.title("Portfolio")
-st.caption("Owner: Imasha Karunathilaka")
 
 settings = get_settings()
 alpha = settings.confidence
@@ -247,3 +247,60 @@ st.caption(
     "All results use the full 2004 to 2026 history. The weights were chosen on "
     "the same data, so the returns are historical and likely too optimistic."
 )
+
+st.subheader("Supplementary validation: annual walk-forward")
+st.caption(
+    "Added after preparation of the submitted PDF. Headline "
+    "allocation and reported results are unchanged."
+)
+st.warning(
+    "Weights in the submitted report were selected in sample. "
+    "Optimisation enforces weight bounds; VaR, ES and stress "
+    "limits are evaluated afterward. The 17.2% inflation loss "
+    "exceeds the proposed 15% monitoring limit and requires an "
+    "explicit exception."
+)
+
+
+@st.cache_data
+def supplementary_walk_forward():
+    return walk_forward(load_returns(), load_risk_free())[0]
+
+
+wf = supplementary_walk_forward()
+st.dataframe(
+    wf.style.format(
+        {
+            "Annual return": "{:.2%}",
+            "Volatility": "{:.2%}",
+            "Sharpe": "{:.3f}",
+            "Max drawdown": "{:.2%}",
+        }
+    ),
+    hide_index=True,
+)
+st.markdown(
+    "Each January from 2010, use only preceding observations (at "
+    "least three years) to re-estimate Maximum Sharpe and Minimum"
+    " variance. Apply those weights with daily rebalancing "
+    "through that year. Costs are excluded. The frozen comparator"
+    " uses the same dates but retains full-sample selection bias."
+    " Annual decisions, training cutoffs and results are archived"
+    " in submission/supplementary/."
+)
+wf_indexed = wf.set_index("Strategy")
+ms_sharpe = wf_indexed.loc["Walk-forward Maximum Sharpe", "Sharpe"]
+mv_sharpe = wf_indexed.loc["Walk-forward Minimum variance", "Sharpe"]
+if ms_sharpe <= mv_sharpe:
+    st.info(
+        "Maximum Sharpe does not outperform Minimum variance on walk-"
+        "forward Sharpe. The submitted recommendation is a "
+        "return/risk trade-off, not demonstrated superior out-of-"
+        "sample risk-adjusted performance."
+    )
+else:
+    st.info(
+        "Maximum Sharpe has higher walk-forward Sharpe in this "
+        "sample; this single historical evaluation does not guarantee"
+        " future superiority."
+    )

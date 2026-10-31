@@ -45,7 +45,6 @@ def impact_chart(table: pd.DataFrame, loss_limit: float) -> go.Figure:
 
 
 st.title("Stress tests")
-st.caption("Owner: Tharindu Dhanushka")
 st.markdown(
     "What would the portfolio have lost in the worst markets of the last twenty "
     "years, and in a crisis we design ourselves where stocks and bonds fall "

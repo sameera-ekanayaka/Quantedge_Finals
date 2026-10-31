@@ -1,5 +1,9 @@
 # Quant Edge Finals: Serendib University Endowment Fund
 
+**Submitted PDFs:** [report](submission/report.pdf), [committee memo](submission/committee_memo.pdf), [tear sheet](submission/tearsheet.pdf).
+
+**Post-report validation and clarifications:** [supplementary note](docs/supplementary_validation.md). Portfolio weights and submitted PDFs remain unchanged.
+
 A Streamlit app that builds and defends a conservative USD 10m portfolio from
 seven ETFs (SPY, EFA, EEM, AGG, GLD, XLE, XLK). It goes from real prices to a
 recommendation: portfolio construction and KPIs, VaR and ES, extreme value
@@ -54,8 +58,8 @@ src/                   All calculations, one module per area
   config.py            Tickers, dates, paths, seeds
   data.py              load_prices, load_returns, load_risk_free
   get_data.py          Download and clean the data
-notebooks/             Walkthroughs, e.g. the data cleaning steps
   ui.py                Shared sidebar and settings
+notebooks/             Walkthroughs, e.g. the data cleaning steps
 tests/                 pytest tests, one file per module
 data/clean/            Cleaned CSVs (committed)
 data/raw/              Raw downloads (not committed)
@@ -163,3 +167,13 @@ without downloading again, run `python -m src.get_data --from-raw`.
 ## AI disclosure
 
 See [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md).
+
+## Start with one command
+
+From the repository root with Python 3.12 installed:
+
+```bash
+python3.12 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt && .venv/bin/streamlit run app.py
+```
+
+The exact submitted PDFs are archived in `submission/`. Additional validation is documented in `docs/supplementary_validation.md`; it does not replace the submitted report.

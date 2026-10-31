@@ -10,7 +10,7 @@ Historical and Gaussian models refit daily. Original Student t, parametric Monte
 
 GARCH(1,1) with constant mean uses Gaussian quasi-maximum-likelihood on the preceding 500 returns in percentage units, refitting every 21 days. Conditional variance updates daily using only the last observed residual. Filtered historical simulation estimates standardised residual-tail VaR/ES; GARCH-EVT fits the residual 90th-percentile loss tail. Transform these by next-day conditional volatility and mean. Convergence failures raise errors. Prefix-invariance tests ensure changing future returns cannot alter prior forecasts. Volatility filtering addresses time variation, but cannot guarantee independence or stable regimes.
 
-## 5.3 Tests and outcomes at 99%
+<h2 style="page-break-before: always;">5.3 Tests and outcomes at 99%</h2>
 
 | Model                     |   days |   breaches |   kupiec_p |     ind_p |      cc_p |
 |:--------------------------|-------:|-----------:|-----------:|----------:|----------:|

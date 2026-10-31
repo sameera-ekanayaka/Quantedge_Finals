@@ -53,10 +53,10 @@ WORDS_PER_PAGE = 400
 CSS = """
 @page { size: A4 portrait; margin: 12mm 15mm; }
 body { font-family: sans-serif; font-size: 10.5pt; line-height: 1.15; }
-h1 { font-size: 16pt; margin-top: 14pt; }
-h2 { font-size: 12.5pt; }
-h3 { font-size: 11pt; }
-table { border-collapse: collapse; font-size: 8.2pt; }
+h1 { font-size: 16pt; margin-top: 14pt; page-break-after: avoid; }
+h2 { font-size: 12.5pt; page-break-after: avoid; }
+h3 { font-size: 11pt; page-break-after: avoid; }
+table { border-collapse: collapse; font-size: 8.2pt; page-break-inside: avoid; }
 th, td { border: 1px solid #999; padding: 1.5pt 4pt; }
 code { font-size: 8.5pt; }
 """

@@ -136,7 +136,7 @@ with tab_w:
         color="ETF",
         color_discrete_sequence=PALETTE,
         text=sdf["Share"].map("{:.1%}".format),
-        title="Share of total risk",
+        title="Share of portfolio variance",
     )
     fig.update_traces(textposition="outside", cliponaxis=False)
     fig.update_layout(showlegend=False, xaxis_tickformat=".0%", xaxis_range=[0, 0.75])

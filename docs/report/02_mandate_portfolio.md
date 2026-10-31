@@ -94,6 +94,8 @@ The final weights are SPY 9.6%, AGG 58.9%, GLD 15%, XLK 15% and XLE 1.6%. They a
 | 8% | 7.2% | 0.758 | -12.9% | -16.9% |
 | 5% | 7.1% | 0.745 | -13.1% | -16.8% |
 
+**Reproduce:** `xlk_cap_test(returns, rf_annual)` in `src/portfolio.py`
+
 Return and Sharpe fall a little, the 2022 loss gets slightly worse, and the inflation shock improves by only 0.4 points at the lowest cap. The money moves into SPY, which is also stock risk. So we kept 15%.
 
 **What we did not do:**

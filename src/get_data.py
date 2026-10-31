@@ -14,6 +14,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+from statsmodels.tsa.stattools import adfuller
 
 from src import config
 
@@ -25,6 +26,13 @@ MAX_FILL_DAYS = 3
 
 # Daily moves bigger than this get listed in the summary so someone looks at them
 LARGE_MOVE = 0.15
+
+# Flag flat-lined prices only when the adjusted close is unchanged for at least
+# this many consecutive trading days. A single unchanged day can be genuine.
+STALE_RUN_DAYS = 3
+
+# Search up to about one trading month when AIC selects the ADF lag length.
+ADF_MAX_LAGS = 20
 
 
 def download_prices(
@@ -188,6 +196,58 @@ def large_moves(prices: pd.DataFrame, threshold: float = LARGE_MOVE) -> pd.Serie
     return returns[returns.abs() > threshold]
 
 
+def stale_price_runs(
+    prices: pd.DataFrame, min_days: int = STALE_RUN_DAYS
+) -> list[dict]:
+    """Find runs of unchanged adjusted closes that need a manual check."""
+    if min_days < 1:
+        raise ValueError("min_days must be at least 1")
+
+    flagged = []
+    for ticker in prices.columns:
+        unchanged = prices[ticker].eq(prices[ticker].shift())
+        groups = unchanged.ne(unchanged.shift()).cumsum()
+        for _, run in unchanged[unchanged].groupby(groups[unchanged]):
+            if len(run) >= min_days:
+                first_unchanged = run.index[0]
+                start_position = prices.index.get_loc(first_unchanged) - 1
+                flagged.append(
+                    {
+                        "ticker": ticker,
+                        "start": str(prices.index[start_position].date()),
+                        "end": str(run.index[-1].date()),
+                        "unchanged_days": int(len(run)),
+                    }
+                )
+    return flagged
+
+
+def stationarity_tests(prices: pd.DataFrame) -> dict[str, dict]:
+    """Run an ADF unit-root test on each ETF's daily log returns."""
+    returns = np.log(prices).diff().dropna()
+    results = {}
+    for ticker in returns:
+        values = returns[ticker].dropna()
+        if values.std() < 1e-12:
+            raise ValueError(f"Cannot run ADF: {ticker} returns are constant")
+        statistic, p_value, lags, observations, critical, _ = adfuller(
+            values,
+            maxlag=ADF_MAX_LAGS,
+            regression="c",
+            autolag="AIC",
+            result_object=False,
+        )
+        results[ticker] = {
+            "statistic": round(float(statistic), 6),
+            "p_value": round(float(p_value), 6),
+            "lags": int(lags),
+            "observations": int(observations),
+            "critical_value_5pct": round(float(critical["5%"]), 6),
+            "stationary_at_5pct": bool(p_value < 0.05),
+        }
+    return results
+
+
 def summary(
     prices: pd.DataFrame, filled: pd.Series, risk_free: pd.DataFrame
 ) -> list[str]:
@@ -253,6 +313,14 @@ def cleaning_report(
             {"date": str(d.date()), "ticker": t, "log_return": round(float(r), 6)}
             for (d, t), r in large_moves(prices).items()
         ],
+        "stale_run_days": STALE_RUN_DAYS,
+        "stale_price_runs": stale_price_runs(prices),
+        "stationarity": {
+            "test": "Augmented Dickey-Fuller on daily log returns",
+            "significance": 0.05,
+            "lag_selection": f"AIC, maximum {ADF_MAX_LAGS} lags",
+            "results": stationarity_tests(prices),
+        },
         "stress_periods": [
             {"name": name, "start": s, "end": e, "covered": covers_period(prices, s, e)}
             for name, (s, e) in config.STRESS_PERIODS.items()

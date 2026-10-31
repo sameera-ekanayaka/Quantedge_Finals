@@ -67,6 +67,59 @@ else:
         hide_index=True,
     )
 
+st.subheader("Stale-price check")
+stale = pd.DataFrame(report.get("stale_price_runs", []))
+st.caption(
+    f"Runs of at least {report.get('stale_run_days', 3)} consecutive trading days "
+    "with an unchanged adjusted close are flagged, not removed."
+)
+if stale.empty:
+    st.write("No stale-price runs found.")
+else:
+    st.dataframe(
+        stale.rename(
+            columns={
+                "ticker": "Ticker",
+                "start": "Start",
+                "end": "End",
+                "unchanged_days": "Unchanged days",
+            }
+        ),
+        hide_index=True,
+    )
+
+st.subheader("Return stationarity")
+stationarity = report.get("stationarity")
+if stationarity is None:
+    st.warning("Stationarity results are missing. Rerun the data pipeline.")
+else:
+    adf = pd.DataFrame.from_dict(stationarity["results"], orient="index")
+    adf.index.name = "Ticker"
+    adf = adf.reset_index().rename(
+        columns={
+            "statistic": "ADF statistic",
+            "p_value": "p-value",
+            "lags": "Lags",
+            "observations": "Observations",
+            "critical_value_5pct": "5% critical value",
+            "stationary_at_5pct": "Stationary at 5%",
+        }
+    )
+    st.caption(
+        "Augmented Dickey-Fuller tests use daily log returns. The null hypothesis "
+        f"is a unit root; p < 0.05 rejects it. Lags: {stationarity['lag_selection']}."
+    )
+    st.dataframe(
+        adf.style.format(
+            {
+                "ADF statistic": "{:.3f}",
+                "p-value": "{:.4f}",
+                "5% critical value": "{:.3f}",
+            }
+        ),
+        hide_index=True,
+    )
+
 st.subheader("Prices, rebased to 100")
 prices = data.rebase(data.load_prices())
 fig = go.Figure()

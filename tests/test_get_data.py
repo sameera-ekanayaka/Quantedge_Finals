@@ -102,6 +102,38 @@ def test_large_moves_flags_jumps():
     assert list(moves.index) == [(prices.index[40], "XLE")]
 
 
+def test_stale_price_runs_flags_only_long_flat_lines():
+    prices = synthetic_prices(end="2005-06-30")
+    prices.loc[prices.index[40:44], "AGG"] = prices.loc[prices.index[39], "AGG"]
+    prices.loc[prices.index[60:62], "GLD"] = prices.loc[prices.index[59], "GLD"]
+
+    flagged = get_data.stale_price_runs(prices)
+
+    assert flagged == [
+        {
+            "ticker": "AGG",
+            "start": str(prices.index[39].date()),
+            "end": str(prices.index[43].date()),
+            "unchanged_days": 4,
+        }
+    ]
+
+
+def test_stationarity_tests_reject_unit_root_for_random_returns():
+    results = get_data.stationarity_tests(synthetic_prices())
+
+    assert set(results) == set(config.TICKERS)
+    assert all(result["stationary_at_5pct"] for result in results.values())
+    assert all(result["p_value"] < 0.05 for result in results.values())
+
+
+def test_stationarity_tests_reject_constant_returns():
+    dates = pd.bdate_range("2020-01-01", periods=100)
+    prices = pd.DataFrame({"SPY": np.exp(np.arange(100) * 0.01)}, index=dates)
+    with pytest.raises(ValueError, match="SPY returns are constant"):
+        get_data.stationarity_tests(prices)
+
+
 def test_stress_periods_covered():
     assert get_data.stress_periods_covered(synthetic_prices())
     assert not get_data.stress_periods_covered(synthetic_prices(start="2010-01-01"))
@@ -205,6 +237,12 @@ def test_run_writes_cleaning_report(tmp_data_dirs, monkeypatch):
     assert report["days"] == len(prices)
     assert report["tickers"] == config.TICKERS
     assert report["large_moves"][0]["ticker"] == "XLE"
+    assert report["stale_price_runs"] == []
+    assert report["stationarity"]["lag_selection"] == "AIC, maximum 20 lags"
+    assert all(
+        result["stationary_at_5pct"]
+        for result in report["stationarity"]["results"].values()
+    )
     assert all(p["covered"] for p in report["stress_periods"])
     assert report["risk_free"]["carried_forward_days"] == 1
     assert report["steps"][-1]["rows"] == len(prices)

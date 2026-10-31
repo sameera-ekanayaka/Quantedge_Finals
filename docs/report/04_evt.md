@@ -25,7 +25,7 @@ where:
 - $y = x - u > 0$ represents the loss exceedance above threshold $u$.
 
 ### Tail Classification
-- **$\xi > 0$ (Fréchet domain / Heavy-tailed):** The tail decays as a power law $P(X > x) \sim x^{-1/\xi}$. Financial asset returns universally belong to this class, exhibiting heavy tails, leptokurtosis, and persistent crash risk.
+- **$\xi > 0$ (Fréchet domain / Heavy-tailed):** The tail decays as a power law $P(X > x) \sim x^{-1/\xi}$. Many financial loss series are empirically heavy-tailed, but the sign and size of $\xi$ must be estimated from the selected data and threshold.
 - **$\xi = 0$ (Gumbel domain / Exponential):** Thin tails (Gaussian, lognormal).
 - **$\xi < 0$ (Weibull domain / Bounded):** Distributions with a finite upper bound.
 
@@ -78,12 +78,12 @@ $$\ln L(\xi, \sigma; Y) = -n_u \ln \sigma - \left(1 + \frac{1}{\xi}\right) \sum_
 - **Maximum Sharpe:** $\hat{\xi} = 0.1845$, $\hat{\sigma} = 0.002696$
 - **Equal Weight:** $\hat{\xi} = 0.2352$, $\hat{\sigma} = 0.004870$
 
-**Key Finding:** Across all portfolios, $\hat{\xi} \approx 0.18 - 0.24 > 0$. This confirms that Serendib's asset universe resides within the **heavy-tailed Fréchet domain**. The positive shape parameters indicate that Gaussian models will inevitably underpredict extreme endowment drawdowns.
+**Key Finding:** Across the fitted portfolios, $\hat{\xi} \approx 0.18 - 0.24 > 0$. Under the selected threshold and sample, this is evidence of a **heavy-tailed Fréchet-type loss tail**. It supports using a tail model alongside Gaussian estimates; it is not proof that the same tail parameters will persist in future regimes.
 
 ### Goodness-of-Fit: Quantile-Quantile (Q-Q) Diagnostics
 To validate model specification, empirical exceedance quantiles are plotted against theoretical GPD quantiles:
 $$q_i^{\text{theo}} = G_{\hat{\xi}, \hat{\sigma}}^{-1}\left(\frac{i - 0.5}{N_u}\right) = \frac{\hat{\sigma}}{\hat{\xi}} \left[\left(1 - \frac{i - 0.5}{N_u}\right)^{-\hat{\xi}} - 1\right]$$
-The Q-Q diagnostic tracks the 45-degree reference line closely across all exceedance percentiles, confirming that the Generalized Pareto model fits the tail structure without systematic bias.
+The Q-Q diagnostic tracks the 45-degree reference line reasonably closely across the fitted exceedances. This is a useful visual check, but it does not prove the GPD is correctly specified or stable through time.
 
 ---
 

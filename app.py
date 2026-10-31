@@ -19,6 +19,8 @@ PAGES = [
     ),
 ]
 
+PAGES.append(st.Page("app/pages/9_supplementary.py", title="Supplementary research"))
+
 page = st.navigation(PAGES)
 render_sidebar()
 page.run()

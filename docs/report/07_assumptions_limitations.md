@@ -69,7 +69,7 @@ This section provides a rigorous audit of assumptions, limitations, and mitigati
 ### 2. Tail Stationarity
 - **Core Assumption:** The tail index $\xi$ remains constant over time.
 - **Vulnerability & Limitation:** Structural breaks, regulatory shifts, or algorithmic market microstructures can cause tail fatness to expand abruptly during novel shocks.
-- **Institutional Mitigation:** EVT estimates are continuously backtested against out-of-sample data and validated against empirical crisis replays.
+- **Institutional Mitigation:** EVT estimates are evaluated with rolling out-of-sample coverage and independence tests, then considered alongside empirical crisis replays. These checks reveal breach clustering rather than validating the model as fully reliable.
 
 ---
 
@@ -97,5 +97,5 @@ This section provides a rigorous audit of assumptions, limitations, and mitigati
 |---|---|---|
 | **Liquidity & Execution** | Illiquid asset freezes during panics | 100% allocation in high-volume, liquid ETFs; minimum 30% AGG bond anchor |
 | **Model Specification** | Gaussian underestimation of tail risk | Mandatory use of EVT GPD and Expected Shortfall for capital sizing |
-| **Hedge Breakdown** | Stock-bond correlation flips positive | Inclusion of Gold (GLD) and Energy (XLE) as non-correlated inflation hedges |
+| **Hedge Breakdown** | Stock-bond correlation flips positive | Gold diversification plus an explicit joint stock-bond shock; the decision does not rely on energy repeating its 2022 gain |
 | **Rebalancing Drag** | Transaction cost erosion from turnover | Rebalance quarterly on tolerance bands ($\pm 2.5\%$) rather than daily |

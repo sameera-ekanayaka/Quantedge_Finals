@@ -19,6 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "docs" / "report"
+AI_DISCLOSURE_FILE = ROOT / "docs" / "AI_DISCLOSURE.md"
 OUT_DIR = ROOT / "build" / "report"
 
 TITLE = "Serendib University Endowment Fund"
@@ -95,6 +96,21 @@ def collect_sections(report_dir: Path = REPORT_DIR) -> tuple[list[str], list[str
     return texts, missing
 
 
+def collect_disclosure(
+    path: Path = AI_DISCLOSURE_FILE, members: list[str] = MEMBERS
+) -> tuple[str, list[str]]:
+    """Return the AI disclosure and members without an entry."""
+    if not path.exists() or not path.read_text(encoding="utf-8").strip():
+        return (
+            "# AI disclosure\n\nTODO: complete the required AI disclosure.\n",
+            [AI_DISCLOSURE_FILE.name],
+        )
+
+    text = path.read_text(encoding="utf-8").strip()
+    missing = [f"AI disclosure: {member}" for member in members if member not in text]
+    return text + "\n", missing
+
+
 def count_words(text: str) -> int:
     # Ignore table rules like |---|---| so they do not count as words
     return len([w for w in re.findall(r"\S+", text) if re.search(r"\w", w)])
@@ -141,6 +157,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     texts, missing = collect_sections()
+    disclosure, disclosure_missing = collect_disclosure()
+    texts.append(disclosure)
+    missing.extend(disclosure_missing)
     title_md = title_page(date.today())
     body_md = "\n\n".join(texts)
 

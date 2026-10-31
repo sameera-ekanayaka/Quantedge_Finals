@@ -220,8 +220,9 @@ with tab_evt:
         "- **Assumption:** Extreme tail dynamics are stationary across time.\n"
         "- **Limitation:** Tail thickness (ξ) can expand abruptly during "
         "liquidity contagions.\n"
-        "- **Mitigation:** EVT estimates are cross-verified against multi-asset "
-        "crisis scenario replays."
+        "- **Mitigation:** EVT is evaluated with rolling out-of-sample coverage "
+        "and independence tests, then considered alongside crisis replays. "
+        "These checks reveal breach clustering rather than proving reliability."
     )
 
 # ---------------- TAB 5: BACKTESTING ----------------

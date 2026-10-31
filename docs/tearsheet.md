@@ -12,7 +12,7 @@
 | **EFA** | Developed International Equities | 0.00% | \$0 | Max 30% | Pass |
 | **EEM** | Emerging Market Equities | 0.00% | \$0 | Max 10% | Pass |
 | **AGG** | US Aggregate Fixed Income (Core Anchor) | 58.85% | \$5,885,000 | Min 30%, Max 60% | Pass |
-| **GLD** | SPDR Gold Shares (Inflation Hedge) | 15.00% | \$1,500,000 | Max 15% | Pass |
+| **GLD** | SPDR Gold Shares (Real-Asset Diversifier) | 15.00% | \$1,500,000 | Max 15% | Pass |
 | **XLE** | Energy Select Sector | 1.60% | \$160,000 | Max 10% | Pass |
 | **XLK** | Technology Select Sector | 15.00% | \$1,500,000 | Max 15% | Pass |
 | **Total** | **Serendib Endowment Portfolio** | **100.00%** | **\$10,000,000** | **Long-only, No Leverage** | **Pass** |
@@ -21,7 +21,7 @@
 
 ### 2. Performance & Risk-Adjusted Summary
 
-- **Annual Return:** **7.4% a year historically**, in-sample (close to our 7% target and to the 7.3% average nominal target of endowments that set one, NACUBO-Commonfund 2025; below the 7.8% hurdle from 25-year average spending of 4.5% plus higher education inflation of 3.3%).
+- **Annual Return:** **7.4% a year historically**, in-sample. It clears our 7.0% base objective (4.5% long-run spending + 2.5% inflation), is close to the 7.3% average nominal target reported by endowments that set one (NACUBO-Commonfund 2025), and falls short of the 7.8% hurdle using 3.3% higher-education inflation.
 - **Sharpe Ratio:** **0.79** (Highest risk-adjusted return across all candidate portfolios).
 - **Annual Volatility:** **7.2%** (Conservative risk profile dominated by 58.85% core fixed income).
 - **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while earning about 0.9 points more a year).
@@ -37,7 +37,7 @@
 | **Parametric Student-t** | 0.61% (\$60,600) | 0.98% (\$98,100) | **1.16% (\$115,700)** | **1.73% (\$172,600)** | 0.57% (\$56,900) |
 | **Extreme Value Theory (EVT GPD)** | 0.65% (\$64,637) | 1.02% (\$102,200) | **1.22% (\$122,044)** | **1.73% (\$172,578)** | 0.51% (\$50,534) |
 
-*Observation:* Normal models underestimate deep tail risk by \$55k+ at 99% ES. Daily risk monitoring is governed by Student-t and EVT.
+*Observation:* Normal models underestimate deep tail risk by \$55k+ at 99% ES. Student-t and EVT pass 99% coverage, but all models fail breach independence because losses cluster in crises.
 
 ---
 
@@ -58,9 +58,9 @@
 
 | Governing Policy Limit | Mandated Limit Level | Final Portfolio Level | Compliance Status |
 |---|---|---|---|
-| **One-Day 99% Value at Risk (VaR)** | USD 150,000 (1.50%) | **USD 116,000 (1.16%)** | **Compliant (PASS)** |
-| **One-Day 99% Expected Shortfall (ES)** | USD 200,000 (2.00%) | **USD 173,000 (1.73%)** | **Compliant (PASS)** |
-| **Loss over one crisis replay** | USD 1,500,000 (15.00%) | **12.6% (USD 1,260,000), 2022** | **Compliant (PASS)** |
+| **One-Day 99% Value at Risk (VaR)** | USD 150,000 (1.50%) | **USD 116,000 (1.16%)** | **Within limit** |
+| **One-Day 99% Expected Shortfall (ES)** | USD 200,000 (2.00%) | **USD 173,000 (1.73%)** | **Within limit** |
+| **Loss over one crisis replay** | USD 1,500,000 (15.00%) | **12.6% (USD 1,260,000), 2022** | **Within limit** |
 | **Inflation shock (assumption)** | USD 1,500,000 (15.00%) | **17.2% (USD 1,720,000)** | **Exceeds, disclosed** |
 
 The limit is measured over the whole crisis window. Inside 2022 the fall from peak to trough reached 17.2%.

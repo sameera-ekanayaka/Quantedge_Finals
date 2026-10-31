@@ -8,23 +8,23 @@ For an endowment, the core fiduciary objective is avoiding catastrophic losses. 
 
 ## 4.1 Theoretical Foundation: Peaks-Over-Threshold (POT)
 
-Under the Pickands-Balkema-de Haan Theorem, exceedances $Y = X - u$ above threshold $u$ converge to the **Generalized Pareto Distribution (GPD)**:
+Under the Pickands-Balkema-de Haan Theorem, exceedances Y = X − u above threshold u converge to the **Generalized Pareto Distribution (GPD)**:
 
-$$G_{\xi, \sigma}(y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi} \quad (\xi \neq 0)$$
+G<sub>ξ,σ</sub>(y) = 1 − (1 + ξy/σ)<sup>−1/ξ</sup>, for ξ ≠ 0 and y ≥ 0 with 1 + ξy/σ > 0.
 
-where $\xi$ is the shape parameter and $\sigma > 0$ is the scale parameter:
-- **$\xi > 0$ (Fréchet / Heavy-tailed):** Tails decay as a power law $P(X > x) \sim x^{-1/\xi}$. Most financial return series exhibit fat tails and crash risk.
-- **$\xi = 0$ (Gumbel):** Unbounded exponential tail.
-- **$\xi < 0$ (Weibull):** Bounded tail with a finite endpoint.
+where ξ is the shape parameter and σ > 0 is the scale parameter:
+- **ξ > 0 (Fréchet / Heavy-tailed):** Tails decay as a power law P(X > x) ∼ x<sup>−1/ξ</sup>. Most financial return series exhibit fat tails and crash risk.
+- **ξ = 0 (Gumbel):** Unbounded exponential tail.
+- **ξ < 0 (Weibull):** Bounded tail with a finite endpoint.
 
 ## 4.2 Threshold Selection and Diagnostic Evidence
 
-Selecting threshold $u$ balances an empirical bias-variance trade-off: setting $u$ too low violates GPD convergence, while setting $u$ too high inflates MLE variance.
+Selecting threshold u balances an empirical bias-variance trade-off: setting u too low violates GPD convergence, while setting u too high inflates MLE variance.
 
-We selected the **90th percentile of losses** as the threshold ($u = 0.45\%$, giving $N_u = 552$ tail observations across 5,518 trading days) after reviewing three diagnostic plots:
+We selected the **90th percentile of losses** as the threshold (u = 0.45%, giving N<sub>u</sub> = 552 tail observations across 5,518 trading days) after reviewing three diagnostic plots:
 
-1. **Mean Excess Plot:** Empirical mean excess $e(u) = E[X - u \mid X > u]$ slopes upward approximately linearly above $u \approx 0.45\%$, which is consistent with the GPD assumption.
-2. **Parameter Stability Plot:** Across thresholds from 75% to 98%, fitted shape $\hat{\xi}$ stays within about 2 standard errors ($\pm 2\text{ SE} \approx \pm 0.10$, $\text{shape\_se} \approx 0.050$), and modified scale $\sigma^*(u) = \sigma(u) - \xi u$ is broadly stable above $0.45\%$.
+1. **Mean Excess Plot:** Empirical mean excess e(u) = E[X − u | X > u] slopes upward approximately linearly above u ≈ 0.45%, which is consistent with the GPD assumption.
+2. **Parameter Stability Plot:** Across thresholds from 75% to 98%, fitted shape ξ̂ stays within about 2 standard errors (±2 SE ≈ ±0.10, shape_se ≈ 0.050), and modified scale σ*(u) = σ(u) − ξu is broadly stable above 0.45%.
 3. **Q-Q Plot:** Theoretical GPD quantiles track empirical exceedances reasonably along the 45-degree line.
 
 The diagnostics are broadly consistent with the selected threshold, although threshold uncertainty and finite-sample error remain. The threshold is not automatically optimized; it is a percentile-based choice whose adequacy is assessed visually.
@@ -33,21 +33,21 @@ The diagnostics are broadly consistent with the selected threshold, although thr
 |---|---|---|---|---|
 | **90th Percentile Rule** | 0.78% | 0.41% | **0.45%** | 0.49% |
 | **95th Percentile Rule** | 1.14% | 0.60% | **0.66%** | 0.72% |
-| **Selected Threshold ($u$)** | 0.78% | 0.41% | **0.45%** | 0.49% |
-| **Exceedance Count ($N_u$)** | 552 days | 552 days | **552 days** | 552 days |
-| **Fitted Shape ($\hat{\xi}$)** | 0.2352 | 0.1921 | **0.1843** | 0.2053 |
+| **Selected Threshold (u)** | 0.78% | 0.41% | **0.45%** | 0.49% |
+| **Exceedance Count (N<sub>u</sub>)** | 552 days | 552 days | **552 days** | 552 days |
+| **Fitted Shape (ξ̂)** | 0.2352 | 0.1921 | **0.1843** | 0.2053 |
 
-On the final Maximum Sharpe portfolio, MLE estimation yields $\hat{\xi} = 0.1843$ and $\hat{\sigma} = 0.002696$, confirming heavy-tailed Fréchet behavior.
+On the final Maximum Sharpe portfolio, MLE estimation yields ξ̂ = 0.1843 and σ̂ = 0.002696, confirming heavy-tailed Fréchet behavior.
 
 ## 4.3 EVT VaR and Expected Shortfall
 
-With exceedance fraction $\hat{p}_u = N_u / N = 10.0\%$, closed-form EVT Value at Risk and Expected Shortfall are:
+With exceedance fraction p̂<sub>u</sub> = N<sub>u</sub>/N = 10.0%, closed-form EVT Value at Risk and Expected Shortfall are:
 
-$$\text{VaR}_\alpha^{\text{EVT}} = u + \frac{\hat{\sigma}}{\hat{\xi}}\left[\left(\frac{\hat{p}_u}{1 - \alpha}\right)^{\hat{\xi}} - 1\right], \quad \text{ES}_\alpha^{\text{EVT}} = \frac{\text{VaR}_\alpha^{\text{EVT}} + \hat{\sigma} - \hat{\xi} u}{1 - \hat{\xi}}$$
+VaR<sub>α</sub> = u + (σ̂/ξ̂)[(p̂<sub>u</sub>/(1 − α))<sup>ξ̂</sup> − 1]; ES<sub>α</sub> = (VaR<sub>α</sub> + σ̂ − ξ̂u)/(1 − ξ̂).
 
-The ES expression requires $\hat{\xi}<1$. At $\hat{\xi}=0$, the continuous
-limit is $\text{VaR}_\alpha=u+\hat{\sigma}\log(\hat{p}_u/(1-\alpha))$ and
-$\text{ES}_\alpha=\text{VaR}_\alpha+\hat{\sigma}$. For $\hat{\xi}\geq1$,
+The ES expression requires ξ̂ < 1. At ξ̂ = 0, the continuous
+limit is VaR<sub>α</sub> = u + σ̂ log(p̂<sub>u</sub>/(1 − α)) and
+ES<sub>α</sub> = VaR<sub>α</sub> + σ̂. For ξ̂ ≥ 1,
 the fitted GPD has infinite theoretical ES.
 
 The table compares 1-day tail risk metrics on the **USD 10m Maximum Sharpe Portfolio**:

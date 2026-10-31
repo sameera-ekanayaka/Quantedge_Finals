@@ -71,7 +71,7 @@ What the table shows:
 - The 2022 loss is lower for equal weight and risk parity. This is probably because they hold more energy, which rose that year. It is a one year effect, so we do not treat energy as a hedge.
 - Every candidate loses more than 15% in the inflation shock. This is a hypothetical stress and we report it openly.
 - Only Maximum Sharpe reaches the 7% target (7.4%). Minimum variance is about half a point short (6.5%).
-- Against the two stricter hurdles, 7.4% (latest spending rate) and 7.8% (higher education inflation), Maximum Sharpe only matches the first and falls short of the second. Only equal weight (9.0%) clears both, and it has the worst losses. This is the price of a conservative mandate.
+- Against the two stricter hurdles, 7.4% (assumed 4.9% spending) and 7.8% (assumed higher education inflation of 3.3%), Maximum Sharpe only matches the first and falls short of the second. Only equal weight (9.0%) clears both, and it has the worst losses. This is the price of a conservative mandate.
 - The final portfolio's one-day 99% ES is USD 173k (1.73% of the fund), inside the USD 200k limit. Equal weight (3.4%) and risk parity (2.1%) are above the 2.0% ES limit.
 
 ## 2.4 Why we chose Maximum Sharpe

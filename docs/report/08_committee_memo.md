@@ -15,11 +15,11 @@ raised from 10% to 15% of the fund.
 ## 8.2 Why this portfolio
 
 - **It meets our base return objective.** It has historically earned **7.4% a
-  year** (Nov 2004 to Oct 2026). Our base objective is about 7%: the 25-year
-  average spending rate of about 4.5% plus our 2.5% inflation assumption. It
-  only approximately meets the stricter 7.4% hurdle from the latest 4.9%
-  effective spending rate, and falls short of the 7.8% hurdle using 3.3%
-  higher-education inflation. These are sensitivities, not promised returns.
+  year** (Nov 2004 to Oct 2026). Our base objective is a committee assumption:
+  4.5% annual spending plus 2.5% inflation, or 7.0%. It approximately meets a
+  7.4% sensitivity using 4.9% spending and falls short of a 7.8% sensitivity
+  using 3.3% higher-education inflation. These are policy sensitivities, not
+  forecasts or promised returns, and the committee can replace them.
 - **It has the best risk-adjusted return** of the candidates (Sharpe 0.79)
   with a maximum drawdown of -18.3%, close to Minimum variance (-17.8%) while
   earning about 0.9 points a year more.

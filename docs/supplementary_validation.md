@@ -35,3 +35,7 @@ These are sensitivity results, not bootstrap confidence intervals. The headline 
 The app now includes the risk comparison chart, removes owner captions, and reports expected EVT estimation failures rather than swallowing every exception. A clean-run command and archived PDFs improve packaging. No GARCH model, multivariate replacement Monte Carlo, new policy benchmark, second hypothetical scenario or re-optimised recommendation is claimed. The submitted PDFs remain unchanged, including their rounding conventions.
 
 Production verification must be performed from an allowed browser: this environment's network policy blocks the deployed Streamlit host. Visit every page and exercise confidence, method and date controls after deployment. A local test pass cannot establish the production revision.
+
+## Subsequent model extensions
+
+The scope limitations above describe the first supplementary pass. A subsequent [advanced validation note](advanced_validation.md) adds the risk-constrained alternative, conditional GARCH models, joint ETF bootstrap, second threshold rule, bootstrap intervals, policy benchmark and distinct hypothetical scenario. These are separate post-report analyses. The original portfolio breach and submitted PDF limitations remain historical facts; all new conditional models still fail independence at 5%.

@@ -177,3 +177,5 @@ python3.12 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt 
 ```
 
 The exact submitted PDFs are archived in `submission/`. Additional validation is documented in `docs/supplementary_validation.md`; it does not replace the submitted report.
+
+Further audit response is available on the app's **Supplementary research** page and in [advanced validation](docs/advanced_validation.md). Reproduce its archived results with `python scripts/build_advanced_validation.py`. These include a separately labeled constrained allocation and conditional risk models; the submitted allocation and PDFs remain unchanged.

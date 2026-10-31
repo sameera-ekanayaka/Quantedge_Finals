@@ -21,7 +21,7 @@
 
 ### 2. Performance & Risk-Adjusted Summary
 
-- **Annual Return:** **7.4% a year historically**, in-sample. It clears our committee's 7.0% base assumption (4.5% spending + 2.5% inflation), approximately meets the 7.4% higher-spending sensitivity (4.9% + 2.5%), and falls short of the 7.8% higher-education-inflation sensitivity (4.5% + 3.3%).
+- **Annual Return:** **7.4% a year historically**, in-sample. It clears our 7.0% base objective (4.5% long-run spending + 2.5% inflation), matches the stricter 7.4% hurdle (4.9% spending + 2.5% inflation), and falls short of the 7.8% hurdle (4.5% spending + 3.3% higher-education inflation).
 - **Sharpe Ratio:** **0.79** (Highest risk-adjusted return across all candidate portfolios).
 - **Annual Volatility:** **7.2%** (Conservative risk profile dominated by 58.85% core fixed income).
 - **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while earning about 0.9 points more a year).

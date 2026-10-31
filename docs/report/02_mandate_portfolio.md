@@ -21,6 +21,9 @@ The committee told us that avoiding large losses matters more than making large 
 | Crisis loss limit | 15% of the fund (USD 1.5m), measured over the whole crisis window | See below |
 
 **Return objective.** An endowment must pay its spending and keep up with inflation. The usual way to set a target is inflation plus the spending rate. The 2025 NACUBO-Commonfund study reports an average effective spending rate of 4.9% for fiscal year 2025 (page 3). Over the past 25 years the average spending rate was about 4.5%, and endowments that set a nominal return target averaged 7.3% (Mercer's summary of the same study). We assume spending of about 4.5% and general inflation of about 2.5%. This gives our base objective of about 7% a year. The 2.5% inflation figure is our own assumption. We use two stricter hurdles as reference points. With the latest spending rate of 4.9%, the hurdle is about 7.4%. With higher education inflation of 3.3% (the Higher Education Price Index over 25 years), it is about 7.8%. The 7.4% that our chosen portfolio earned in the past is a result, not a target. It meets the base objective, only matches the first stricter hurdle, and falls short of the second. A conservative mix earns less than endowments that hold private assets, and we show this gap openly in 2.3.
+
+**Income.** The client also wants income. Our returns use adjusted close prices, so they include the effect of dividends and bond interest, and they show the total return of each ETF. We did not model the cash yield or the yearly spending payments, so we do not state an income figure. The portfolio is 58.85% bonds, which is where most of its income comes from. We treat income as a limitation and not as a result.
+
 **Weight limits.** These are our own judgement. They keep the fund conservative and stop one ETF from dominating.
 
 | ETF | Minimum | Maximum |
@@ -32,6 +35,8 @@ The committee told us that avoiding large losses matters more than making large 
 | GLD | 0% | 15% |
 | XLE | 0% | 10% |
 | XLK | 0% | 15% |
+
+**Why these limits.** The limits are our judgement, not the output of a model. Each one has a reason. Bonds have a 30% floor and a 60% cap. The floor keeps a stable core in a fund that puts losses first. The cap stops the fund from relying on one asset class, which matters because bonds fell together with stocks in 2022. SPY is capped at 40% so that stocks cannot dominate. EFA is capped at 30% to keep some room for other countries. Emerging markets are capped at 10% because they are riskier and we want the fund to stay conservative. Gold is capped at 15% because it is a diversifier and not a source of growth. The two sector funds are capped because they are concentrated bets. Energy gets 10%. Technology gets 15%, a little more, and Section 2.5 shows that lowering this cap barely changes the result. Some limits matter more than others. In Maximum Sharpe, gold and technology sit exactly at their caps and bonds are just below theirs, so the result depends on our choices.
 
 **Crisis loss limit.** Our first idea was 10% of the fund. We tested it and no candidate meets it in all three historical crises (see 2.3). Even the calmest candidate loses 12.5% in 2022, so a 10% limit cannot be met inside this mandate. We propose 15% (USD 1.5m), the same limit used in Sections 6 and 8. We think this is fair for a conservative investor for four reasons. First, we did not set it to fit our result. The worst historical loss of the final portfolio is 12.6%, which is 2.4 points below the limit. Second, in each crisis the final portfolio lost far less than SPY alone: 5.2% against 36.9% in 2008, 9.9% against 33.4% in March 2020, and 12.6% against 18.2% in 2022. Third, the limit is measured the same way for every portfolio, as the loss over the whole crisis window. Inside 2022 the fall from peak to trough reached 17.2%, which is above 15%, and we say so openly. Fourth, a limit is a trigger for the committee to review the portfolio, not a promise that losses stay below it. The inflation shock (17.2%) is also above the limit and we report it openly. Every candidate except equal weight stays inside 15% in the three historical replays.
 
@@ -140,5 +145,15 @@ The committee asked what can go wrong, how bad losses could become, and how conf
 - **What remains.** Stocks and bonds can fall together, as in 2022. Our own inflation shock costs 17.2% (USD 1.72m), above the 15% limit. Technology causes about 36% of the risk with 15% of the money.
 - **How confident we are.** Less than the numbers suggest. The weights were chosen on the same 2004 to 2026 data, trading costs are not included, and the quarterly rebalancing check shows a small drop in return.
 - **Our request.** Accept the portfolio with a crisis loss limit of 15%, and review it if the inflation shock or the technology risk becomes a concern.
+
+## 2.7 Other risks we considered
+
+These come from our own tests. They are not forecasts.
+
+- **Interest rates.** Bonds are 58.85% of the fund. A fast rise in yields is the biggest single risk, as in 2022. Section 6 assumes bonds fall 15% in our inflation shock.
+- **Inflation.** Our inflation shock costs 17.2% (USD 1.72m), above the 15% limit. Section 8 says we would move money from technology into energy if inflation persists.
+- **Stock and bond correlation.** The portfolio relies on bonds and gold to offset stocks. If stocks and bonds move together for a long time, that protection is weaker. This is why 2022 is our worst historical replay.
+- **Concentration.** Technology is 15% of the money and about 36% of the portfolio's risk, so a fall in technology shares matters more than its weight suggests.
+- **Model risk.** Our risk estimates come from history. Section 5 shows that breaches cluster in crises for every model, so the limits are monitoring triggers and not guarantees.
 
 **Sources:** NACUBO and Commonfund Institute (2026). Summary observations from the 2025 NACUBO-Commonfund Study of Endowments. Spending rate: page 3. Return objectives: page 6. Momjian, L. Insights from the 2025 NACUBO-Commonfund Study of Endowments. Mercer (Marsh). Source for the 25-year average spending rate of about 4.5% and the HEPI hurdle of about 7.8%.

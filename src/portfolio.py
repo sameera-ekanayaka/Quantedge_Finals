@@ -293,3 +293,40 @@ def xlk_cap_test(
     finally:
         BOUNDS["XLK"] = original
     return pd.DataFrame(rows).T
+
+
+def rebalanced_returns(
+    returns: pd.DataFrame, weights: pd.Series, freq: str = "Q"
+) -> pd.Series:
+    """Return daily portfolio returns when weights reset only each period.
+
+    Between resets the holdings drift with the market, like a real fund that
+    rebalances quarterly.
+    """
+    simple = log_to_simple(returns)[TICKERS]
+    target = weights.reindex(TICKERS)
+    pieces = []
+    for _, block in simple.groupby(simple.index.to_period(freq)):
+        value = (1 + block).cumprod().mul(target, axis=1).sum(axis=1)
+        pieces.append(value / value.shift(1).fillna(1.0) - 1)
+    return pd.concat(pieces).rename("portfolio")
+
+
+def rebalancing_comparison(
+    returns: pd.DataFrame, weights: pd.Series, rf_annual: float
+) -> pd.DataFrame:
+    """Compare daily rebalancing with quarterly rebalancing for one portfolio."""
+    series = {
+        "Daily rebalancing": portfolio_returns(returns, weights),
+        "Quarterly rebalancing": rebalanced_returns(returns, weights),
+    }
+    rows = {}
+    for name, port in series.items():
+        rows[name] = {
+            "Annual return": annual_return(port),
+            "Annual volatility": annual_volatility(port),
+            "Sharpe": sharpe_ratio(port, rf_annual),
+            "Max drawdown": max_drawdown(port),
+            "1-day ES 99%": var_es(port, 0.99, "historical")[1],
+        }
+    return pd.DataFrame(rows).T

@@ -254,15 +254,15 @@ try:
             "Tail Gap (ES - VaR)": format_pct(evt_e - evt_v),
         }
     )
-except (NotImplementedError, ImportError, Exception):
+except Exception:
     comp_records.append(
         {
             "Methodology": "Extreme Value Theory (EVT / GPD)",
-            f"1-Day VaR ({alpha:.0%})": "Pending (Wave 3)",
-            "1-Day VaR ($)": "Pending",
-            f"1-Day ES ({alpha:.0%})": "Pending",
-            "1-Day ES ($)": "Pending",
-            "Tail Gap (ES - VaR)": "Pending",
+            f"1-Day VaR ({alpha:.0%})": "EVT unavailable",
+            "1-Day VaR ($)": "EVT unavailable",
+            f"1-Day ES ({alpha:.0%})": "EVT unavailable",
+            "1-Day ES ($)": "EVT unavailable",
+            "Tail Gap (ES - VaR)": "EVT unavailable",
         }
     )
 
@@ -341,11 +341,31 @@ table_display = pd.DataFrame(
 
 st.dataframe(table_display, use_container_width=True)
 
-st.info(
-    f"**Euler Check:**\n"
-    f"- Sum of Component VaR = **{format_pct(budget_df['component_var'].sum())}** "
-    f"(matches portfolio VaR)\n"
-    f"- Sum of Component ES = **{format_pct(budget_df['component_es'].sum())}** "
-    f"(matches portfolio ES)\n"
-    f"- Total Risk Contribution = **{budget_df['pct_es_contrib'].sum():.1%}**."
-)
+if budget_method == "parametric":
+    st.info(
+        f"**Euler Check:**\n"
+        f"- Sum of Component VaR = "
+        f"**{format_pct(budget_df['component_var'].sum())}** "
+        f"(matches portfolio normal VaR)\n"
+        f"- Sum of Component ES = "
+        f"**{format_pct(budget_df['component_es'].sum())}** "
+        f"(matches portfolio normal ES)\n"
+        f"- Total ES Contribution = "
+        f"**{budget_df['pct_es_contrib'].sum():.1%}**."
+    )
+else:
+    historical_var, historical_es = var_es(
+        port_returns, alpha=alpha, method="historical"
+    )
+    st.info(
+        f"**Historical attribution check:**\n"
+        f"- Component VaR sum = "
+        f"**{format_pct(budget_df['component_var'].sum())}**. This is a local "
+        f"quantile-band attribution estimate; the portfolio's empirical VaR is "
+        f"**{format_pct(historical_var)}**, so exact reconciliation is not expected.\n"
+        f"- Component ES sum = "
+        f"**{format_pct(budget_df['component_es'].sum())}** "
+        f"(matches portfolio ES of **{format_pct(historical_es)}**)\n"
+        f"- Total ES Contribution = "
+        f"**{budget_df['pct_es_contrib'].sum():.1%}**."
+    )

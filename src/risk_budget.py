@@ -120,12 +120,17 @@ def historical_risk_budget(
     weights: np.ndarray | pd.Series,
     alpha: float = 0.95,
 ) -> pd.DataFrame:
-    """Historical Euler risk decomposition for Expected Shortfall.
+    """Historical Euler decomposition for ES and local attribution for VaR.
 
     For historical ES:
     Marginal ES_i = -E[R_i | R_portfolio <= -VaR_portfolio].
     Component ES_i = Weight_i * Marginal ES_i.
     Euler guarantee: sum(Component ES_i) == Total Portfolio ES.
+
+    Historical VaR is a non-smooth sample quantile, so its marginal values are
+    estimated from observations in a narrow band around the quantile. Those
+    component VaR values are attribution estimates and are not guaranteed to
+    sum to the portfolio's empirical VaR.
 
     Parameters
     ----------
@@ -161,7 +166,8 @@ def historical_risk_budget(
 
     pct_es = component_es / total_es if total_es > 0 else np.zeros_like(component_es)
 
-    # For historical VaR, estimate marginal VaR using narrow quantile bandwidth (+- 1%)
+    # Historical VaR has no exact sample Euler decomposition. Estimate local
+    # marginal VaR from observations in a narrow quantile bandwidth (+/- 1%).
     low_q = max(0.0, 1.0 - alpha - 0.01)
     high_q = min(1.0, 1.0 - alpha + 0.01)
     var_mask = (port_series >= np.quantile(port_series, low_q)) & (

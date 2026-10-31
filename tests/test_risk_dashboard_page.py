@@ -4,9 +4,9 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from src import config
-from src.data import load_returns, load_risk_free
+from src.data import load_returns
 from src.evt import evt_var_es, select_threshold
-from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+from src.portfolio import final_weights, portfolio_returns
 
 PAGE = Path(__file__).resolve().parent.parent / "app" / "pages" / "3_risk_dashboard.py"
 
@@ -33,8 +33,7 @@ def test_dashboard_evt_row_uses_shared_threshold_and_core_metrics():
     at.run()
 
     returns = load_returns()
-    rf_annual = annual_risk_free(load_risk_free(), returns.index)
-    weights = candidate_portfolios(returns, rf_annual)["Maximum Sharpe"]
+    weights = final_weights()
     losses = -portfolio_returns(returns, weights)
     threshold, _, _ = select_threshold(losses, target_quantile=0.90)
     expected_var, expected_es, params = evt_var_es(

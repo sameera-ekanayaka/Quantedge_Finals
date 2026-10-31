@@ -20,7 +20,12 @@ from src.evt import (
     parameter_stability_plot_data,
     select_threshold,
 )
-from src.portfolio import annual_risk_free, candidate_portfolios, portfolio_returns
+from src.portfolio import (
+    annual_risk_free,
+    candidate_portfolios,
+    final_weights,
+    portfolio_returns,
+)
 from src.supplementary import threshold_sensitivity
 from src.ui import get_settings
 from src.var_es import var_es
@@ -33,6 +38,7 @@ def get_cached_data():
     rf = load_risk_free()
     rf_ann = annual_risk_free(rf, returns.index)
     candidates = candidate_portfolios(returns, rf_ann)
+    candidates["Maximum Sharpe"] = final_weights()
     return returns, candidates
 
 

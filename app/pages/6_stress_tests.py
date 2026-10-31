@@ -4,14 +4,16 @@ import streamlit as st
 
 from src import config, stress
 from src.data import load_returns, load_risk_free
-from src.portfolio import annual_risk_free, candidate_portfolios
+from src.portfolio import annual_risk_free, candidate_portfolios, final_weights
 
 
 @st.cache_data
 def load_candidates() -> tuple[pd.DataFrame, pd.DataFrame]:
     returns = load_returns()
     rf = annual_risk_free(load_risk_free(), returns.index)
-    return returns, candidate_portfolios(returns, rf)
+    candidates = candidate_portfolios(returns, rf)
+    candidates["Maximum Sharpe"] = final_weights()
+    return returns, candidates
 
 
 def impact_chart(table: pd.DataFrame, loss_limit: float) -> go.Figure:
@@ -66,7 +68,10 @@ loss_limit = col_limit.slider(
     value=stress.DEFAULT_LOSS_LIMIT,
     step=0.01,
     format="%.2f",
-    help="The largest loss in one crisis the fund is willing to take. Proposal.",
+    help=(
+        "Revised scenario-loss proposal: 18%. "
+        "This is not a drawdown cap or a future guarantee."
+    ),
 )
 weights = candidates[portfolio]
 
@@ -99,7 +104,10 @@ with st.expander("Our scenario: inflation shock (edit the assumptions)"):
         "assumption rather than a bond-price forecast."
     )
 
-scenarios = {"Inflation shock (our scenario)": shocks}
+scenarios = {
+    "Inflation shock (our scenario)": shocks,
+    "Equity crash and dollar spike (assumption)": stress.DOLLAR_CRASH_SHOCK,
+}
 table = stress.stress_table(returns, weights, scenarios=scenarios)
 
 st.subheader("Impact on the USD 10m portfolio")

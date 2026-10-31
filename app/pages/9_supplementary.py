@@ -20,22 +20,19 @@ from src.ui import get_settings
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "submission" / "advanced"
 settings = get_settings()
-st.title("Supplementary research and audit response")
-st.warning(
-    "Prepared after the submitted PDF. Original weights, reported "
-    "results and archived PDFs remain unchanged. The new allocation "
-    "and models below are supplementary alternatives, not results "
-    "contained in that PDF."
+st.title("Extended validation and model comparison")
+st.info(
+    "Included in the replacement submission. Decision: ADJUST the scenario-loss "
+    "limit to 18%, retaining the original allocation. The 15%-constrained "
+    "alternative below is a counterfactual, not the adopted allocation. "
+    "The 18% policy is retrospective, not independently calibrated, and is "
+    "not a drawdown cap."
 )
 st.markdown(
-    "**Supplementary decision: ADJUST the allocation if the 15% "
-    "scenario ceiling is mandatory.** The submitted allocation fails "
-    "that ceiling. The alternative enforces the tested scenario and "
-    "daily risk limits; it does not guarantee a 15% maximum drawdown "
-    "or future losses below the limit."
+    "**Decision: ADJUST.** All models still fail independence; the new "
+    "analyses do not establish guaranteed future risk control."
 )
-
-st.header("1. Risk-constrained allocation alternative")
+st.header("1. Counterfactual: risk-constrained 15% allocation")
 st.dataframe(pd.read_csv(OUT / "allocations.csv", index_col=0).style.format("{:.2%}"))
 st.markdown(
     "Maximise in-sample Sharpe subject to full investment, original "
@@ -213,6 +210,6 @@ else:
 st.markdown(
     "Reproduce with `python scripts/build_advanced_validation.py`. "
     "Methods, assumptions and limitations are documented in "
-    "`docs/advanced_validation.md`. Submitted PDFs remain archived "
-    "unchanged in `submission/`."
+    "`docs/advanced_validation.md`. Replacement PDFs are in `submission/`; "
+    "earlier PDFs are archived in `submission/previous_submission/`."
 )

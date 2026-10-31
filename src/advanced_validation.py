@@ -11,12 +11,10 @@ from src.backtest import summarise
 from src.data import log_to_simple
 from src.evt import evt_var_es, fit_gpd
 from src.portfolio import TICKERS, asset_stats, get_bounds
-from src.stress import INFLATION_SHOCK, asset_period_returns
+from src.stress import DOLLAR_CRASH_SHOCK, INFLATION_SHOCK, asset_period_returns
 from src.var_es import var_es
 
-DOLLAR_CRASH = dict(
-    zip(TICKERS, [-0.35, -0.40, -0.45, 0.05, -0.10, -0.40, -0.40], strict=True)
-)
+DOLLAR_CRASH = DOLLAR_CRASH_SHOCK
 
 
 def stress_vectors(returns):

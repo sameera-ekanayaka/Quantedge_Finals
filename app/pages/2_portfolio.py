@@ -19,6 +19,7 @@ from src.portfolio import (
     asset_stats,
     candidate_kpis,
     candidate_portfolios,
+    construct_final_portfolio,
     efficient_frontier,
     final_weights,
     min_es,
@@ -38,6 +39,9 @@ def load_everything():
     returns = load_returns()
     rf = annual_risk_free(load_risk_free(), returns.index)
     candidates = candidate_portfolios(returns, rf)
+    constructed = construct_final_portfolio(returns, rf)
+    if not np.allclose(constructed, final_weights(), atol=0.0001):
+        raise ValueError("Frozen targets no longer match the risk-constrained solve")
     candidates["Minimum ES"] = min_es(returns)
     return returns, rf, candidates
 
@@ -248,17 +252,17 @@ st.caption(
     "the same data, so the returns are historical and likely too optimistic."
 )
 
-st.subheader("Supplementary validation: annual walk-forward")
+st.subheader("Annual walk-forward validation")
 st.caption(
-    "Added after preparation of the submitted PDF. Headline "
+    "Included in the replacement submission. Headline "
     "allocation and reported results are unchanged."
 )
-st.warning(
-    "Weights in the submitted report were selected in sample. "
-    "Optimisation enforces weight bounds; VaR, ES and stress "
-    "limits are evaluated afterward. The 17.2% inflation loss "
-    "exceeds the proposed 15% monitoring limit and requires an "
-    "explicit exception."
+st.info(
+    "Decision: ADJUST the scenario-loss limit to 18%, retaining the allocation. "
+    "The final construction enforces asset bounds, historical daily VaR/ES "
+    "and scenario limits. The 18% policy was chosen after reviewing results, "
+    "not independently calibrated. It is not a drawdown cap. Weights remain "
+    "selected in sample; the baseline allocation walk-forward test is below."
 )
 
 

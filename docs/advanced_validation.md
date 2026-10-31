@@ -1,5 +1,7 @@
 # Post-report audit response: additional models and constrained alternative
 
+**Historical research record.** The replacement submission now integrates these analyses and explicitly proposes an 18% scenario-loss limit. Read `docs/report/` and the current PDFs in `submission/` for the final decision. References below to the submitted/unchanged PDFs describe the earlier submission, now archived in `submission/previous_submission/`.
+
 Prepared 31 October 2026 after the submitted PDF. This supplements the report; it does not replace or retroactively change the submitted recommendation, portfolio weights, documents or model results. The app's **Supplementary research** page presents the additions separately. Original models remain available for reproduction.
 
 Reproduce all archived outputs with `python scripts/build_advanced_validation.py`. Clean market data and original ETF bounds are unchanged. The submitted PDF checksums remain in `submission/SHA256SUMS`.

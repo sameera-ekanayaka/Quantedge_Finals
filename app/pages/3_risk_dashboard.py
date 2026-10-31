@@ -240,10 +240,11 @@ for m_key, m_label in config.VAR_METHODS.items():
 
 # Check EVT from Praveen
 try:
-    from src.evt import evt_var_es
+    from src.evt import evt_var_es, select_threshold
 
-    # Test if implemented
-    evt_v, evt_e, _ = evt_var_es(-port_returns, alpha=alpha, threshold=0.01)
+    evt_losses = -port_returns
+    evt_threshold, _, _ = select_threshold(evt_losses, target_quantile=0.90)
+    evt_v, evt_e, _ = evt_var_es(evt_losses, alpha=alpha, threshold=evt_threshold)
     comp_records.append(
         {
             "Methodology": "Extreme Value Theory (EVT / GPD)",

@@ -12,6 +12,7 @@ import streamlit as st
 from src import config
 from src.data import load_returns, load_risk_free
 from src.evt import (
+    classify_tail,
     evt_var_es,
     fit_gpd,
     gpd_qq_data,
@@ -284,12 +285,20 @@ with col_fit_metrics:
         "Exceedance Probability (p_u)",
         format_pct(comparison["n_exceedances"] / len(losses)),
     )
-    tail_desc = (
-        "**Heavy-tailed (Fréchet Domain)**: Tail decays as a power law, "
-        "confirming significant tail risk beyond Gaussian assumptions."
-        if xi > 0
-        else "**Thin-tailed (Weibull/Gumbel Domain)**"
-    )
+    tail_type = classify_tail(xi)
+    if tail_type == "Heavy-tailed (Fréchet)":
+        tail_desc = (
+            "**Heavy-tailed (Fréchet Domain):** the fitted tail decays as a power law."
+        )
+    elif tail_type == "Bounded-tail (Weibull)":
+        tail_desc = (
+            "**Bounded-tail (Weibull Domain):** the fitted tail has an endpoint."
+        )
+    else:
+        tail_desc = (
+            "**Exponential-tail (Gumbel Domain):** the fitted excesses have an "
+            "unbounded exponential tail."
+        )
     st.markdown(f"**Tail Classification:**\n{tail_desc}")
 
 with col_qq:

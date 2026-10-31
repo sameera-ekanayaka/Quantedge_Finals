@@ -6,6 +6,7 @@ from scipy import stats
 from src import config
 from src.data import stub_returns
 from src.evt import (
+    classify_tail,
     evt_var_es,
     fit_gpd,
     gpd_qq_data,
@@ -41,6 +42,18 @@ def test_fit_gpd_known_distribution():
 def test_fit_gpd_insufficient_exceedances():
     with pytest.raises(ValueError, match="Need at least 10 exceedances"):
         fit_gpd(np.array([0.01, 0.02, 0.03]))
+
+
+@pytest.mark.parametrize(
+    ("xi", "expected"),
+    [
+        (0.2, "Heavy-tailed (Fréchet)"),
+        (0.0, "Exponential-tail (Gumbel)"),
+        (-0.2, "Bounded-tail (Weibull)"),
+    ],
+)
+def test_tail_classification(xi, expected):
+    assert classify_tail(xi) == expected
 
 
 def test_mean_excess_plot_data(sample_losses):
@@ -99,8 +112,9 @@ def test_select_threshold(sample_losses):
         float(np.quantile(sample_losses, 0.90))
     )
     assert comp["n_exceedances"] > 0
-    assert "standard errors" in reason
+    assert "standard error" in reason
     assert "exceedances" in reason
+    assert "reviewed separately" in reason
 
 
 def test_evt_var_es_returns_positive_floats(sample_losses):
@@ -133,9 +147,51 @@ def test_evt_var_es_with_explicit_threshold(sample_losses):
     assert var > u  # 99% VaR should exceed the 92% threshold
 
 
+def test_evt_default_threshold_matches_shared_selector(sample_losses):
+    threshold, _, _ = select_threshold(sample_losses, target_quantile=0.90)
+
+    default_var, default_es, default_params = evt_var_es(sample_losses, alpha=0.99)
+    explicit_var, explicit_es, _ = evt_var_es(
+        sample_losses, alpha=0.99, threshold=threshold
+    )
+
+    assert default_params["threshold"] == pytest.approx(threshold)
+    assert default_var == pytest.approx(explicit_var)
+    assert default_es == pytest.approx(explicit_es)
+
+
+def test_evt_var_es_uses_exponential_limit_when_xi_is_zero(monkeypatch):
+    losses = pd.Series(np.linspace(0.0, 2.0, 100))
+    threshold = 1.0
+    sigma = 0.25
+    monkeypatch.setattr("src.evt.fit_gpd", lambda _: (0.0, sigma))
+
+    var, es, params = evt_var_es(losses, alpha=0.99, threshold=threshold)
+    p_u = float((losses > threshold).mean())
+    expected_var = threshold + sigma * np.log(p_u / 0.01)
+
+    assert var == pytest.approx(expected_var)
+    assert es == pytest.approx(expected_var + sigma)
+    assert params["tail_type"] == "Exponential-tail (Gumbel)"
+
+
+def test_evt_es_is_infinite_when_xi_has_no_finite_mean(monkeypatch):
+    losses = pd.Series(np.linspace(0.0, 2.0, 100))
+    monkeypatch.setattr("src.evt.fit_gpd", lambda _: (1.0, 0.25))
+
+    _, es, params = evt_var_es(losses, alpha=0.99, threshold=1.0)
+
+    assert np.isinf(es)
+    assert params["tail_type"] == "Heavy-tailed (Fréchet)"
+
+
 def test_evt_var_es_invalid_inputs(sample_losses):
     with pytest.raises(ValueError, match="Confidence alpha"):
         evt_var_es(sample_losses, alpha=1.05)
 
     with pytest.raises(ValueError, match="Too few exceedances"):
         evt_var_es(sample_losses, alpha=0.95, threshold=sample_losses.max() + 0.1)
+
+    threshold = float(np.quantile(sample_losses, 0.90))
+    with pytest.raises(ValueError, match="at or above the fitted threshold"):
+        evt_var_es(sample_losses, alpha=0.80, threshold=threshold)

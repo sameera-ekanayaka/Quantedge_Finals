@@ -10,6 +10,17 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+XI_ZERO_TOLERANCE = 1e-7
+
+
+def classify_tail(xi: float, tolerance: float = XI_ZERO_TOLERANCE) -> str:
+    """Classify a GPD tail from its shape parameter."""
+    if xi > tolerance:
+        return "Heavy-tailed (Fréchet)"
+    if xi < -tolerance:
+        return "Bounded-tail (Weibull)"
+    return "Exponential-tail (Gumbel)"
+
 
 def _clean_losses(losses: pd.Series | np.ndarray) -> pd.Series:
     """Validate and clean the loss series, ensuring positive numeric values."""
@@ -167,9 +178,11 @@ def select_threshold(
     losses: pd.Series | np.ndarray,
     target_quantile: float = 0.90,
 ) -> tuple[float, str, dict]:
-    """Select a defensible POT threshold using empirical quantiles and stability.
+    """Select a percentile-based POT threshold and return fit diagnostics.
 
-    Cross-checks against standard benchmark rules (90th and 95th percentiles).
+    The selection itself is the requested empirical quantile. The returned
+    90th/95th-percentile benchmarks and fit uncertainty support review; they do
+    not automatically optimize the threshold.
 
     Parameters
     ----------
@@ -214,9 +227,10 @@ def select_threshold(
         reason = (
             f"Chosen threshold u = {chosen:.4f} is the "
             f"{target_quantile:.0%} percentile with {n_exceed} exceedances "
-            f"(out of {n_total} trading days). Fitted shape parameter ξ above u "
-            f"stays within about 2 standard errors "
-            f"(shape_se ≈ {shape_se:.4f}, ±2 SE ≈ ±{2 * shape_se:.4f})."
+            f"(out of {n_total} trading days). The fitted shape at this threshold "
+            f"is ξ = {xi:.4f}, with approximate standard error {shape_se:.4f}. "
+            "Mean-excess, parameter-stability and Q-Q plots must be reviewed "
+            "separately."
         )
     else:
         reason = (
@@ -274,8 +288,13 @@ def evt_var_es(
 
     # Closed-form POT VaR
     # When (1 - alpha) is smaller than p_u, we extrapolate into the tail
-    prob_ratio = p_u / (1.0 - alpha)
-    if abs(xi) < 1e-7:
+    tail_probability = 1.0 - alpha
+    if tail_probability > p_u + 1e-12:
+        raise ValueError(
+            "EVT confidence level must place VaR at or above the fitted threshold"
+        )
+    prob_ratio = p_u / tail_probability
+    if abs(xi) <= XI_ZERO_TOLERANCE:
         var = threshold + sigma * np.log(prob_ratio)
         es = var + sigma
     else:
@@ -284,9 +303,8 @@ def evt_var_es(
         if xi < 1.0:
             es = (var + sigma - xi * threshold) / (1.0 - xi)
         else:
-            # Theoretical mean is infinite if xi >= 1; empirical fallback
-            tail = clean[clean > var]
-            es = float(tail.mean()) if len(tail) > 0 else var
+            # The GPD mean, and therefore Expected Shortfall, is infinite.
+            es = float("inf")
 
     # Sanity guard: ES must always be at least VaR
     if es < var:
@@ -299,7 +317,7 @@ def evt_var_es(
         "n_exceedances": int(n_u),
         "p_exceed": float(p_u),
         "alpha": float(alpha),
-        "tail_type": "Heavy-tailed (Fréchet)" if xi > 0 else "Thin-tailed (Weibull)",
+        "tail_type": classify_tail(xi),
     }
 
     return float(var), float(es), params

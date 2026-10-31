@@ -14,8 +14,8 @@ $$G_{\xi, \sigma}(y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi} \quad 
 
 where $\xi$ is the shape parameter and $\sigma > 0$ is the scale parameter:
 - **$\xi > 0$ (Fréchet / Heavy-tailed):** Tails decay as a power law $P(X > x) \sim x^{-1/\xi}$. Most financial return series exhibit fat tails and crash risk.
-- **$\xi = 0$ (Gumbel):** Thin exponential tails (Gaussian).
-- **$\xi < 0$ (Weibull):** Bounded tails with a finite endpoint.
+- **$\xi = 0$ (Gumbel):** Unbounded exponential tail.
+- **$\xi < 0$ (Weibull):** Bounded tail with a finite endpoint.
 
 ## 4.2 Threshold Selection and Diagnostic Evidence
 
@@ -44,6 +44,11 @@ On the final Maximum Sharpe portfolio, MLE estimation yields $\hat{\xi} = 0.1843
 With exceedance fraction $\hat{p}_u = N_u / N = 10.0\%$, closed-form EVT Value at Risk and Expected Shortfall are:
 
 $$\text{VaR}_\alpha^{\text{EVT}} = u + \frac{\hat{\sigma}}{\hat{\xi}}\left[\left(\frac{\hat{p}_u}{1 - \alpha}\right)^{\hat{\xi}} - 1\right], \quad \text{ES}_\alpha^{\text{EVT}} = \frac{\text{VaR}_\alpha^{\text{EVT}} + \hat{\sigma} - \hat{\xi} u}{1 - \hat{\xi}}$$
+
+The ES expression requires $\hat{\xi}<1$. At $\hat{\xi}=0$, the continuous
+limit is $\text{VaR}_\alpha=u+\hat{\sigma}\log(\hat{p}_u/(1-\alpha))$ and
+$\text{ES}_\alpha=\text{VaR}_\alpha+\hat{\sigma}$. For $\hat{\xi}\geq1$,
+the fitted GPD has infinite theoretical ES.
 
 The table compares 1-day tail risk metrics on the **USD 10m Maximum Sharpe Portfolio**:
 

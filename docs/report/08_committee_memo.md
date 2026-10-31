@@ -15,11 +15,7 @@ raised from 10% to 15% of the fund.
 ## 8.2 Why this portfolio
 
 - **It meets our base return objective.** It has historically earned **7.4% a
-  year** (Nov 2004 to Oct 2026). Our base objective is about 7%: the 25-year
-  average spending rate of about 4.5% plus our 2.5% inflation assumption. It
-  only approximately meets the stricter 7.4% hurdle from the latest 4.9%
-  effective spending rate, and falls short of the 7.8% hurdle using 3.3%
-  higher-education inflation. These are sensitivities, not promised returns.
+  year** (Nov 2004 to Oct 2026). Our base objective is about 7.0% (an assumed 4.5% annual spending rate plus 2.5% inflation). It matches our stricter 7.4% hurdle (4.9% assumed spending plus 2.5% inflation) and falls short of the 7.8% hurdle (4.5% spending plus 3.3% assumed higher-education inflation). These are team policy assumptions, not promised returns.
 - **It has the best risk-adjusted return** of the candidates (Sharpe 0.79)
   with a maximum drawdown of -18.3%, close to Minimum variance (-17.8%) while
   earning about 0.9 points a year more.
@@ -38,6 +34,9 @@ raised from 10% to 15% of the fund.
   single biggest driver of losses.
 - **The return is in-sample.** The weights were chosen on the same 2004 to
   2026 data the 7.4% is measured on, so the future return is likely lower.
+- **Rebalancing.** The headline figures assume daily rebalancing. Quarterly
+  rebalancing returns 7.3% with a -18.7% maximum drawdown, versus 7.4% and
+  -18.3% daily, so the historical difference is small (`rebalancing_comparison`).
 - **Daily risk.** One-day 99% Student t VaR is 1.16% (USD 116k) and ES is
   1.73% (USD 173k). The normal model understates both: in the backtest
   (Section 5) it breaches twice as often as it should.

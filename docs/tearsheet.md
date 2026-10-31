@@ -21,7 +21,7 @@
 
 ### 2. Performance & Risk-Adjusted Summary
 
-- **Annual Return:** **7.4% a year historically**, in-sample. It clears our 7.0% base objective (4.5% long-run spending + 2.5% inflation), is close to the 7.3% average nominal target reported by endowments that set one (NACUBO-Commonfund 2025), and falls short of the 7.8% hurdle using 3.3% higher-education inflation.
+- **Annual Return:** **7.4% a year historically**, in-sample. It clears our 7.0% base objective (4.5% long-run spending + 2.5% inflation), matches the stricter 7.4% hurdle (4.9% spending + 2.5% inflation), and falls short of the 7.8% hurdle (4.5% spending + 3.3% higher-education inflation).
 - **Sharpe Ratio:** **0.79** (Highest risk-adjusted return across all candidate portfolios).
 - **Annual Volatility:** **7.2%** (Conservative risk profile dominated by 58.85% core fixed income).
 - **Maximum Drawdown:** **-18.3%** (Comparable to Minimum Variance at -17.8%, while earning about 0.9 points more a year).

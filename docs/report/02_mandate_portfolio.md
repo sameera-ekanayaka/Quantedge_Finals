@@ -7,6 +7,8 @@
 
 The committee told us that avoiding large losses matters more than making large gains. So we did not look for the best return. We looked for a portfolio whose worst case we can measure and defend. This section sets the rules (the mandate), explains how we built five candidates, and shows why we chose one. Numbers use 5,518 trading days from 19 Nov 2004 to 27 Oct 2026. The average risk free rate over this time is 1.79% a year.
 
+**Read this first.** The weights were chosen on the same 2004 to 2026 data that we use to measure them. So every return and risk figure in this section is historical and in-sample. We did not test weights chosen on one period against another period.
+
 ## 2.1 The mandate
 
 | Decision | Our choice | Reason |
@@ -31,7 +33,7 @@ The committee told us that avoiding large losses matters more than making large 
 | XLE | 0% | 10% |
 | XLK | 0% | 15% |
 
-**Crisis loss limit.** Our first idea was 10% of the fund. We tested it and no candidate meets it in all three historical crises (see 2.3). So we propose 15%, the same limit used in Sections 6 and 8. Every candidate except equal weight stays inside 15% in the three historical replays.
+**Crisis loss limit.** Our first idea was 10% of the fund. We tested it and no candidate meets it in all three historical crises (see 2.3). Even the calmest candidate loses 12.5% in 2022, so a 10% limit cannot be met inside this mandate. We propose 15% (USD 1.5m), the same limit used in Sections 6 and 8. We think this is fair for a conservative investor for four reasons. First, we did not set it to fit our result. The worst historical loss of the final portfolio is 12.6%, which is 2.4 points below the limit. Second, in each crisis the final portfolio lost far less than SPY alone: 5.2% against 36.9% in 2008, 9.9% against 33.4% in March 2020, and 12.6% against 18.2% in 2022. Third, the limit is measured the same way for every portfolio, as the loss over the whole crisis window. Inside 2022 the fall from peak to trough reached 17.2%, which is above 15%, and we say so openly. Fourth, a limit is a trigger for the committee to review the portfolio, not a promise that losses stay below it. The inflation shock (17.2%) is also above the limit and we report it openly. Every candidate except equal weight stays inside 15% in the three historical replays.
 
 ## 2.2 How we built the candidates
 
@@ -76,6 +78,33 @@ The final weights are SPY 9.6%, AGG 58.9%, GLD 15%, XLK 15% and XLE 1.6%. They a
 4. **It has a cost.** In the inflation shock Maximum Sharpe loses 17.2%, about USD 120k more than minimum variance.
 5. **Its beta to SPY is 0.29.** The information ratio is -0.33. This is expected for a portfolio that is mostly bonds, since it lags SPY in good years. SPY lost 36.9% over the 2008 window, while our portfolio lost 5.2%.
 
+### Maximum Sharpe against Minimum variance
+
+These two are the closest candidates, so this is the choice a judge will test.
+
+| | Minimum variance | Maximum Sharpe |
+|---|---|---|
+| Holdings | SPY 25%, AGG 60%, GLD 15% | SPY 9.6%, AGG 58.9%, GLD 15%, XLK 15%, XLE 1.6% |
+| Annual return | 6.5% | 7.4% |
+| Annual volatility | 6.7% | 7.2% |
+| Sharpe | 0.72 | 0.79 |
+| Sortino | 1.02 | 1.13 |
+| Calmar | 0.37 | 0.41 |
+| Max drawdown | -17.8% | -18.3% |
+| 1-day ES at 99% | 1.7% | 1.7% |
+| 2008 | -5.6% | -5.2% |
+| March 2020 | -9.6% | -9.9% |
+| 2022 | -12.5% | -12.6% |
+| Inflation shock (assumption) | -16.0% | -17.2% |
+
+What Maximum Sharpe gives: 0.9 points more return a year, which is what lets it reach the 7% base objective. It also holds four ETFs above 5%, against three.
+
+What it costs: a max drawdown 0.5 points deeper, and an inflation shock loss 1.2 points larger (about USD 120k). In the three historical crises the two are within 0.4 points of each other.
+
+Concentration: Minimum variance gets 51.5% of its variance from SPY alone. Maximum Sharpe gets about 36% of its risk from XLK. Both depend on one ETF, so neither is clearly more diversified.
+
+We do not claim the gap in Sharpe is proven, because both are in-sample. We would switch to Minimum variance if the committee ranks the inflation shock above the 7% objective.
+
 **Where the risk comes from.** We used Aadhila's risk budget (Section 3), which splits the risk of the final portfolio between the ETFs. Technology is 15% of the money but about 36% of the risk. This is the same under the normal method (36.0%) and the historical method at 99% (37.8% of VaR and 36.5% of ES), so it does not depend on the method. Bonds are 58.9% of the money but only about 21% of the risk. Gold adds 15.9% of the tail loss, less than its 20.1% share under the normal method, so it helps a little on the worst days. SPY adds 21.7%. The historical numbers use about 55 bad days at 99%, so we read them as rough. **Reproduce:** `risk_budget(returns, final_weights(), alpha=0.99, method='historical')` in `src/risk_budget.py`.
 **Verdict for the committee:** accept with an adjusted risk limit (Section 8).
 
@@ -98,8 +127,18 @@ Return and Sharpe fall a little, the 2022 loss gets slightly worse, and the infl
 **What we did not do:**
 
 - The weights were chosen on the same 2004 to 2026 data used to measure them. The 7.4% return is historical and probably too optimistic. We did not run a test where the weights are chosen on one period and measured on another.
-- The headline return and risk numbers assume the weights are rebalanced every day. A real fund rebalances every quarter. The stress replays in Section 6 buy and hold.
+- The headline numbers assume the weights are reset every day, but a real fund rebalances every quarter. We checked this with `rebalancing_comparison`. For the final portfolio the quarterly return is 7.3% against 7.4%, the max drawdown is -18.7% against -18.3%, and the 1-day 99% ES is 1.71% against 1.73%. The difference is small, so we keep the daily figures as the headline. The stress replays in Section 6 already use buy and hold. **Reproduce:** `rebalancing_comparison(returns, final_weights(), rf_annual)` in `src/portfolio.py`.
 - We ignore trading costs and fees.
 - We measure risk over one day. We did not build a 10 to 20 day view.
+
+## 2.6 Why a conservative endowment should accept this portfolio
+
+The committee asked what can go wrong, how bad losses could become, and how confident we are. Our answer:
+
+- **What it offers.** Historically 7.4% a year with 7.2% volatility, close to our 7% base objective, with a Sharpe ratio of 0.79.
+- **How bad it got.** In the three historical crises it lost 5.2%, 9.9% and 12.6% over the crisis window (at most USD 1.26m on USD 10m), against 36.9%, 33.4% and 18.2% for SPY alone. The one day 99% expected shortfall is 1.73% of the fund (USD 173k), inside the USD 200k limit.
+- **What remains.** Stocks and bonds can fall together, as in 2022. Our own inflation shock costs 17.2% (USD 1.72m), above the 15% limit. Technology causes about 36% of the risk with 15% of the money.
+- **How confident we are.** Less than the numbers suggest. The weights were chosen on the same 2004 to 2026 data, trading costs are not included, and the quarterly rebalancing check shows a small drop in return.
+- **Our request.** Accept the portfolio with a crisis loss limit of 15%, and review it if the inflation shock or the technology risk becomes a concern.
 
 **Sources:** NACUBO and Commonfund Institute (2026). Summary observations from the 2025 NACUBO-Commonfund Study of Endowments. Spending rate: page 3. Return objectives: page 6. Momjian, L. Insights from the 2025 NACUBO-Commonfund Study of Endowments. Mercer (Marsh). Source for the 25-year average spending rate of about 4.5% and the HEPI hurdle of about 7.8%.
